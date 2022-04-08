@@ -38,7 +38,7 @@ public class MultilevelListView extends ListView {
         private final MyLog myLog = new MyLog(this);
         private final Context context;
         private Data<?, ?>[] srcData = null;
-        private List<DstData<?, ?>> dstData = null;
+        private List<Data<?, ?>> dstData = null;
 
         private ListViewAdapter(Context context) {
             this.context = context;
@@ -46,19 +46,14 @@ public class MultilevelListView extends ListView {
 
         private void updateData(Data<?, ?>[] data) {
             srcData = data;
-            dstData = new ArrayList<>();
-            for (int i = 0; i < srcData.length; i++) {
-                srcData[i].index = new int[] { i };
-                dstData.add(srcData[i]);
-            }
+            dstData = new ArrayList<>(Arrays.asList(srcData));
             notifyDataSetChanged();
         }
 
         private void onItemClick(int position) {
-            Data<?, ?> goalData = findFromIndex(dstData.get(position).index);
+            Data<?, ?> goalData = dstData.get(position);
             Data<?, ?>[] children = goalData.subordinateData;
             if (children == null) {
-                myLog.v(position + ": 没有孩子节点，不更改视图");
                 return;
             }
             if (goalData.isExpand) {
@@ -66,29 +61,9 @@ public class MultilevelListView extends ListView {
                 foldAll(position + 1, children);
             } else {
                 goalData.isExpand = true;
-                for (int i = 0; i < children.length; i++) {
-                    Data<?, ?> child = children[i];
-                    // 记录位置
-                    child.index = new int[goalData.index.length + 1];
-                    System.arraycopy(goalData.index, 0, child.index, 0, goalData.index.length);
-                    child.index[goalData.index.length] = i;
-                    dstData.add(++position, child);
-                }
+                dstData.addAll(position + 1, Arrays.asList(children));
             }
             notifyDataSetChanged();
-        }
-
-        private Data<?, ?> findFromIndex(int[] index) {
-            Data<?, ?> result = null;
-            Data<?, ?>[] subordinateData = srcData;
-            for (int i : index) {
-                if (subordinateData == null) {
-                    throw new Error("索引记录异常");
-                }
-                result = subordinateData[i];
-                subordinateData = result.subordinateData;
-            }
-            return result;
         }
 
         /**
@@ -133,7 +108,7 @@ public class MultilevelListView extends ListView {
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = null;
             myLog.v("getView: " + position + "  isNull: " + (convertView == null));
-            DstData<?, ?> data = dstData.get(position);
+            Data<?, ?> data = dstData.get(position);
             Object viewHolder;
             if (convertView == null) {
                 convertView = View.inflate(context, data.resId, null);
@@ -147,26 +122,29 @@ public class MultilevelListView extends ListView {
         }
     }
 
-    private static abstract class DstData<T, ViewHolder> {
+    public static abstract class Data<T, ViewHolder> {
         @LayoutRes
         private final int resId;
 
         @Nullable
         protected final T data;
 
-        /**
-         * 记录该节点在树中的位置.
-         */
-        int[] index = null;
+        @Nullable
+        protected final Data<?, ?>[] subordinateData;
 
         /**
          * 该节点是否展开了.
          */
-        boolean isExpand = false;
+        private boolean isExpand = false;
 
-        private DstData(@LayoutRes int resId, @Nullable T data) {
+        protected Data(@LayoutRes int resId, @Nullable T data) {
+            this(resId, data, null);
+        }
+
+        protected Data(@LayoutRes int resId, @Nullable T data, @Nullable Data<?, ?>[] subordinateData) {
             this.resId = resId;
             this.data = data;
+            this.subordinateData = subordinateData;
         }
 
         /**
@@ -186,19 +164,5 @@ public class MultilevelListView extends ListView {
          * @param viewHolder 与视图绑定的ViewHolder实例
          */
         protected abstract void loadingDataOnView(@NotNull Object viewHolder);
-    }
-
-    public static abstract class Data<T, ViewHolder> extends DstData<T, ViewHolder> {
-        @Nullable
-        protected final Data<?, ?>[] subordinateData;
-
-        protected Data(@LayoutRes int resId, @Nullable T data) {
-            this(resId, data, null);
-        }
-
-        protected Data(@LayoutRes int resId, @Nullable T data, @Nullable Data<?, ?>[] subordinateData) {
-            super(resId, data);
-            this.subordinateData = subordinateData;
-        }
     }
 }
