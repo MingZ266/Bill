@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import androidx.annotation.LayoutRes;
-import com.mingz.billing.utils.MyLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MultilevelListView extends ListView {
-    //private final MyLog myLog = new MyLog(this);
     private final ListViewAdapter adapter;
 
     public MultilevelListView(Context context) {
@@ -35,46 +33,32 @@ public class MultilevelListView extends ListView {
     }
 
     private static class ListViewAdapter extends BaseAdapter {
-        private final MyLog myLog = new MyLog(this);
         private final Context context;
-        @LayoutRes
-        private int[] lastIds = null;
-        private List<Data<?, ?>> dstData = null;
+        private List<Data<?, ?>> dataList = null;
 
         private ListViewAdapter(Context context) {
             this.context = context;
         }
 
         private void updateData(Data<?, ?>[] data) {
-            dstData = new ArrayList<>(Arrays.asList(data));
+            dataList = new ArrayList<>(Arrays.asList(data));
             notifyDataSetChanged();
         }
 
         private void onItemClick(int position) {
-            Data<?, ?> goalData = dstData.get(position);
+            Data<?, ?> goalData = dataList.get(position);
             Data<?, ?>[] children = goalData.subordinateData;
             if (children == null) {
                 return;
             }
-            recordResId();
             if (goalData.isExpand) {
                 goalData.isExpand = false;
                 foldAll(position + 1, children);
             } else {
                 goalData.isExpand = true;
-                dstData.addAll(position + 1, Arrays.asList(children));
+                dataList.addAll(position + 1, Arrays.asList(children));
             }
             notifyDataSetChanged();
-        }
-
-        private void recordResId() {
-            int size = dstData.size();
-            if (lastIds == null || lastIds.length < size) {
-                lastIds = new int[size];
-            }
-            for (int i = 0; i < size; i++) {
-                lastIds[i] = dstData.get(i).resId;
-            }
         }
 
         /**
@@ -92,16 +76,16 @@ public class MultilevelListView extends ListView {
                     foldAll(position + 1, data.subordinateData);
                     data.isExpand = false;
                 }
-                dstData.remove(position);
+                dataList.remove(position);
             }
         }
 
         @Override
         public int getCount() {
-            if (dstData == null) {
+            if (dataList == null) {
                 return 0;
             }
-            return dstData.size();
+            return dataList.size();
         }
 
         @Override
@@ -116,21 +100,12 @@ public class MultilevelListView extends ListView {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Data<?, ?> data = dstData.get(position);
-            if (lastIds != null && position < lastIds.length) {
-                myLog.v("dataResId: " + data.resId + "  lastId: " + lastIds[position]);
-                if (data.resId != lastIds[position]) {
-                    convertView = null;
-                }
-            }
-            myLog.v("getView: " + position + "  isNull: " + (convertView == null));
+            Data<?, ?> data = dataList.get(position);
             Object viewHolder;
-            if (convertView == null) {
+            if (convertView == null || (viewHolder = convertView.getTag(data.resId)) == null) {
                 convertView = View.inflate(context, data.resId, null);
                 viewHolder = data.newViewHolder(convertView);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = convertView.getTag();
+                convertView.setTag(data.resId, viewHolder);
             }
             data.loadingDataOnView(viewHolder);
             return convertView;

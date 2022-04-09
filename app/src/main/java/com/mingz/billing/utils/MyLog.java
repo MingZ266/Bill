@@ -36,56 +36,56 @@ public class MyLog {
         this(obj.getClass(), debug);
     }
 
-    public void v(String msg) {
+    public void v(Object msg) {
         core(Log.VERBOSE, msg);
     }
 
-    public void v(String errorInfo, Throwable e) {
+    public void v(Object errorInfo, Throwable e) {
         core(Log.VERBOSE, errorInfo, e);
     }
 
-    public void d(String msg) {
+    public void d(Object msg) {
         core(Log.DEBUG, msg);
     }
 
-    public void d(String errorInfo, Throwable e) {
+    public void d(Object errorInfo, Throwable e) {
         core(Log.DEBUG, errorInfo, e);
     }
 
-    public void i(String msg) {
+    public void i(Object msg) {
         core(Log.INFO, msg);
     }
 
-    public void i(String errorInfo, Throwable e) {
+    public void i(Object errorInfo, Throwable e) {
         core(Log.INFO, errorInfo, e);
     }
 
-    public void w(String msg) {
+    public void w(Object msg) {
         core(Log.WARN, msg);
     }
 
-    public void w(String errorInfo, Throwable e) {
+    public void w(Object errorInfo, Throwable e) {
         core(Log.WARN, errorInfo, e);
     }
 
-    public void e(String msg) {
+    public void e(Object msg) {
         core(Log.ERROR, msg);
     }
 
-    public void e(String errorInfo, Throwable e) {
+    public void e(Object errorInfo, Throwable e) {
         core(Log.ERROR, errorInfo, e);
     }
 
-    private void core(@Level int priority, String msg) {
+    private void core(@Level int priority, Object msg) {
         if (!debug) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return;
             }
         }
-        Log.println(priority, tag, msg);
+        Log.println(priority, tag, msg.toString());
     }
 
-    private void core(@Level int priority, String errorInfo, Throwable e) {
+    private void core(@Level int priority, Object errorInfo, Throwable e) {
         if (!debug) {
             if (priority == Log.VERBOSE || priority == Log.DEBUG) {
                 return;
