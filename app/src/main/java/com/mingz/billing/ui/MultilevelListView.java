@@ -37,7 +37,8 @@ public class MultilevelListView extends ListView {
     private static class ListViewAdapter extends BaseAdapter {
         private final MyLog myLog = new MyLog(this);
         private final Context context;
-        private Data<?, ?>[] srcData = null;
+        @LayoutRes
+        private int[] lastIds = null;
         private List<Data<?, ?>> dstData = null;
 
         private ListViewAdapter(Context context) {
@@ -45,8 +46,7 @@ public class MultilevelListView extends ListView {
         }
 
         private void updateData(Data<?, ?>[] data) {
-            srcData = data;
-            dstData = new ArrayList<>(Arrays.asList(srcData));
+            dstData = new ArrayList<>(Arrays.asList(data));
             notifyDataSetChanged();
         }
 
@@ -56,6 +56,7 @@ public class MultilevelListView extends ListView {
             if (children == null) {
                 return;
             }
+            recordResId();
             if (goalData.isExpand) {
                 goalData.isExpand = false;
                 foldAll(position + 1, children);
@@ -64,6 +65,16 @@ public class MultilevelListView extends ListView {
                 dstData.addAll(position + 1, Arrays.asList(children));
             }
             notifyDataSetChanged();
+        }
+
+        private void recordResId() {
+            int size = dstData.size();
+            if (lastIds == null || lastIds.length < size) {
+                lastIds = new int[size];
+            }
+            for (int i = 0; i < size; i++) {
+                lastIds[i] = dstData.get(i).resId;
+            }
         }
 
         /**
@@ -100,15 +111,19 @@ public class MultilevelListView extends ListView {
 
         @Override
         public long getItemId(int position) {
-            myLog.v("getItemId: " + position);
             return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = null;
-            myLog.v("getView: " + position + "  isNull: " + (convertView == null));
             Data<?, ?> data = dstData.get(position);
+            if (lastIds != null && position < lastIds.length) {
+                myLog.v("dataResId: " + data.resId + "  lastId: " + lastIds[position]);
+                if (data.resId != lastIds[position]) {
+                    convertView = null;
+                }
+            }
+            myLog.v("getView: " + position + "  isNull: " + (convertView == null));
             Object viewHolder;
             if (convertView == null) {
                 convertView = View.inflate(context, data.resId, null);

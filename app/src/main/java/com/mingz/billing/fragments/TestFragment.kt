@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.mingz.billing.R
 import com.mingz.billing.ui.MultilevelListView
+import com.mingz.billing.utils.MyLog
 
 class TestFragment : Fragment() {
     private lateinit var dataListView: MultilevelListView
 
     companion object {
+        private val myLog = MyLog(this);
+
         @JvmStatic
         fun newInstance() = TestFragment()
     }
@@ -65,22 +68,23 @@ class TestFragment : Fragment() {
 
     private class Level1(data: String, subordinateData: Array<Level2>?) :
         MultilevelListView.Data<String, Level1.ViewHolder>(
-        android.R.layout.simple_list_item_1, data, subordinateData
+        R.layout.test_item_list_level_1, data, subordinateData
     ) {
 
-        constructor(data: String) : this(data, null);
+        constructor(data: String) : this(data, null)
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
-            viewHolder.text1 = view.findViewById(android.R.id.text1)
+            viewHolder.level1text = view.findViewById(R.id.level1text)
             return viewHolder
         }
 
         override fun loadingDataOnView(viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
+                myLog.v("Level 1: ${viewHolder.javaClass.canonicalName}")
                 return
             }
-            viewHolder.text1.text = data
+            viewHolder.level1text.text = data
         }
 
         override fun toString(): String {
@@ -88,27 +92,28 @@ class TestFragment : Fragment() {
         }
 
         private class ViewHolder {
-            lateinit var text1: TextView
+            lateinit var level1text: TextView
         }
     }
 
     private class Level2(data: Int, subordinateData: Array<Level3>?) :
         MultilevelListView.Data<Int, Level2.ViewHolder>(
-        android.R.layout.simple_list_item_1, data, subordinateData
+        R.layout.test_item_list_level_2, data, subordinateData
     ) {
-        constructor(data: Int) : this(data, null);
+        constructor(data: Int) : this(data, null)
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
-            viewHolder.text1 = view.findViewById(android.R.id.text1)
+            viewHolder.level2text = view.findViewById(R.id.level2text)
             return viewHolder
         }
 
         override fun loadingDataOnView(viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
+                myLog.v("Level 2: ${viewHolder.javaClass.canonicalName}")
                 return
             }
-            viewHolder.text1.text = data.toString()
+            viewHolder.level2text.text = data.toString()
         }
 
         override fun toString(): String {
@@ -116,24 +121,25 @@ class TestFragment : Fragment() {
         }
 
         private class ViewHolder {
-            lateinit var text1: TextView
+            lateinit var level2text: TextView
         }
     }
 
     private class Level3(data: Double) : MultilevelListView.Data<Double, Level3.ViewHolder>(
-        android.R.layout.simple_list_item_1, data
+        R.layout.test_item_list_level_3, data
     ) {
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
-            viewHolder.text1 = view.findViewById(android.R.id.text1)
+            viewHolder.level3text = view.findViewById(R.id.level3text)
             return viewHolder
         }
 
         override fun loadingDataOnView(viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
+                myLog.v("Level 3: ${viewHolder.javaClass.canonicalName}")
                 return
             }
-            viewHolder.text1.text = data.toString()
+            viewHolder.level3text.text = data.toString()
         }
 
         override fun toString(): String {
@@ -141,7 +147,7 @@ class TestFragment : Fragment() {
         }
 
         private class ViewHolder {
-            lateinit var text1: TextView
+            lateinit var level3text: TextView
         }
     }
 }
