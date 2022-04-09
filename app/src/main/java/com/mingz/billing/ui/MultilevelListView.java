@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 对于使用同一Layout资源的条目必须设置同一ViewHolder类.
+ */
 public class MultilevelListView extends ListView {
     private final ListViewAdapter adapter;
 

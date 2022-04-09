@@ -14,7 +14,7 @@ class TestFragment : Fragment() {
     private lateinit var dataListView: MultilevelListView
 
     companion object {
-        private val myLog = MyLog(this);
+        private val myLog = MyLog(this)
 
         @JvmStatic
         fun newInstance() = TestFragment()
@@ -66,12 +66,10 @@ class TestFragment : Fragment() {
         dataListView = view.findViewById(R.id.dataListView)
     }
 
-    private class Level1(data: String, subordinateData: Array<Level2>?) :
+    private class Level1(data: String, subordinateData: Array<Level2>? = null) :
         MultilevelListView.Data<String, Level1.ViewHolder>(
         R.layout.test_item_list_level_1, data, subordinateData
     ) {
-
-        constructor(data: String) : this(data, null)
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
@@ -96,11 +94,10 @@ class TestFragment : Fragment() {
         }
     }
 
-    private class Level2(data: Int, subordinateData: Array<Level3>?) :
+    private class Level2(data: Int, subordinateData: Array<Level3>? = null) :
         MultilevelListView.Data<Int, Level2.ViewHolder>(
         R.layout.test_item_list_level_2, data, subordinateData
     ) {
-        constructor(data: Int) : this(data, null)
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
@@ -150,4 +147,78 @@ class TestFragment : Fragment() {
             lateinit var level3text: TextView
         }
     }
+
+    /*private class Level1(data: String, subordinateData: Array<Level2>? = null) :
+        MultilevelListView.Data<String, ViewHolder>(
+            R.layout.test_item_list_simple_text, data, subordinateData
+        ) {
+
+        override fun newViewHolder(view: View): ViewHolder {
+            val viewHolder = ViewHolder()
+            viewHolder.text = view.findViewById(R.id.text)
+            return viewHolder
+        }
+
+        override fun loadingDataOnView(viewHolder: Any) {
+            if (viewHolder !is ViewHolder) {
+                myLog.v("Level 1: ${viewHolder.javaClass.canonicalName}")
+                return
+            }
+            viewHolder.text.text = "1st: $data"
+        }
+
+        override fun toString(): String {
+            return data!!
+        }
+    }
+
+    private class Level2(data: Int, subordinateData: Array<Level3>? = null) :
+        MultilevelListView.Data<Int, ViewHolder>(
+            R.layout.test_item_list_simple_text, data, subordinateData
+        ) {
+
+        override fun newViewHolder(view: View): ViewHolder {
+            val viewHolder = ViewHolder()
+            viewHolder.text = view.findViewById(R.id.text)
+            return viewHolder
+        }
+
+        override fun loadingDataOnView(viewHolder: Any) {
+            if (viewHolder !is ViewHolder) {
+                myLog.v("Level 2: ${viewHolder.javaClass.canonicalName}")
+                return
+            }
+            viewHolder.text.text = "   2nd: ${data.toString()}"
+        }
+
+        override fun toString(): String {
+            return data.toString()
+        }
+    }
+
+    private class Level3(data: Double) : MultilevelListView.Data<Double, ViewHolder>(
+        R.layout.test_item_list_simple_text, data
+    ) {
+        override fun newViewHolder(view: View): ViewHolder {
+            val viewHolder = ViewHolder()
+            viewHolder.text = view.findViewById(R.id.text)
+            return viewHolder
+        }
+
+        override fun loadingDataOnView(viewHolder: Any) {
+            if (viewHolder !is ViewHolder) {
+                myLog.v("Level 3: ${viewHolder.javaClass.canonicalName}")
+                return
+            }
+            viewHolder.text.text = "      3rd: ${data.toString()}"
+        }
+
+        override fun toString(): String {
+            return data.toString()
+        }
+    }
+
+    private class ViewHolder {
+        lateinit var text: TextView
+    }*/
 }
