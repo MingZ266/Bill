@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.ExpandableListView
 import android.widget.TextView
 import com.mingz.billing.R
 import com.mingz.billing.ui.MyExpandableListView
@@ -133,7 +132,7 @@ class BillingMainFragment : Fragment() {
             val view: View
             val viewHolder: ChildViewHolder
             if (convertView == null) {
-                view = View.inflate(context, R.layout.item_list_billing_year_child, null)
+                view = View.inflate(context, R.layout.drop_item_list_billing_year_child, null)
                 viewHolder = ChildViewHolder()
                 viewHolder.monthBilling = view.findViewById(R.id.monthBilling)
                 view.tag = viewHolder
