@@ -1,27 +1,28 @@
 package com.mingz.billing.fragments
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.mingz.billing.databinding.FragmentRecordExpenditureBinding
+import com.mingz.billing.R
+import com.mingz.billing.databinding.FragmentRecordTransferBinding
 
-class RecordExpenditureFragment : Fragment() {
-    private lateinit var binding: FragmentRecordExpenditureBinding
+class RecordTransferFragment : Fragment() {
+    private lateinit var binding: FragmentRecordTransferBinding
 
     /**
-     * 支出.
+     * 转账.
      */
     companion object {
         @JvmStatic
-        fun newInstance() = RecordExpenditureFragment()
+        fun newInstance() = RecordTransferFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRecordExpenditureBinding.inflate(inflater, container, false)
+        binding = FragmentRecordTransferBinding.inflate(inflater, container, false)
         return binding.root
     }
 

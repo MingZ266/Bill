@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.mingz.billing.R
@@ -29,6 +30,13 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null)
         LayoutInflater.from(context).inflate(R.layout.layout_show_date_time, this)
         dateText = findViewById(R.id.dateText)
         timeText = findViewById(R.id.timeText)
+        val root = findViewById<View>(R.id.root)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ShowDateTime)
+        try {
+            root.isEnabled = typedArray.getBoolean(R.styleable.ShowDateTime_android_enabled, true)
+        } finally {
+            typedArray.recycle()
+        }
     }
 
     fun updateToNowTime() {

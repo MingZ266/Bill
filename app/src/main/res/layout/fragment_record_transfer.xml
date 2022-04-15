@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@color/themeWhite"
+    android:orientation="vertical"
+    tools:context=".fragments.RecordTransferFragment">
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:columnCount="2">
+        
+        <com.mingz.billing.ui.ShowText
+            android:id="@+id/outAccount"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="10dp"
+            app:title="转出账户"/>
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/outPrice"
+            android:layout_gravity="fill"
+            app:title="转出"/>
+        
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="fill"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/drawableSize"
+                android:layout_height="@dimen/drawableSize"
+                android:src="@drawable/ic_transfer"
+                android:tint="@color/themeColor"
+                tools:ignore="ContentDescription"/>
+            
+        </LinearLayout>
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/servicePrice"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="fill"
+            app:showType="false"
+            app:title="手续费"/>
+    
+        <com.mingz.billing.ui.ShowText
+            android:id="@+id/inAccount"
+            android:layout_columnWeight="1"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:title="转入账户"/>
+    
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/inPrice"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="fill"
+            app:showType="false"
+            android:enabled="false"
+            app:title="转入"/>
+        
+    </GridLayout>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:title="备注"
+        app:editable="true"
+        android:hint="@string/remarksHint"/>
+
+</LinearLayout>

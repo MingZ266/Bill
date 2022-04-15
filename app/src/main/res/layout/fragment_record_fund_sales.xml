@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@color/themeWhite"
+    android:orientation="vertical"
+    tools:context=".fragments.RecordFundSalesFragment">
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/fund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="基金"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="卖出时间"
+        android:textSize="@dimen/smallTextSize"
+        android:textColor="@color/themeColor"
+        tools:ignore="HardcodedText"/>
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/salesTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="到账时间"
+        android:textSize="@dimen/smallTextSize"
+        android:textColor="@color/themeColor"
+        tools:ignore="HardcodedText"/>
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/arrivalTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"/>
+    
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:columnCount="3"
+        tools:ignore="HardcodedText">
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="确认净值"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="确认份额"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:text="手续费"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:id="@+id/confirmValue"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="1.2345"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/confirmAmount"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/servicePrice"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+    
+    </GridLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        
+        <com.mingz.billing.ui.ShowText
+            android:id="@+id/account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            app:title="收款账户"/>
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:title="实收"/>
+        
+    </LinearLayout>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:title="备注"
+        app:editable="true"
+        android:hint="@string/remarksHint"/>
+
+</LinearLayout>

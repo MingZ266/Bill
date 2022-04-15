@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@color/themeWhite"
+    android:orientation="vertical"
+    tools:context=".fragments.RecordFundTransferFragment">
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="转换时间"
+        android:textSize="@dimen/smallTextSize"
+        android:textColor="@color/themeColor"
+        tools:ignore="HardcodedText"/>
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/transferTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/outFund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:title="转出基金"/>
+    
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:columnCount="3"
+        tools:ignore="HardcodedText">
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="转出份额"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="基金净值"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:text="转出金额"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:id="@+id/outAmount"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/outValue"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="1.2345"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/outPrice"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+    
+    </GridLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+    
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/drawableSize"
+            android:layout_weight="1"
+            android:src="@drawable/ic_transfer"
+            android:tint="@color/themeColor"
+            tools:ignore="ContentDescription"/>
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/servicePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:title="手续费"/>
+        
+    </LinearLayout>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/inFund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="转入基金"/>
+    
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:columnCount="3"
+        tools:ignore="HardcodedText">
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="5dp"
+            android:text="转入份额"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="基金净值"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:layout_columnWeight="1"
+            android:layout_marginStart="5dp"
+            android:text="转入金额"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:id="@+id/inAmount"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/inValue"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline_with_color"
+            android:gravity="center_vertical"
+            tools:text="1.2345"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+        <TextView
+            android:id="@+id/inPrice"
+            android:layout_gravity="fill"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_blue_outline"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeGrey"/>
+    
+    </GridLayout>
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:enabled="false"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        
+        <com.mingz.billing.ui.ShowText
+            android:id="@+id/account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            app:title="账户"
+            android:enabled="false"/>
+    
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/shouldBePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            app:showType="false"
+            android:enabled="false"/>
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:title="实际金额"
+            app:showType="false"/>
+        
+    </LinearLayout>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:title="备注"
+        app:editable="true"
+        android:hint="@string/remarksHint"/>
+
+</LinearLayout>

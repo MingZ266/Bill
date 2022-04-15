@@ -10,6 +10,9 @@ import com.mingz.billing.databinding.FragmentRecordIncomeBinding
 class RecordIncomeFragment : Fragment() {
     private lateinit var binding: FragmentRecordIncomeBinding
 
+    /**
+     * 收入.
+     */
     companion object {
         @JvmStatic
         fun newInstance() = RecordIncomeFragment()

@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.mingz.billing.R
+import com.mingz.billing.databinding.FragmentTestBinding
 import com.mingz.billing.ui.MultilevelListView
-import com.mingz.billing.ui.ShowDateTime
 import com.mingz.billing.utils.MyLog
 import com.mingz.billing.utils.Tools
 
 class TestFragment : Fragment() {
-    private lateinit var showDateTime: ShowDateTime
-    private lateinit var dataListView: MultilevelListView
+    private lateinit var binding: FragmentTestBinding
 
     companion object {
+        @JvmStatic
         private val myLog = MyLog(this)
 
         @JvmStatic
@@ -25,15 +25,17 @@ class TestFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_test, container, false)
+    ): View {
+        binding = FragmentTestBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         context?.let { context ->
-            initView(view)
-            showDateTime.updateToNowTime()
-            Tools.chooseDateTime(context, showDateTime)
+            binding.showDateTime.updateToNowTime()
+            Tools.chooseDateTime(context, binding.showDateTime)
             val data = arrayOf(
                 Level1("A", arrayOf(
                     Level2(0, arrayOf(
@@ -63,13 +65,8 @@ class TestFragment : Fragment() {
                     ))
                 ))
             )
-            dataListView.setData(data)
+            binding.dataListView.setData(data)
         }
-    }
-
-    private fun initView(view: View) {
-        showDateTime = view.findViewById(R.id.showDateTime)
-        dataListView = view.findViewById(R.id.dataListView)
     }
 
     private class Level1(data: String, subordinateData: Array<Level2>? = null) :
