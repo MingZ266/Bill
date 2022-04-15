@@ -2,16 +2,19 @@ package com.mingz.billing;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
 public class VoidTest {
     @Test
     public void test() {
-        Calendar now = Calendar.getInstance();
+        /*Calendar now = Calendar.getInstance();
         printCalendar(now);
         now.set(1970, 0, 1, 8, 0);
-        printCalendar(now);
+        printCalendar(now);*/
+        BigDecimal num = new BigDecimal("+2.3");
+        System.out.println(num);
     }
 
     private void printCalendar(Calendar calendar) {

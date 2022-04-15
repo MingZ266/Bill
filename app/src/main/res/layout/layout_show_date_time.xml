@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:background="@drawable/bg_blue_outline_with_color"
+    android:orientation="horizontal">
+    
+    <ImageView
+        android:layout_width="@dimen/drawableSize"
+        android:layout_height="@dimen/drawableSize"
+        android:src="@drawable/ic_date"
+        android:tint="@color/themeColor"
+        tools:ignore="ContentDescription"/>
+    
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        tools:text="日期"
+        android:textSize="@dimen/mostTextSize"
+        android:textColor="@color/themeGrey"/>
+    
+    <ImageView
+        android:layout_width="@dimen/drawableSize"
+        android:layout_height="@dimen/drawableSize"
+        android:src="@drawable/ic_time"
+        android:tint="@color/themeColor"
+        tools:ignore="ContentDescription"/>
+    
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        tools:text="时间"
+        android:textSize="@dimen/mostTextSize"
+        android:textColor="@color/themeGrey"/>
+
+</LinearLayout>

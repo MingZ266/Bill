@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:orientation="vertical"
+    tools:background="@color/themeWhite"
+    tools:context=".fragments.RecordExpenditureFragment">
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/showDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/showDateTime"
+        android:layout_marginTop="20dp"
+        app:title="支出科目"/>
+    
+    <com.mingz.billing.ui.AmountOfMoney
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:layout_toStartOf="@id/price"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:title="付款账户"/>
+    
+    <LinearLayout
+        android:id="@+id/unused_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/price"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/originalPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            app:title="原价"
+            app:showType="false"/>
+    
+        <com.mingz.billing.ui.AmountOfMoney
+            android:id="@+id/discount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            app:title="优惠"
+            app:showType="false"/>
+        
+    </LinearLayout>
+    
+    <com.mingz.billing.ui.ShowText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/unused_1"
+        android:layout_marginTop="10dp"
+        app:title="备注"
+        app:editable="true"
+        android:hint="添加备注"
+        tools:ignore="HardcodedText"/>
+
+</RelativeLayout>

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="interval">15dp</dimen>
+    <dimen name="radius">12dp</dimen>
+    <dimen name="drawableSize">30dp</dimen>
+    <dimen name="smallTextSize">14sp</dimen>
+    <dimen name="mostTextSize">18sp</dimen>
+    <dimen name="btnTextSize">20sp</dimen>
+    <dimen name="titleTextSize">22sp</dimen>
 </resources>

@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <declare-styleable name="DrawableTextView">
+        <attr name="android:drawableStart"/>
+        <attr name="drawableStartWidth" format="dimension"/>
+        <attr name="drawableStartHeight" format="dimension"/>
+        <attr name="android:drawableEnd"/>
+        <attr name="drawableEndWidth" format="dimension"/>
+        <attr name="drawableEndHeight" format="dimension"/>
+        <attr name="android:drawableTop"/>
+        <attr name="drawableTopWidth" format="dimension"/>
+        <attr name="drawableTopHeight" format="dimension"/>
+        <attr name="android:drawableBottom"/>
+        <attr name="drawableBottomWidth" format="dimension"/>
+        <attr name="drawableBottomHeight" format="dimension"/>
+    </declare-styleable>
+    
+    <!-- ******** 组合视图 ******** -->
+    <declare-styleable name="AmountOfMoney">
+        <attr name="title"/>
+        <attr name="type" format="string"/>
+        <attr name="showType" format="boolean"/>
+        <attr name="android:enabled"/>
+    </declare-styleable>
+    
+    <declare-styleable name="ShowText">
+        <attr name="title"/>
+        <attr name="android:enabled"/>
+        <attr name="editable" format="boolean"/>
+        <attr name="android:hint"/>
+    </declare-styleable>
 </resources>

@@ -9,8 +9,10 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Billing">
-        <activity android:name=".activities.MainActivity"
-            android:exported="false">
+        <activity android:name=".activities.RecordActivity"/>
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
     

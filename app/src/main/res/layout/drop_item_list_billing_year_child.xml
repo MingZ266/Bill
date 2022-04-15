@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.mingz.billing.ui.MyExpandableListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/monthBilling"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:groupIndicator="@null"/>

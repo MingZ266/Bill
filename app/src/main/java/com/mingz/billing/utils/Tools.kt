@@ -11,8 +11,9 @@ import com.mingz.billing.ui.ShowDateTime
 
 class Tools {
     companion object {
+        @JvmStatic
         fun chooseDateTime(context: Context, showDateTime: ShowDateTime) {
-            showDateTime.setOnClickListener { _ ->
+            showDateTime.setOnClickListener {
                 val dialogView = View.inflate(context, R.layout.dialog_date_time_picker, null)
                 val dialog = AlertDialog.Builder(context).create()
                 dialog.setCanceledOnTouchOutside(false)
@@ -32,8 +33,8 @@ class Tools {
                 val picker = dialogView.findViewById<DateTimePicker>(R.id.picker)
                 picker.setDateTime(showDateTime.year, showDateTime.month, showDateTime.day,
                     showDateTime.hour, showDateTime.minute)
-                cancel.setOnClickListener { _ -> dialog.cancel() }
-                confirm.setOnClickListener { _ ->
+                cancel.setOnClickListener { dialog.cancel() }
+                confirm.setOnClickListener {
                     showDateTime.setTime(picker.year, picker.month, picker.day,
                         picker.hour, picker.minute)
                     dialog.cancel()
