@@ -1,8 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="20dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@color/themeWhite"
     tools:context=".fragments.RecordIncomeFragment">
+    
+    <com.mingz.billing.ui.ShowDateTime
+        android:id="@+id/showDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/showDateTime"
+        android:layout_marginTop="20dp"
+        app:title="收入科目"/>
+    
+    <com.mingz.billing.ui.AmountOfMoney
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subject"
+        android:layout_toStartOf="@id/price"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:title="收款账户"/>
+    
+    <com.mingz.billing.ui.ShowText
+        android:id="@+id/remarks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/account"
+        android:layout_marginTop="10dp"
+        app:title="备注"
+        app:editable="true"
+        android:hint="添加备注"
+        tools:ignore="HardcodedText" />
 
-</FrameLayout>
+</RelativeLayout>
