@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.mingz.billing.databinding.FragmentRecordFundDividendBinding
+import com.mingz.billing.utils.Tools
 
-class RecordFundDividendFragment : Fragment() {
+class RecordFundDividendFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordFundDividendBinding
 
-    /**
-     * 基金红利.
-     */
     companion object {
         @JvmStatic
         fun newInstance() = RecordFundDividendFragment()
@@ -29,7 +26,13 @@ class RecordFundDividendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { //context ->
-        }
+        val context = context ?: return
+    }
+
+    override fun getTitle(): String = "红利"
+
+    override fun save() {
+        val context = context ?: return
+        Tools.showToast(context, "保存基金红利")
     }
 }

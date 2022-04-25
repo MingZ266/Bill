@@ -1,19 +1,15 @@
 package com.mingz.billing.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mingz.billing.R
 import com.mingz.billing.databinding.FragmentRecordFundTransferBinding
+import com.mingz.billing.utils.Tools
 
-class RecordFundTransferFragment : Fragment() {
+class RecordFundTransferFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordFundTransferBinding
 
-    /**
-     * 基金转换.
-     */
     companion object {
         @JvmStatic
         fun newInstance() = RecordFundTransferFragment()
@@ -29,7 +25,13 @@ class RecordFundTransferFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { //context ->
-        }
+        val context = context ?: return
+    }
+
+    override fun getTitle(): String = "转换"
+
+    override fun save() {
+        val context = context ?: return
+        Tools.showToast(context, "保存基金转换")
     }
 }

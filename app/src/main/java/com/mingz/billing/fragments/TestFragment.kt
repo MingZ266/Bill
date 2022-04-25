@@ -1,5 +1,6 @@
 package com.mingz.billing.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import com.mingz.billing.R
 import com.mingz.billing.databinding.FragmentTestBinding
 import com.mingz.billing.ui.MultilevelListView
 import com.mingz.billing.utils.MyLog
-import com.mingz.billing.utils.Tools
 
 class TestFragment : Fragment() {
     private lateinit var binding: FragmentTestBinding
@@ -33,40 +33,39 @@ class TestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { context ->
-            binding.showDateTime.updateToNowTime()
-            Tools.chooseDateTime(context, binding.showDateTime)
-            val data = arrayOf(
-                Level1("A", arrayOf(
-                    Level2(0, arrayOf(
-                        Level3(0.1),
-                        Level3(1.2)
-                    )),
-                    Level2(1, arrayOf(
-                        Level3(2.3)
-                    ))
+        val context = context ?: return
+        binding.showDateTime.updateToNowTime()
+        //Tools.chooseDateTime(context, binding.showDateTime)
+        val data = arrayOf(
+            Level1("A", arrayOf(
+                Level2(0, arrayOf(
+                    Level3(0.1),
+                    Level3(1.2)
                 )),
-                Level1("B", arrayOf(
-                    Level2(2, arrayOf(
-                        Level3(3.4),
-                        Level3(4.5),
-                        Level3(5.6)
-                    ))
-                )),
-                Level1("C", arrayOf(
-                    Level2(3, arrayOf(
-                        Level3(6.7)
-                    )),
-                    Level2(4, arrayOf(
-                        Level3(7.8)
-                    )),
-                    Level2(5, arrayOf(
-                        Level3(8.9)
-                    ))
+                Level2(1, arrayOf(
+                    Level3(2.3)
                 ))
-            )
-            binding.dataListView.setData(data)
-        }
+            )),
+            Level1("B", arrayOf(
+                Level2(2, arrayOf(
+                    Level3(3.4),
+                    Level3(4.5),
+                    Level3(5.6)
+                ))
+            )),
+            Level1("C", arrayOf(
+                Level2(3, arrayOf(
+                    Level3(6.7)
+                )),
+                Level2(4, arrayOf(
+                    Level3(7.8)
+                )),
+                Level2(5, arrayOf(
+                    Level3(8.9)
+                ))
+            ))
+        )
+        binding.dataListView.setData(data)
     }
 
     private class Level1(data: String, subordinateData: Array<Level2>? = null) :
@@ -80,7 +79,7 @@ class TestFragment : Fragment() {
             return viewHolder
         }
 
-        override fun loadingDataOnView(viewHolder: Any) {
+        override fun loadingDataOnView(context: Context, viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
                 myLog.v("Level 1: ${viewHolder.javaClass.canonicalName}")
                 return
@@ -108,7 +107,7 @@ class TestFragment : Fragment() {
             return viewHolder
         }
 
-        override fun loadingDataOnView(viewHolder: Any) {
+        override fun loadingDataOnView(context: Context, viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
                 myLog.v("Level 2: ${viewHolder.javaClass.canonicalName}")
                 return
@@ -134,7 +133,7 @@ class TestFragment : Fragment() {
             return viewHolder
         }
 
-        override fun loadingDataOnView(viewHolder: Any) {
+        override fun loadingDataOnView(context: Context, viewHolder: Any) {
             if (viewHolder !is ViewHolder) {
                 myLog.v("Level 3: ${viewHolder.javaClass.canonicalName}")
                 return

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mingz.billing.ui.SizeLimitLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    app:heightScale="0.4"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@drawable/bg_bottom_dialog">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+        
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="标题"
+                android:textSize="@dimen/smallTextSize"
+                android:textColor="@color/themeColor"/>
+        
+            <ImageView
+                android:id="@+id/putAway"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_arrow_put_away"
+                android:tint="@color/themeColor"
+                tools:ignore="ContentDescription"/>
+    
+        </LinearLayout>
+    
+        <com.mingz.billing.ui.MultilevelListView
+            android:id="@+id/contentList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:scrollbars="none"
+            android:divider="@null"
+            android:listSelector="@android:color/transparent"/>
+        
+        <TextView
+            android:id="@+id/selectIt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:focusable="true"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            tools:text="选    择"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_subject_select_btn"/>
+        
+    </LinearLayout>
+
+</com.mingz.billing.ui.SizeLimitLayout>

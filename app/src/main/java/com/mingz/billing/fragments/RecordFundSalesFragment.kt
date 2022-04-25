@@ -1,19 +1,15 @@
 package com.mingz.billing.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mingz.billing.R
 import com.mingz.billing.databinding.FragmentRecordFundSalesBinding
+import com.mingz.billing.utils.Tools
 
-class RecordFundSalesFragment : Fragment() {
+class RecordFundSalesFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordFundSalesBinding
 
-    /**
-     * 基金卖出.
-     */
     companion object {
         @JvmStatic
         fun newInstance() = RecordFundSalesFragment()
@@ -29,7 +25,13 @@ class RecordFundSalesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { //context ->
-        }
+        val context = context ?: return
+    }
+
+    override fun getTitle(): String = "卖出"
+
+    override fun save() {
+        val context = context ?: return
+        Tools.showToast(context, "保存基金卖出")
     }
 }

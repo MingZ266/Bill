@@ -3,13 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    tools:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:background="@drawable/bg_bottom_dialog"
     android:orientation="vertical">
     
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         tools:ignore="HardcodedText">
         
         <TextView
@@ -18,8 +23,7 @@
             android:layout_height="wrap_content"
             android:text="取消"
             android:textSize="20sp"
-            android:textColor="@color/themeColor"
-            android:layout_marginStart="@dimen/interval"/>
+            android:textColor="@color/themeColor"/>
         
         <TextView
             android:id="@+id/confirm"
@@ -28,8 +32,7 @@
             android:layout_alignParentEnd="true"
             android:text="确定"
             android:textSize="20sp"
-            android:textColor="@color/themeColor"
-            android:layout_marginEnd="@dimen/interval"/>
+            android:textColor="@color/themeColor"/>
         
     </RelativeLayout>
     
@@ -38,9 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="@dimen/interval"
-        android:layout_marginEnd="@dimen/interval"
         android:theme="@style/DateTimePicker"/>
 
 </LinearLayout>

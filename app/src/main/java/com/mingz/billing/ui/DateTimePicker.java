@@ -1,23 +1,52 @@
 package com.mingz.billing.ui;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
+import com.mingz.billing.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class DateTimePicker extends LinearLayout {
+    /**
+     * 显示日期选择器和时间选择器.
+     */
+    public static final int MODE_ALL = 0;
+
+    /**
+     * 只显示日期选择器.
+     */
+    public static final int MODE_DATE = 1;
+
+    /**
+     * 只显示时间选择器.
+     */
+    public static final int MODE_TIME = 2;
+
     private final NumberPicker yearPicker;
     private final NumberPicker monthPicker;
     private final NumberPicker dayPicker;
     private final NumberPicker hourPicker;
     private final NumberPicker minutePicker;
+    private final TextView dateSplitLeft;
+    private final TextView dateSplitRight;
+    private final TextView timeSplit;
+    private final int timeMarginStart;
+
+    @MODE
+    private int lastMode;
 
     private OnDateTimeChangeListener listener = null;
 
@@ -32,6 +61,11 @@ public class DateTimePicker extends LinearLayout {
         dayPicker = new NumberPicker(context, attrs);
         hourPicker = new NumberPicker(context, attrs);
         minutePicker = new NumberPicker(context, attrs);
+        dateSplitLeft = new TextView(context, attrs);
+        dateSplitRight = new TextView(context, attrs);
+        timeSplit = new TextView(context, attrs);
+        final NumberPicker.Formatter formatter = value ->
+                String.format(Locale.getDefault(), "%02d", value);
         // 年选择器
         yearPicker.setWrapSelectorWheel(false);
         settingYearRange(1970);
@@ -49,6 +83,7 @@ public class DateTimePicker extends LinearLayout {
         // 月选择器
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
+        monthPicker.setFormatter(formatter);
         monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             dayPicker.setMaxValue(getDayMaxValue(yearPicker.getValue(), newVal));
             if (listener != null) {
@@ -60,6 +95,7 @@ public class DateTimePicker extends LinearLayout {
         // 日选择器
         dayPicker.setMinValue(1);
         dayPicker.setMaxValue(31);
+        dayPicker.setFormatter(formatter);
         dayPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (listener != null) {
                 listener.onDate(yearPicker.getValue(), monthPicker.getValue(), newVal);
@@ -70,6 +106,7 @@ public class DateTimePicker extends LinearLayout {
         // 时选择器
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);
+        hourPicker.setFormatter(formatter);
         hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (listener != null) {
                 listener.onTime(newVal, minutePicker.getValue());
@@ -80,6 +117,7 @@ public class DateTimePicker extends LinearLayout {
         // 分选择器
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
+        minutePicker.setFormatter(formatter);
         minutePicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (listener != null) {
                 listener.onTime(hourPicker.getValue(), newVal);
@@ -88,7 +126,7 @@ public class DateTimePicker extends LinearLayout {
             }
         });
         // 计算参数
-        final int timeMarginStart = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        timeMarginStart = (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 20.0f, context.getResources().getDisplayMetrics()));
         // 设置父组件参数
         setOrientation(HORIZONTAL);
@@ -97,16 +135,14 @@ public class DateTimePicker extends LinearLayout {
         yearPicker.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
         addView(yearPicker);
 
-        TextView dateSplit1 = new TextView(context, attrs);
-        dateSplit1.setText(" - ");
-        addView(dateSplit1);
+        dateSplitLeft.setText(" - ");
+        addView(dateSplitLeft);
 
         monthPicker.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
         addView(monthPicker);
 
-        TextView dateSplit2 = new TextView(context, attrs);
-        dateSplit2.setText(" - ");
-        addView(dateSplit2);
+        dateSplitRight.setText(" - ");
+        addView(dateSplitRight);
 
         dayPicker.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
         addView(dayPicker);
@@ -116,12 +152,22 @@ public class DateTimePicker extends LinearLayout {
         hourPicker.setLayoutParams(hourParams);
         addView(hourPicker);
 
-        TextView timeSplit = new TextView(context, attrs);
         timeSplit.setText(" : ");
         addView(timeSplit);
 
         minutePicker.setLayoutParams(new LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
         addView(minutePicker);
+
+        // 设置模式
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DateTimePicker);
+        final int mode;
+        try {
+            mode = typedArray.getInt(R.styleable.DateTimePicker_pickerMode, MODE_ALL);
+        } finally {
+            typedArray.recycle();
+        }
+        lastMode = MODE_ALL;
+        setMode(mode);
     }
 
     private void settingYearRange(int year) {
@@ -159,6 +205,68 @@ public class DateTimePicker extends LinearLayout {
         throw new IllegalArgumentException("月份应该在1到12之间");
     }
 
+    private void hideDate() {
+        yearPicker.setVisibility(View.GONE);
+        monthPicker.setVisibility(View.GONE);
+        dayPicker.setVisibility(View.GONE);
+        dateSplitLeft.setVisibility(View.GONE);
+        dateSplitRight.setVisibility(View.GONE);
+        LayoutParams params = (LayoutParams) hourPicker.getLayoutParams();
+        params.setMarginStart(0);
+        hourPicker.setLayoutParams(params);
+    }
+
+    private void showDate() {
+        yearPicker.setVisibility(View.VISIBLE);
+        monthPicker.setVisibility(View.VISIBLE);
+        dayPicker.setVisibility(View.VISIBLE);
+        dateSplitLeft.setVisibility(View.VISIBLE);
+        dateSplitRight.setVisibility(View.VISIBLE);
+        LayoutParams params = (LayoutParams) hourPicker.getLayoutParams();
+        params.setMarginStart(timeMarginStart);
+        hourPicker.setLayoutParams(params);
+    }
+
+    private void hideTime() {
+        hourPicker.setVisibility(View.GONE);
+        minutePicker.setVisibility(View.GONE);
+        timeSplit.setVisibility(View.GONE);
+    }
+
+    private void showTime() {
+        hourPicker.setVisibility(View.VISIBLE);
+        minutePicker.setVisibility(View.VISIBLE);
+        timeSplit.setVisibility(View.VISIBLE);
+    }
+
+    public void setMode(@MODE int mode) {
+        if (mode == lastMode) {
+            return;
+        }
+        switch (mode) {
+            case MODE_ALL:
+                if (lastMode == MODE_DATE) {
+                    showTime();
+                } else {
+                    showDate();
+                }
+                break;
+            case MODE_DATE:
+                if (lastMode == MODE_TIME) {
+                    showDate();
+                }
+                hideTime();
+                break;
+            case MODE_TIME:
+                if (lastMode == MODE_DATE) {
+                    showTime();
+                }
+                hideDate();
+                break;
+        }
+        lastMode = mode;
+    }
+
     public void updateToNowTime() {
         Calendar now = Calendar.getInstance();
         setDateTime(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1,
@@ -182,6 +290,12 @@ public class DateTimePicker extends LinearLayout {
         dayPicker.setValue(day);
         hourPicker.setValue(hour);
         minutePicker.setValue(minute);
+    }
+
+    public void setDate(@IntRange(from = 100) int year,
+                        @IntRange(from = 1, to = 12) int month,
+                        @IntRange(from = 1, to = 31) int day) {
+        setDateTime(year, month, day, hourPicker.getValue(), minutePicker.getValue());
     }
 
     public int getYear() {
@@ -222,4 +336,8 @@ public class DateTimePicker extends LinearLayout {
 
         default void onDateTime(int year, int month, int day, int hour, int minute) {}
     }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({MODE_ALL, MODE_DATE, MODE_TIME})
+    private @interface MODE {}
 }

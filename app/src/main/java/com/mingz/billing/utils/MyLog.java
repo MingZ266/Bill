@@ -11,6 +11,8 @@ public class MyLog {
     public final String tag;
     public final boolean debug;
 
+    public static final MyLog TEMP = new MyLog("TEMP");
+
     public MyLog(String tag, boolean debug) {
         this.tag = "MyTAG - " + tag;
         this.debug = debug;

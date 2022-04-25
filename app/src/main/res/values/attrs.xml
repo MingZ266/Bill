@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="DateTimePicker">
+        <attr name="pickerMode" format="enum">
+            <enum name="all" value="0"/>
+            <enum name="date" value="1"/>
+            <enum name="time" value="2"/>
+        </attr>
+    </declare-styleable>
+    
     <declare-styleable name="DrawableTextView">
         <attr name="android:drawableStart"/>
         <attr name="drawableStartWidth" format="dimension"/>
@@ -15,10 +23,22 @@
         <attr name="drawableBottomHeight" format="dimension"/>
     </declare-styleable>
     
+    <declare-styleable name="SizeLimitLayout">
+        <attr name="widthScale" format="float"/>
+        <attr name="heightScale" format="float"/>
+    </declare-styleable>
+    
+    <declare-styleable name="CheckedLinearLayout">
+        <attr name="android:checked"/>
+    </declare-styleable>
+    
     <!-- ******** 组合视图 ******** -->
+    <declare-styleable name="ShowDateTime">
+        <attr name="android:enabled"/>
+    </declare-styleable>
+    
     <declare-styleable name="AmountOfMoney">
         <attr name="title"/>
-        <attr name="type" format="string"/>
         <attr name="showType" format="boolean"/>
         <attr name="android:enabled"/>
     </declare-styleable>

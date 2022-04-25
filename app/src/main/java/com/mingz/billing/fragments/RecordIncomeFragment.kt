@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import com.mingz.billing.databinding.FragmentRecordIncomeBinding
+import com.mingz.billing.utils.Tools
 
-class RecordIncomeFragment : Fragment() {
+class RecordIncomeFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordIncomeBinding
 
-    /**
-     * 收入.
-     */
     companion object {
         @JvmStatic
         fun newInstance() = RecordIncomeFragment()
@@ -28,7 +25,13 @@ class RecordIncomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { //context ->
-        }
+        val context = context ?: return
+    }
+
+    override fun getTitle(): String = "收入"
+
+    override fun save() {
+        val context = context ?: return
+        Tools.showToast(context, "保存收入")
     }
 }

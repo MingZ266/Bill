@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.mingz.billing.databinding.FragmentMainBillingBinding
 
-class BillingMainFragment : Fragment() {
+class MainBillingFragment : MainFragment() {
     private lateinit var binding: FragmentMainBillingBinding
 
     companion object {
         @JvmStatic
-        fun newInstance() = BillingMainFragment()
+        fun newInstance() = MainBillingFragment()
     }
+
+    override fun getTitle(): String = "账单"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?
@@ -25,8 +27,7 @@ class BillingMainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { //context ->
-        }
+        val context = context ?: return
     }
 
     private data class DayData(val data: String)

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/sidebarInterval"
+    android:paddingEnd="@dimen/sidebarInterval"
+    android:paddingTop="7.5dp"
+    android:paddingBottom="7.5dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_sidebar_item">
+    
+    <View
+        android:id="@+id/margin"
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    
+    <com.mingz.billing.ui.DrawableTextView
+        android:id="@+id/option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        tools:text="选项"
+        android:textSize="@dimen/mostTextSize"
+        android:textColor="@color/themeGrey"
+        android:drawableStart="@drawable/ic_arrow_open"
+        app:drawableStartWidth="20dp"
+        app:drawableStartHeight="20dp"
+        android:drawablePadding="10dp"/>
+    
+</LinearLayout>

@@ -5,41 +5,57 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
 import com.mingz.billing.R
-import java.math.BigDecimal
+import com.mingz.billing.databinding.LayoutAmountOfMoneyBinding
+import com.mingz.billing.utils.DataSource
+import com.mingz.billing.utils.StringList
+import com.mingz.billing.utils.Tools
 
 class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
     : FrameLayout(context, attrs) {
-    private val amount: TextView
+    private val binding: LayoutAmountOfMoneyBinding
+    private var theType: StringList.StringWithId? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.layout_amount_of_money, this)
-        amount = findViewById(R.id.amount)
-        val root = findViewById<View>(R.id.root)
-        val title = findViewById<TextView>(R.id.title)
-        val type = findViewById<TextView>(R.id.type)
+        binding = LayoutAmountOfMoneyBinding.inflate(LayoutInflater.from(context),
+            this, true)
+        if (DataSource.INSTANCE.typeList.isNotEmpty()) {
+            theType = DataSource.INSTANCE.typeList[0]
+        }
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AmountOfMoney)
         try {
-            root.isEnabled = typedArray.getBoolean(R.styleable.AmountOfMoney_android_enabled, true)
+            binding.root.isEnabled = typedArray.getBoolean(
+                R.styleable.AmountOfMoney_android_enabled, true)
             var titleText = typedArray.getText(R.styleable.AmountOfMoney_title)
             if (titleText == null) {
                 titleText = "金额"
             }
-            title.text = titleText
-            var typeText = typedArray.getText(R.styleable.AmountOfMoney_type)
-            if (typeText == null) {
-                typeText = "null"
-            }
-            type.text = typeText
+            binding.title.text = titleText
+            binding.type.text = if (theType != null) theType!!.content else "null"
             val showType = typedArray.getBoolean(R.styleable.AmountOfMoney_showType, true)
-            type.visibility = if (showType) View.VISIBLE else View.GONE
+            binding.type.visibility = if (showType) View.VISIBLE else View.GONE
+            binding.type.setOnClickListener {
+                Tools.showSelectPopup(context, titleText.toString(), DataSource.INSTANCE.typeList,
+                    if (theType != null) theType!!.id else -1, {
+                    theType = it
+                    binding.type.text = it.content
+                }) {
+                    // TODO: 修改货币类型
+                    Tools.showToast(context, "修改货币类型")
+                }
+            }
         } finally {
             typedArray.recycle()
         }
     }
 
-    fun setAmount(amount: BigDecimal) {
-        this.amount.text = String.format("%.2f", amount)
+    fun getTitle() = binding.title.text.toString()
+
+    fun getAmount() = binding.amount.text.toString()
+
+    fun getType() = binding.type.text.toString()
+
+    fun setAmount(amount: String) {
+        binding.amount.text = amount
     }
 }

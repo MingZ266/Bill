@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="interval">15dp</dimen>
+    <dimen name="sidebarInterval">10dp</dimen>
     <dimen name="radius">12dp</dimen>
     <dimen name="drawableSize">30dp</dimen>
     <dimen name="smallTextSize">14sp</dimen>

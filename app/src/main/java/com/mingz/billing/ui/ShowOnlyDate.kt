@@ -5,8 +5,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.TextView
-import com.mingz.billing.R
+import com.mingz.billing.databinding.DialogDateTimePickerBinding
+import com.mingz.billing.databinding.LayoutShowOnlyDateBinding
+import com.mingz.billing.utils.Tools
 
 class ShowOnlyDate(context: Context, attrs: AttributeSet? = null)
     : FrameLayout(context, attrs) {
@@ -17,11 +18,12 @@ class ShowOnlyDate(context: Context, attrs: AttributeSet? = null)
     var day = 1
         private set
 
-    private val dateText: TextView
+    private val binding: LayoutShowOnlyDateBinding
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.layout_show_only_date, this)
-        dateText = findViewById(R.id.dateText)
+        binding = LayoutShowOnlyDateBinding.inflate(LayoutInflater.from(context),
+            this, true)
+        setListener()
     }
 
     @SuppressLint("SetTextI18n")
@@ -29,11 +31,24 @@ class ShowOnlyDate(context: Context, attrs: AttributeSet? = null)
         this.year = year
         this.month = month
         this.day = day
-        dateText.text = "$year - " +
+        binding.dateText.text = "$year - " +
                 "${month.toString().padStart(2, '0')} - " +
                 day.toString().padStart(2, '0')
     }
 
     fun setTime(showDateTime: ShowDateTime) =
         setTime(showDateTime.year, showDateTime.month, showDateTime.day)
+
+    private fun setListener() = setOnClickListener {
+        val binding = DialogDateTimePickerBinding.inflate(LayoutInflater.from(context))
+        val dialog = Tools.showBottomPopup(context, binding.root)
+        dialog.setCanceledOnTouchOutside(false)
+        binding.picker.setMode(DateTimePicker.MODE_DATE)
+        binding.picker.setDate(year, month, day)
+        binding.cancel.setOnClickListener { dialog.cancel() }
+        binding.confirm.setOnClickListener {
+            setTime(binding.picker.year, binding.picker.month, binding.picker.day)
+            dialog.cancel()
+        }
+    }
 }

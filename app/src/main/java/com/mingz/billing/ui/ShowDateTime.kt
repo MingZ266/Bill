@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
 import com.mingz.billing.R
+import com.mingz.billing.databinding.DialogDateTimePickerBinding
+import com.mingz.billing.databinding.LayoutShowDateTimeBinding
+import com.mingz.billing.utils.Tools
 import java.util.*
 
 class ShowDateTime(context: Context, attrs: AttributeSet? = null)
@@ -23,20 +24,18 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null)
     var minute = 0
         private set
 
-    private val dateText: TextView
-    private val timeText: TextView
+    private val binding: LayoutShowDateTimeBinding
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.layout_show_date_time, this)
-        dateText = findViewById(R.id.dateText)
-        timeText = findViewById(R.id.timeText)
-        val root = findViewById<View>(R.id.root)
+        binding = LayoutShowDateTimeBinding.inflate(LayoutInflater.from(context),
+            this, true)
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ShowDateTime)
         try {
-            root.isEnabled = typedArray.getBoolean(R.styleable.ShowDateTime_android_enabled, true)
+            binding.root.isEnabled = typedArray.getBoolean(R.styleable.ShowDateTime_android_enabled, true)
         } finally {
             typedArray.recycle()
         }
+        setListener()
     }
 
     fun updateToNowTime() {
@@ -55,10 +54,29 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null)
         this.day = day
         this.hour = hour
         this.minute = minute
-        dateText.text = "$year - " +
+        binding.dateText.text = "$year - " +
                 "${month.toString().padStart(2, '0')} - " +
                 day.toString().padStart(2, '0')
-        timeText.text = "${hour.toString().padStart(2, '0')} : " +
+        binding.timeText.text = "${hour.toString().padStart(2, '0')} : " +
                 minute.toString().padStart(2, '0')
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        binding.root.isEnabled = enabled
+    }
+
+    private fun setListener() = setOnClickListener {
+        if (this.binding.root.isEnabled) {
+            val binding = DialogDateTimePickerBinding.inflate(LayoutInflater.from(context))
+            val dialog = Tools.showBottomPopup(context, binding.root)
+            dialog.setCanceledOnTouchOutside(false)
+            binding.picker.setDateTime(year, month, day, hour, minute)
+            binding.cancel.setOnClickListener { dialog.cancel() }
+            binding.confirm.setOnClickListener {
+                setTime(binding.picker.year, binding.picker.month, binding.picker.day,
+                    binding.picker.hour, binding.picker.minute)
+                dialog.cancel()
+            }
+        }
     }
 }

@@ -22,14 +22,14 @@ public class DrawableTextView extends AppCompatTextView {
                     R.styleable.DrawableTextView_android_drawableStart,
                     R.styleable.DrawableTextView_drawableStartWidth,
                     R.styleable.DrawableTextView_drawableStartHeight);
-            Drawable drawableEnd = setDrawableSize(typedArray,
-                    R.styleable.DrawableTextView_android_drawableEnd,
-                    R.styleable.DrawableTextView_drawableEndWidth,
-                    R.styleable.DrawableTextView_drawableEndHeight);
             Drawable drawableTop = setDrawableSize(typedArray,
                     R.styleable.DrawableTextView_android_drawableTop,
                     R.styleable.DrawableTextView_drawableTopWidth,
                     R.styleable.DrawableTextView_drawableTopHeight);
+            Drawable drawableEnd = setDrawableSize(typedArray,
+                    R.styleable.DrawableTextView_android_drawableEnd,
+                    R.styleable.DrawableTextView_drawableEndWidth,
+                    R.styleable.DrawableTextView_drawableEndHeight);
             Drawable drawableBottom = setDrawableSize(typedArray,
                     R.styleable.DrawableTextView_android_drawableBottom,
                     R.styleable.DrawableTextView_drawableBottomWidth,
@@ -55,5 +55,23 @@ public class DrawableTextView extends AppCompatTextView {
             drawable.setBounds(0, 0, width, height);
         }
         return drawable;
+    }
+
+    public void setDrawables(@Nullable Drawable start, @Nullable Drawable top,
+                             @Nullable Drawable end, @Nullable Drawable bottom) {
+        Drawable[] drawables = getCompoundDrawables();
+        if (start != null && drawables[0] != null) {
+            start.setBounds(drawables[0].getBounds());
+        }
+        if (top != null && drawables[1] != null) {
+            top.setBounds(drawables[1].getBounds());
+        }
+        if (end != null && drawables[2] != null) {
+            end.setBounds(drawables[2].getBounds());
+        }
+        if (bottom != null && drawables[3] != null) {
+            bottom.setBounds(drawables[3].getBounds());
+        }
+        setCompoundDrawables(start, top, end, bottom);
     }
 }
