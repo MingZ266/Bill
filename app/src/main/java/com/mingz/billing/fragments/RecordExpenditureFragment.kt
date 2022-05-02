@@ -6,10 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.mingz.billing.databinding.FragmentRecordExpenditureBinding
 import com.mingz.billing.utils.DataSource
+import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
+import java.math.BigDecimal
 
 class RecordExpenditureFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordExpenditureBinding
+
+    private var subject: StringWithId? = null
+    private var account: StringWithId? = null
+    private lateinit var price: BigDecimal
+    private lateinit var originalPrice: BigDecimal
+    private lateinit var discount: BigDecimal
 
     companion object {
         @JvmStatic
@@ -27,37 +35,90 @@ class RecordExpenditureFragment : RecordFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val context = context ?: return
-        binding.account.setSelectItem(DataSource.INSTANCE.accountList)
+        binding.subject.setOnClickListener {
+            Tools.showSelectSubject(context, binding.subject.getTitle(),
+                DataSource.INSTANCE.expenditureSubject,
+                if (subject != null) subject!!.id else -1) {
+                subject = it
+                binding.subject.setContent(it.content)
+            }
+        }
+
+        binding.account.setOnClickListener {
+            Tools.showSelectPopup(context, binding.account.getTitle(),
+                DataSource.INSTANCE.accountList,
+                if (account != null) account!!.id else -1, {
+                    account = it
+                    binding.account.setContent(it.content)
+                })
+        }
+
         binding.price.setOnClickListener {
             Tools.inputAmountOfMoney(context, binding.price.getTitle(),
                 binding.price.getAmount()) {
+                price = BigDecimal(it)
+                originalPrice = price.add(discount)
                 binding.price.setAmount(it)
+                binding.originalPrice.setAmount(originalPrice)
             }
         }
+
         binding.originalPrice.setOnClickListener {
             Tools.inputAmountOfMoney(context, binding.originalPrice.getTitle(),
                 binding.originalPrice.getAmount()) {
-                binding.originalPrice.setAmount(it)
+                val theOriginalPrice = BigDecimal(it)
+                if (theOriginalPrice > discount) {
+                    originalPrice = theOriginalPrice
+                    price = originalPrice.minus(discount)
+                    binding.price.setAmount(price)
+                    binding.originalPrice.setAmount(it)
+                } else {
+                    Tools.showToast(context, "${binding.originalPrice.getTitle()}必须" +
+                            "高于${binding.discount.getTitle()}")
+                }
             }
         }
+
         binding.discount.setOnClickListener {
             Tools.inputAmountOfMoney(context, binding.discount.getTitle(),
                 binding.discount.getAmount()) {
-                binding.discount.setAmount(it)
+                val theDiscount = BigDecimal(it)
+                if (theDiscount < originalPrice) {
+                    discount = theDiscount
+                    price = originalPrice.minus(discount)
+                    binding.price.setAmount(price)
+                    binding.discount.setAmount(it)
+                } else {
+                    Tools.showToast(context, "${binding.discount.getTitle()}必须" +
+                            "低于${binding.originalPrice.getTitle()}")
+                }
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        subject = null
+        account = null
+        price = BigDecimal.ZERO
+        originalPrice = BigDecimal.ZERO
+        discount = BigDecimal.ZERO
+        DataSource.checkedPosition = -1
         binding.time.updateToNowTime()
-        binding.account.setContent("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")
     }
 
     override fun getTitle(): String = "支出"
 
     override fun save() {
         val context = context ?: return
-        Tools.showToast(context, "保存支出")
+        if (subject == null) {
+            Tools.showToast(context, "请选择${binding.subject.getTitle()}")
+        } else if (account == null) {
+            Tools.showToast(context, "请选择${binding.account.getTitle()}")
+        } else if (price <= BigDecimal.ZERO) {
+            Tools.showToast(context, "${binding.price.getTitle()}必须大于零")
+        } else {
+            Tools.showToast(context, "保存支出")
+        }
     }
 }

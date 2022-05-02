@@ -230,7 +230,7 @@ public abstract class LocalEncryption {
         return key;
     }
 
-    private byte[] aesEncrypt(byte[] key, byte[] data) {
+    protected static byte[] aesEncrypt(byte[] key, byte[] data) {
         try {
             @SuppressLint("GetInstance")
             Cipher cipher = Cipher.getInstance(AES_NAME);
@@ -241,7 +241,7 @@ public abstract class LocalEncryption {
         }
     }
 
-    private byte[] aesDecrypt(byte[] key, byte[] ciphertext) {
+    protected static byte[] aesDecrypt(byte[] key, byte[] ciphertext) {
         try {
             @SuppressLint("GetInstance")
             Cipher cipher = Cipher.getInstance(AES_NAME);

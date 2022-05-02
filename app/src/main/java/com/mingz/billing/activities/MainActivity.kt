@@ -8,6 +8,7 @@ import com.mingz.billing.R
 import com.mingz.billing.databinding.ActivityMainBinding
 import com.mingz.billing.fragments.MainBillingFragment
 import com.mingz.billing.fragments.MainFragment
+import com.mingz.billing.utils.Tools
 
 class MainActivity : AppCompatActivity() {
     private val activity = this
@@ -20,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Thread {
+            Tools.showToastOnUiThread(activity, "吐司弹窗")
+        }.start()
         initView()
         myListener()
     }

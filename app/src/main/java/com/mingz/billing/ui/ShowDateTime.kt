@@ -47,6 +47,13 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null)
         )
     }
 
+    fun getTimestamp(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month - 1, day, hour, minute, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.timeInMillis
+    }
+
     @SuppressLint("SetTextI18n")
     fun setTime(year: Int, month: Int, day: Int, hour: Int, minute: Int) {
         this.year = year
@@ -59,6 +66,13 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null)
                 day.toString().padStart(2, '0')
         binding.timeText.text = "${hour.toString().padStart(2, '0')} : " +
                 minute.toString().padStart(2, '0')
+    }
+
+    fun setTime(timestamp: Long) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp
+        setTime(calendar[Calendar.YEAR], calendar[Calendar.MONTH] + 1, calendar[Calendar.DATE],
+            calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
     }
 
     override fun setEnabled(enabled: Boolean) {

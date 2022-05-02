@@ -1,32 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:orientation="vertical">
+    android:paddingBottom="5dp">
     
-    <com.mingz.billing.ui.CheckedLinearLayout
+    <LinearLayout
+        android:id="@+id/showChecked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:focusable="true"
-        android:clickable="true"
-        tools:checked="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/bg_click_feedback">
-        
-        <View
-            android:id="@+id/margin"
-            android:layout_width="30dp"
-            android:layout_height="0dp"
-            tools:visibility="gone"/>
+        android:background="@drawable/bg_click_feedback"
+        tools:ignore="UselessParent">
         
         <com.mingz.billing.ui.DrawableTextView
             android:id="@+id/content"
@@ -36,11 +28,11 @@
             tools:text="内容"
             android:textColor="@color/themeGrey"
             android:textSize="@dimen/mostTextSize"
-            android:drawableStart="@drawable/ic_arrow_open"
-            app:drawableStartWidth="20dp"
-            app:drawableStartHeight="20dp"
+            android:drawableStart="@drawable/ic_point"
+            app:drawableStartWidth="10dp"
+            app:drawableStartHeight="10dp"
             android:drawablePadding="10dp"/>
         
-    </com.mingz.billing.ui.CheckedLinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

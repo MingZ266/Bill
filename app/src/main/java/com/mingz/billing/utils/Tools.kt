@@ -2,6 +2,9 @@ package com.mingz.billing.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Message
+import android.util.Base64
 import android.view.*
 import android.widget.BaseAdapter
 import android.widget.Toast
@@ -9,12 +12,19 @@ import androidx.annotation.IntRange
 import androidx.appcompat.app.AlertDialog
 import com.mingz.billing.databinding.DialogInputAmountOfMoneyBinding
 import com.mingz.billing.databinding.DialogSelectItemBinding
+import com.mingz.billing.databinding.DialogSelectSubjectBinding
 import com.mingz.billing.databinding.ItemDialogContentListBinding
-import java.lang.StringBuilder
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.math.BigDecimal
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import kotlin.text.StringBuilder
 
 class Tools {
     companion object {
+        private val myLog by lazy { MyLog("Tools") }
         //******弹窗******
         @JvmStatic
         fun setAsBottomPopupAndShow(dialog: AlertDialog, content: View) {
@@ -194,7 +204,7 @@ class Tools {
 
         @JvmStatic
         fun showSelectPopup(context: Context, title: String, contentList: StringList,
-                            checkedId: Int, onResult: (StringList.StringWithId) -> Unit,
+                            checkedId: Int, onResult: (StringWithId) -> Unit,
                             onEdit: (() -> Unit)? = null) {
             val binding = DialogSelectItemBinding.inflate(LayoutInflater.from(context))
             val dialog = showBottomPopup(context, binding.root)
@@ -221,15 +231,100 @@ class Tools {
         }
 
         @JvmStatic
-        fun showSelectSubject(context: Context, title: String) {
+        fun showSelectSubject(context: Context, title: String, subject: SubjectArray,
+                              checkedId: Int, onResult: (StringWithId) -> Unit) {
+            val binding = DialogSelectSubjectBinding.inflate(LayoutInflater.from(context))
+            val dialog = showBottomPopup(context, binding.root)
+            dialog.setCanceledOnTouchOutside(false)
+            // 初始化视图
+            binding.title.text = title
+            binding.subjectList.setDataAndExpandAll(subject.toArray())
+            binding.subjectList.setAllowExpandFold(false)
+            binding.subjectList.post {
+                binding.subjectList.setItemChecked(DataSource.checkedPosition, true)
+                binding.subjectList.setSelection(DataSource.checkedPosition)
+            }
+            // 设置监听
+            binding.putAway.setOnClickListener { dialog.cancel() }
+            var select: StringWithId? = null
+            var checkedPosition = -1
+            binding.subjectList.setOnItemClickListener { data, position ->
+                if (data is SubjectLvOne) {
+                    select = data.data
+                    checkedPosition = position
+                } else if (data is SubjectLvTwo) {
+                    select = data.data
+                    checkedPosition = position
+                }
+            }
+            binding.selectIt.setOnClickListener {
+                if (select == null) {
+                    return@setOnClickListener
+                }
+                DataSource.checkedPosition = checkedPosition
+                onResult(select!!)
+                dialog.cancel()
+            }
         }
         //******安全******
+        private val digest = MessageDigest.getInstance("MD5")
+
+        @JvmStatic
+        fun md5AsBytes(content: ByteArray): ByteArray = digest.digest(content)
+
+        @JvmStatic
+        fun md5(content: String): String = md5(content.toByteArray(StandardCharsets.UTF_8))
+
+        @JvmStatic
+        fun md5(content: ByteArray) = bytesToBase64(digest.digest(content))
+
+        @JvmStatic
+        fun bytesToBase64(data: ByteArray): String {
+            return Base64.encodeToString(data, Base64.URL_SAFE or Base64.NO_PADDING)
+        }
+        //******文件******
+        @JvmStatic
+        fun saveFile(file: File, data: ByteArray, append: Boolean = false) {
+            try {
+                FileOutputStream(file, append).use { fos ->
+                    fos.write(data)
+                }
+            } catch (e: Exception) {
+                myLog.i("文件保存失败", e)
+            }
+        }
+
+        @JvmStatic
+        fun saveFile(file: File, data: String, append: Boolean = false) =
+            saveFile(file, data.toByteArray(StandardCharsets.UTF_8), append)
+
+        @JvmStatic
+        fun readFile(file: File): ByteArray? {
+            return try {
+                FileInputStream(file).use { fis ->
+                    fis.readBytes()
+                }
+            } catch (e: Exception) {
+                myLog.i("文件读取失败", e)
+                null
+            }
+        }
+
+        fun readFileAsString(file: File): String? = readFile(file)?.let {
+            String(it, StandardCharsets.UTF_8)
+        }
 
         //******其它******
-
         @JvmStatic
         fun showToast(context: Context, msg: String) =
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+        @JvmStatic
+        fun showToastOnUiThread(context: Context, msg: String) {
+            Handler(context.mainLooper).post {
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private class SelectContentAdapter(

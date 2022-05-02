@@ -8,13 +8,14 @@ import android.widget.FrameLayout
 import com.mingz.billing.R
 import com.mingz.billing.databinding.LayoutAmountOfMoneyBinding
 import com.mingz.billing.utils.DataSource
-import com.mingz.billing.utils.StringList
+import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
+import java.math.BigDecimal
 
 class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
     : FrameLayout(context, attrs) {
     private val binding: LayoutAmountOfMoneyBinding
-    private var theType: StringList.StringWithId? = null
+    private var theType: StringWithId? = null
 
     init {
         binding = LayoutAmountOfMoneyBinding.inflate(LayoutInflater.from(context),
@@ -57,5 +58,9 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
 
     fun setAmount(amount: String) {
         binding.amount.text = amount
+    }
+
+    fun setAmount(amount: BigDecimal) {
+        binding.amount.text = amount.toPlainString()
     }
 }

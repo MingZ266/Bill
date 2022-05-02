@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.mingz.billing.R
 import com.mingz.billing.databinding.LayoutShowTextBinding
 import com.mingz.billing.utils.StringList
+import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
 
 class ShowText(context: Context, attrs: AttributeSet? = null)
@@ -80,20 +81,6 @@ class ShowText(context: Context, attrs: AttributeSet? = null)
             }
         }
         return super.dispatchTouchEvent(ev)
-    }
-
-    fun setSelectItem(contentList: StringList, onEdit: (() -> Unit)? = null) {
-        setOnClickListener(object : OnClickListener {
-            private var theContent: StringList.StringWithId? = null
-
-            override fun onClick(v: View?) {
-                Tools.showSelectPopup(context, binding.title.text.toString(), contentList,
-                    if (theContent != null) theContent!!.id else -1, {
-                    theContent = it
-                    binding.content.setText(it.content)
-                }, onEdit)
-            }
-        })
     }
 
     fun getTitle() = binding.title.text.toString()

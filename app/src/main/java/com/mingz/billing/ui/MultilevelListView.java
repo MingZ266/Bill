@@ -32,7 +32,17 @@ public class MultilevelListView extends ListView {
     }
 
     public void setData(Data<?, ?>[] data) {
-        adapter.updateData(data);
+        adapter.dataList = new ArrayList<>(Arrays.asList(data));
+        adapter.notifyDataSetChanged();
+    }
+
+    public void setDataAndExpandAll(Data<?, ?>[] data) {
+        adapter.dataList = new ArrayList<>(Arrays.asList(data));
+        adapter.expandAll();
+    }
+
+    public void setAllowExpandFold(boolean allow) {
+        adapter.allowExpandFold = allow;
     }
 
     public void setOnItemClickListener(@Nullable OnItemClickListener listener) {
@@ -43,32 +53,43 @@ public class MultilevelListView extends ListView {
         private final Context context;
         private List<Data<?, ?>> dataList = null;
         private OnItemClickListener listener = null;
+        private boolean allowExpandFold = true;
 
         private ListViewAdapter(Context context) {
             this.context = context;
         }
 
-        private void updateData(Data<?, ?>[] data) {
-            dataList = new ArrayList<>(Arrays.asList(data));
+        private void expandAll() {
+            for (int i = 0; i < dataList.size(); i++) {
+                Data<?, ?> goalData = dataList.get(i);
+                Data<?, ?>[] children = goalData.subordinateData;
+                if (children == null || goalData.isExpand) {
+                    continue;
+                }
+                goalData.isExpand = true;
+                dataList.addAll(i + 1, Arrays.asList(children));
+            }
             notifyDataSetChanged();
         }
 
         private void onItemClick(int position) {
             Data<?, ?> goalData = dataList.get(position);
-            Data<?, ?>[] children = goalData.subordinateData;
-            if (children != null) {
-                if (goalData.isExpand) {
-                    goalData.isExpand = false;
-                    foldAll(position + 1, children);
-                } else {
-                    goalData.isExpand = true;
-                    dataList.addAll(position + 1, Arrays.asList(children));
+            if (allowExpandFold) {
+                Data<?, ?>[] children = goalData.subordinateData;
+                if (children != null) {
+                    if (goalData.isExpand) {
+                        goalData.isExpand = false;
+                        foldAll(position + 1, children);
+                    } else {
+                        goalData.isExpand = true;
+                        dataList.addAll(position + 1, Arrays.asList(children));
+                    }
+                    notifyDataSetChanged();
                 }
-                notifyDataSetChanged();
             }
             if (listener != null) {
-                // 不论展开、收起还是都不做，都不会改变这个条目的位置
-                listener.onItemClick(goalData);
+                // 不论展开、折叠还是都不做，都不会改变这个条目的位置
+                listener.onItemClick(goalData, position);
             }
         }
 
@@ -118,7 +139,7 @@ public class MultilevelListView extends ListView {
                 viewHolder = data.newViewHolder(convertView);
                 convertView.setTag(data.resId, viewHolder);
             }
-            data.loadingDataOnView(context, viewHolder);
+            data.loadingDataOnView(context, viewHolder, position);
             return convertView;
         }
     }
@@ -164,10 +185,11 @@ public class MultilevelListView extends ListView {
          *
          * @param viewHolder 与视图绑定的ViewHolder实例
          */
-        protected abstract void loadingDataOnView(@NonNull Context context, @NonNull Object viewHolder);
+        protected abstract void loadingDataOnView(@NonNull Context context, @NonNull Object viewHolder,
+                                                  int position);
     }
 
     public interface OnItemClickListener {
-        void onItemClick(@NonNull Data<?, ?> data);
+        void onItemClick(@NonNull Data<?, ?> data, int position);
     }
 }

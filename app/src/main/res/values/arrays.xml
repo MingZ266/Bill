@@ -1,19 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="defaultAccount">
-        <item>账户A</item>
-        <item>账户B</item>
-        <item>账户C</item>
-        <item>账户D</item>
-        <item>账户E</item>
-        <item>账户F</item>
-        <item>账户G</item>
-        <item>账户H</item>
+    <string-array name="defaultType">
+        <item>人民币</item>
+        <item>美元</item>
+        <item>英镑</item>
     </string-array>
     
-    <string-array name="defaultType">
-        <item>币种A</item>
-        <item>币种B</item>
-        <item>币种C</item>
+    <string-array name="defaultExpenditure">
+        <item>#饮食开支</item>
+        <item>早午晚餐</item>
+        <item>零食代餐</item>
+        <item>烟酒茶饮</item>
+        
+        <item>#转账</item>
+        <item>微信转出</item>
+        <item>支付宝转出</item>
+        <item>银行卡转出</item>
+        
+        <item>#居家生活</item>
+        <item>日常用品</item>
+        <item>水电煤气</item>
+        <item>手机话费</item>
+        <item>数码设备</item>
+        
+        <item>#人情世故</item>
+        <item>发红包</item>
+        <item>送礼请客</item>
+        <item>慈善捐助</item>
+        
+        <item>#学习进修</item>
+        <item>复印打印</item>
+        <item>报考培训</item>
+        <item>书刊杂志</item>
+        <item>学务用品</item>
+        
+        <item>#仪容装扮</item>
+        <item>美容美发</item>
+        <item>衣物服饰</item>
+    
+        <item>#休闲娱乐</item>
+        <item>游戏充值</item>
+        <item>旅游度假</item>
+        
+        <item>#交通</item>
+        <item>公共交通</item>
+        <item>的士租车</item>
+        
+        <item>#医疗</item>
+        <item>诊疗费</item>
+        <item>药品费</item>
+        <item>医疗器械</item>
+        
+        <item>#其它支出</item>
+        <item>社保医保</item>
+        <item>交税纳税</item>
+    </string-array>
+    
+    <string-array name="defaultIncome">
+        <item>#转账收入</item>
+        <item>转入微信</item>
+        <item>转入支付宝</item>
+        <item>转入银行卡</item>
+        
+        <item>#职业收入</item>
+        <item>工资</item>
+        <item>奖金</item>
+        <item>福利补贴</item>
+        <item>劳务外快</item>
+        <item>经营所得</item>
+        
+        <item>#其它收入</item>
+        <item>利息</item>
+        <item>礼金</item>
+        <item>红包</item>
     </string-array>
 </resources>

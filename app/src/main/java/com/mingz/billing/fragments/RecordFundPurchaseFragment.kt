@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mingz.billing.databinding.FragmentRecordFundPurchaseBinding
-import com.mingz.billing.utils.DataSource
 import com.mingz.billing.utils.Tools
 
 class RecordFundPurchaseFragment : RecordFragment() {
@@ -27,10 +26,6 @@ class RecordFundPurchaseFragment : RecordFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val context = context ?: return
-        binding.fund.setSelectItem(DataSource.INSTANCE.fundList) {
-            Tools.showToast(context, "修改基金")
-        }
-        binding.account.setSelectItem(DataSource.INSTANCE.accountList)
         binding.discount.setOnClickListener {
             Tools.inputAmountOfMoney(context, binding.discount.getTitle(),
                 binding.discount.getAmount()) {

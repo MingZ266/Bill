@@ -61,7 +61,7 @@ class RecordActivity : AppCompatActivity() {
         binding.save.setOnClickListener {
             current.save()
         }
-        binding.optionList.setOnItemClickListener { data ->
+        binding.optionList.setOnItemClickListener { data, _ ->
             if (data is OptionLevelOne) {
                 if (data.subordinateData == null) {
                     when (data.data) {
@@ -101,7 +101,7 @@ class RecordActivity : AppCompatActivity() {
             return viewHolder
         }
 
-        override fun loadingDataOnView(context: Context, viewHolder: Any) {
+        override fun loadingDataOnView(context: Context, viewHolder: Any, position: Int) {
             if (viewHolder is ViewHolder) {
                 viewHolder.option.text = data
                 if (subordinateData == null) {
@@ -143,7 +143,7 @@ class RecordActivity : AppCompatActivity() {
             return viewHolder
         }
 
-        override fun loadingDataOnView(context: Context, viewHolder: Any) {
+        override fun loadingDataOnView(context: Context, viewHolder: Any, position: Int) {
             if (viewHolder is ViewHolder) {
                 viewHolder.option.text = data
             }
