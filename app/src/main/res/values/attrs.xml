@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="SwitchAnimView">
+        <!-- 切换时遮罩的颜色，无视透明度. -->
+        <attr format="color" name="maskColor" />
+    </declare-styleable>
+    
     <declare-styleable name="DateTimePicker">
         <attr name="pickerMode" format="enum">
             <enum name="all" value="0"/>

@@ -4,15 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.mingz.billing.databinding.FragmentMainBillingBinding
+import com.mingz.billing.databinding.FragmentHomeBillingBinding
 
-class MainBillingFragment : MainFragment() {
-    private lateinit var binding: FragmentMainBillingBinding
+class HomeBillingFragment : HomeFragment() {
+    private lateinit var binding: FragmentHomeBillingBinding
 
     companion object {
         @JvmStatic
-        fun newInstance() = MainBillingFragment()
+        fun newInstance() = HomeBillingFragment()
     }
 
     override fun getTitle(): String = "账单"
@@ -20,7 +19,7 @@ class MainBillingFragment : MainFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBillingBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBillingBinding.inflate(inflater, container, false)
         return binding.root
     }
 

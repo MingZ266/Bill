@@ -9,94 +9,121 @@ import com.mingz.billing.ui.MultilevelListView.Data
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.util.*
+import kotlin.reflect.KProperty
 
 class DataSource private constructor() {
-    private val myLog = MyLog(this)
-
-    /**
-     * 所有账户.
-     */
-    val accountList = StringList()
-
-    /**
-     * 所有货币类型.
-     */
-    val typeList = StringList()
-
-    /**
-     * 所有基金.
-     */
-    val fundList = StringList()
-
-    /**
-     * 支出科目.
-     */
-    val expenditureSubject = SubjectArray()
-
-    /**
-     * 收入科目.
-     */
-    val incomeSubject = SubjectArray()
-
-    init {
-        if (myLog.debug) {
-            accountList.add("账户A")
-            accountList.add("账户B")
-            accountList.add("账户C")
-            accountList.add("账户D")
-            accountList.add("账户E")
-            accountList.add("账户F")
-            accountList.add("账户G")
-            accountList.add("账户H")
-            fundList.add("基金A")
-            fundList.add("基金B")
-            fundList.add("基金C")
-            fundList.add("基金D")
-            fundList.add("基金E")
-            fundList.add("基金F")
-        }
-    }
 
     companion object {
-        @JvmStatic
-        val INSTANCE = DataSource()
+        private val myLog = MyLog(this)
+        private val file by InitFile()
 
-        @JvmStatic
+        /**
+         * 所有账户.
+         */
+        @JvmField
+        val accountList = StringList()
+
+        /**
+         * 所有货币类型.
+         */
+        @JvmField
+        val typeList = StringList()
+
+        /**
+         * 所有基金.
+         */
+        @JvmField
+        val fundList = StringList()
+
+        /**
+         * 支出科目.
+         */
+        @JvmField
+        val expenditureSubject = SubjectArray()
+
+        /**
+         * 收入科目.
+         */
+        @JvmField
+        val incomeSubject = SubjectArray()
+
+        @JvmField
         var checkedPosition = -1
-    }
 
-    fun init(applicationContext: Context) {
-        val res = applicationContext.resources
-        typeList.init(res.getStringArray(R.array.defaultType))
-        expenditureSubject.init(res.getStringArray(R.array.defaultExpenditure))
-        incomeSubject.init(res.getStringArray(R.array.defaultIncome))
-    }
+        fun init(applicationContext: Context) {
+            InitFile.init(applicationContext)
+            val json = readDataSource()
+            if (json == null) {
+                initUseDefault(applicationContext)
+            } else {
+                try {
+                    val jsonObj = JSONObject(json)
+                    accountList.init(jsonObj.getJSONArray("ac"))
+                    typeList.init(jsonObj.getJSONArray("ty"))
+                    fundList.init(jsonObj.getJSONArray("fu"))
+                    expenditureSubject.init(jsonObj.getJSONArray("ex"))
+                    incomeSubject.init(jsonObj.getJSONArray("in"))
+                } catch (e: Exception) {
+                    myLog.w("数据源存储文件解析失败", e)
+                    accountList.clear()
+                    typeList.clear()
+                    fundList.clear()
+                    expenditureSubject.clear()
+                    incomeSubject.clear()
+                    initUseDefault(applicationContext)
+                }
+            }
+        }
 
-    @Throws(Exception::class)
-    fun init(json: String) {
-        val jsonObj = JSONObject(json)
-        accountList.init(jsonObj.getJSONArray("ac"))
-        typeList.init(jsonObj.getJSONArray("ty"))
-        fundList.init(jsonObj.getJSONArray("fu"))
-        expenditureSubject.init(jsonObj.getJSONArray("ex"))
-        incomeSubject.init(jsonObj.getJSONArray("in"))
-    }
+        private fun initUseDefault(applicationContext: Context) {
+            // TODO: delete it
+            if (myLog.debug) {
+                accountList.add("账户A")
+                accountList.add("账户B")
+                accountList.add("账户C")
+                accountList.add("账户D")
+                accountList.add("账户E")
+                accountList.add("账户F")
+                accountList.add("账户G")
+                accountList.add("账户H")
+                fundList.add("基金A")
+                fundList.add("基金B")
+                fundList.add("基金C")
+                fundList.add("基金D")
+                fundList.add("基金E")
+                fundList.add("基金F")
+            }
+            val res = applicationContext.resources
+            typeList.init(res.getStringArray(R.array.defaultType))
+            expenditureSubject.init(res.getStringArray(R.array.defaultExpenditure))
+            incomeSubject.init(res.getStringArray(R.array.defaultIncome))
+        }
 
-    fun toJson(): String {
-        val cache = StringBuilder()
-        cache.append('{')
-        cache.append("\"ac\":").append(accountList.toString())
-        cache.append(',')
-        cache.append("\"ty\":").append(typeList.toString())
-        cache.append(',')
-        cache.append("\"fu\":").append(fundList.toString())
-        cache.append(',')
-        cache.append("\"ex\":").append(expenditureSubject.toString())
-        cache.append(',')
-        cache.append("\"in\":").append(incomeSubject.toString())
-        cache.append('}')
-        return cache.toString()
+        private fun readDataSource(): String? {
+            Tools.readFile(file)?.let { content ->
+                // TODO: 按需进行解密
+                return String(content, StandardCharsets.UTF_8)
+            }
+            return null
+        }
+
+        fun toJson(): String {
+            val cache = StringBuilder()
+            cache.append('{')
+            cache.append("\"ac\":").append(accountList.toString())
+            cache.append(',')
+            cache.append("\"ty\":").append(typeList.toString())
+            cache.append(',')
+            cache.append("\"fu\":").append(fundList.toString())
+            cache.append(',')
+            cache.append("\"ex\":").append(expenditureSubject.toString())
+            cache.append(',')
+            cache.append("\"in\":").append(incomeSubject.toString())
+            cache.append('}')
+            return cache.toString()
+        }
     }
 
     override fun toString() = toJson()
@@ -114,6 +141,8 @@ class DataSource private constructor() {
                 }
             }
         }
+
+        operator fun getValue(companion: DataSource.Companion, property: KProperty<*>) = file
     }
 }
 
@@ -143,6 +172,11 @@ class StringList : ArrayList<StringWithId>() {
                 null
             }
         }
+    }
+
+    override fun clear() {
+        super.clear()
+        nextId = 1
     }
 
     fun add(content: String) {
@@ -232,6 +266,11 @@ class SubjectArray {
             else lvTwoList.toArray(emptyArray<SubjectLvTwo>())))
         }
         subject = lvOneList.toArray(emptyArray<SubjectLvOne>())
+    }
+
+    fun clear() {
+        nextId = 1
+        subject = emptyArray()
     }
 
     fun toArray() = Array(subject.size) copy@{ i ->

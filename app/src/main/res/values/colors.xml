@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     
     <color name="themeColor">#51A3F8</color>
+    <color name="switchColor">#A2CFFF</color>
     <color name="themeColorHalfA">#7F51A3F8</color>
     <color name="themeWhite">#EDF6FF</color>
     <color name="themeGrey">#666666</color>

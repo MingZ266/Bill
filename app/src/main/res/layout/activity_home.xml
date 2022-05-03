@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.HomeActivity">
+    
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:openDrawer="start">
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingStart="@dimen/interval"
+                android:paddingEnd="@dimen/interval"
+                tools:ignore="ContentDescription">
+            
+                <ImageView
+                    android:id="@+id/menu"
+                    android:layout_width="@dimen/drawableSize"
+                    android:layout_height="@dimen/drawableSize"
+                    android:src="@drawable/ic_menu"
+                    android:tint="@color/themeColor"/>
+            
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    tools:text="标题"
+                    android:textSize="@dimen/titleTextSize"
+                    android:textColor="@color/themeColor"/>
+            
+                <ImageView
+                    android:id="@+id/addRecord"
+                    android:layout_width="@dimen/drawableSize"
+                    android:layout_height="@dimen/drawableSize"
+                    android:src="@drawable/ic_add_record"
+                    android:tint="@color/themeColor"/>
+        
+            </LinearLayout>
+        
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/themeColor"/>
+        
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+    
+        </LinearLayout>
+    
+        <com.mingz.billing.ui.SizeLimitLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:widthScale="0.67"
+            android:background="@drawable/bg_bottom_dialog">
+        
+            <include layout="@layout/layout_sidebar_menu"/>
+    
+        </com.mingz.billing.ui.SizeLimitLayout>
+        
+    </androidx.drawerlayout.widget.DrawerLayout>
+    
+    <com.mingz.billing.ui.HalfSwitchAnimView
+        android:id="@+id/halfSwitchAnim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:maskColor="@color/switchColor"/>
+
+</RelativeLayout>

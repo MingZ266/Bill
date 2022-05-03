@@ -20,8 +20,8 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
     init {
         binding = LayoutAmountOfMoneyBinding.inflate(LayoutInflater.from(context),
             this, true)
-        if (DataSource.INSTANCE.typeList.isNotEmpty()) {
-            theType = DataSource.INSTANCE.typeList[0]
+        if (DataSource.typeList.isNotEmpty()) {
+            theType = DataSource.typeList[0]
         }
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AmountOfMoney)
         try {
@@ -36,7 +36,7 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
             val showType = typedArray.getBoolean(R.styleable.AmountOfMoney_showType, true)
             binding.type.visibility = if (showType) View.VISIBLE else View.GONE
             binding.type.setOnClickListener {
-                Tools.showSelectPopup(context, titleText.toString(), DataSource.INSTANCE.typeList,
+                Tools.showSelectPopup(context, titleText.toString(), DataSource.typeList,
                     if (theType != null) theType!!.id else -1, {
                     theType = it
                     binding.type.text = it.content

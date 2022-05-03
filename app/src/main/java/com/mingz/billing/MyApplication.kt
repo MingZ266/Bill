@@ -12,7 +12,7 @@ class MyApplication : Application() {
         super.onCreate()
         val context = applicationContext
         Encryption.init(context)
-        DataSource.INSTANCE.init(context)
+        DataSource.init(context)
         Billing.init(context)
     }
 }

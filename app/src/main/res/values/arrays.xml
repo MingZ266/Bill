@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="proverb">
+        <item>取之有度，用之有节，则常足</item>
+        <item>机不可失，时不再来</item>
+        <item>积硅步以至千里，积小流以成江海</item>
+        <item>从俭去奢，必有裨益</item>
+        <item>认真生活，简单做人，用心做事</item>
+        <item>慎而思之，勤而行之</item>
+    </string-array>
+    
     <string-array name="defaultType">
         <item>人民币</item>
         <item>美元</item>
