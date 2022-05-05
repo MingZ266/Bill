@@ -89,10 +89,12 @@ class RecordActivity : AppCompatActivity() {
         current = fragment
     }
 
-    private class OptionLevelOne(data: String, children: Array<OptionLevelTwo>? = null
-    ) : MultilevelListView.Data<String, OptionLevelOne.ViewHolder>(
-        R.layout.item_side_bar_record_type_level_one, data, children
-    ) {
+    private class OptionLevelOne(data: String, children: Array<OptionLevelTwo>? = null) :
+        MultilevelListView.Data<String, OptionLevelOne.ViewHolder>(data, children) {
+
+        override fun getResId() = R.layout.item_side_bar_record_type_level_one
+
+        override fun getLevel() = 0
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()
@@ -132,10 +134,12 @@ class RecordActivity : AppCompatActivity() {
         }
     }
 
-    private class OptionLevelTwo(data: String
-    ) : MultilevelListView.Data<String, OptionLevelTwo.ViewHolder>(
-        R.layout.item_side_bar_record_type_level_two, data
-    ) {
+    private class OptionLevelTwo(data: String) :
+        MultilevelListView.Data<String, OptionLevelTwo.ViewHolder>(data) {
+
+        override fun getResId() = R.layout.item_side_bar_record_type_level_two
+
+        override fun getLevel() = 1
 
         override fun newViewHolder(view: View): ViewHolder {
             val viewHolder = ViewHolder()

@@ -3,7 +3,6 @@ package com.mingz.billing.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
-import android.os.Message
 import android.util.Base64
 import android.view.*
 import android.widget.BaseAdapter
@@ -20,7 +19,6 @@ import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import kotlin.text.StringBuilder
 
 class Tools {
     companion object {
@@ -232,7 +230,7 @@ class Tools {
 
         @JvmStatic
         fun showSelectSubject(context: Context, title: String, subject: SubjectArray,
-                              checkedId: Int, onResult: (StringWithId) -> Unit) {
+                              onResult: (StringWithId) -> Unit) {
             val binding = DialogSelectSubjectBinding.inflate(LayoutInflater.from(context))
             val dialog = showBottomPopup(context, binding.root)
             dialog.setCanceledOnTouchOutside(false)
@@ -269,8 +267,9 @@ class Tools {
         //******安全******
         private val digest = MessageDigest.getInstance("MD5")
 
-        @JvmStatic
-        fun md5AsBytes(content: ByteArray): ByteArray = digest.digest(content)
+        private fun bytesToBase64(data: ByteArray): String {
+            return Base64.encodeToString(data, Base64.URL_SAFE or Base64.NO_PADDING)
+        }
 
         @JvmStatic
         fun md5(content: String): String = md5(content.toByteArray(StandardCharsets.UTF_8))
@@ -278,25 +277,19 @@ class Tools {
         @JvmStatic
         fun md5(content: ByteArray) = bytesToBase64(digest.digest(content))
 
-        @JvmStatic
-        fun bytesToBase64(data: ByteArray): String {
-            return Base64.encodeToString(data, Base64.URL_SAFE or Base64.NO_PADDING)
-        }
         //******文件******
         @JvmStatic
-        fun saveFile(file: File, data: ByteArray, append: Boolean = false) {
-            try {
+        fun saveFile(file: File, data: ByteArray, append: Boolean = false): Boolean {
+            return try {
                 FileOutputStream(file, append).use { fos ->
                     fos.write(data)
                 }
+                true
             } catch (e: Exception) {
                 myLog.i("文件保存失败", e)
+                false
             }
         }
-
-        @JvmStatic
-        fun saveFile(file: File, data: String, append: Boolean = false) =
-            saveFile(file, data.toByteArray(StandardCharsets.UTF_8), append)
 
         @JvmStatic
         fun readFile(file: File): ByteArray? {
@@ -310,11 +303,27 @@ class Tools {
             }
         }
 
-        fun readFileAsString(file: File): String? = readFile(file)?.let {
-            String(it, StandardCharsets.UTF_8)
+        //******其它******
+        /**
+         * 追加[str]，并将[str]中未转义的引号进行转义.
+         */
+        @JvmStatic
+        fun StringBuilder.appendStringToJson(str: String): StringBuilder {
+            var hasNot = true // 标记上一个字符是否为转义字符
+            for (c in str) {
+                hasNot = if (c == '\\') {
+                    false
+                } else {
+                    if (hasNot && c == '"') {
+                        append('\\')
+                    }
+                    true
+                }
+                append(c)
+            }
+            return this
         }
 
-        //******其它******
         @JvmStatic
         fun showToast(context: Context, msg: String) =
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

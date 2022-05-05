@@ -13,6 +13,11 @@
         </attr>
     </declare-styleable>
     
+    <declare-styleable name="MultilevelListView">
+        <!-- 若设置，则每级最多只能展开一个. -->
+        <attr format="boolean" name="atMostExpandOne" />
+    </declare-styleable>
+    
     <declare-styleable name="DrawableTextView">
         <attr name="android:drawableStart"/>
         <attr name="drawableStartWidth" format="dimension"/>

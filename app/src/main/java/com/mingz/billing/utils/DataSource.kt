@@ -6,10 +6,10 @@ import android.widget.TextView
 import com.mingz.billing.R
 import com.mingz.billing.ui.DrawableTextView
 import com.mingz.billing.ui.MultilevelListView.Data
+import com.mingz.billing.utils.Tools.Companion.appendStringToJson
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.reflect.KProperty
 
@@ -52,11 +52,16 @@ class DataSource private constructor() {
         @JvmField
         var checkedPosition = -1
 
-        fun init(applicationContext: Context) {
-            InitFile.init(applicationContext)
-            val json = readDataSource()
+        @JvmStatic
+        fun init(applicationContext: Context) = InitFile.init(applicationContext)
+
+        @JvmStatic
+        fun initData(context: Context) {
+            val json = Tools.readFile(file)?.let {
+                Encryption.decryptIfNeedAndToString(it)
+            }
             if (json == null) {
-                initUseDefault(applicationContext)
+                initUseDefault(context)
             } else {
                 try {
                     val jsonObj = JSONObject(json)
@@ -72,12 +77,12 @@ class DataSource private constructor() {
                     fundList.clear()
                     expenditureSubject.clear()
                     incomeSubject.clear()
-                    initUseDefault(applicationContext)
+                    initUseDefault(context)
                 }
             }
         }
 
-        private fun initUseDefault(applicationContext: Context) {
+        private fun initUseDefault(context: Context) {
             // TODO: delete it
             if (myLog.debug) {
                 accountList.add("账户A")
@@ -95,21 +100,18 @@ class DataSource private constructor() {
                 fundList.add("基金E")
                 fundList.add("基金F")
             }
-            val res = applicationContext.resources
+            val res = context.resources
             typeList.init(res.getStringArray(R.array.defaultType))
             expenditureSubject.init(res.getStringArray(R.array.defaultExpenditure))
             incomeSubject.init(res.getStringArray(R.array.defaultIncome))
         }
 
-        private fun readDataSource(): String? {
-            Tools.readFile(file)?.let { content ->
-                // TODO: 按需进行解密
-                return String(content, StandardCharsets.UTF_8)
-            }
-            return null
+        @JvmStatic
+        fun save() {
+            Tools.saveFile(file, Encryption.encryptIfNeed(toJson()))
         }
 
-        fun toJson(): String {
+        private fun toJson(): String {
             val cache = StringBuilder()
             cache.append('{')
             cache.append("\"ac\":").append(accountList.toString())
@@ -195,7 +197,7 @@ class StringList : ArrayList<StringWithId>() {
         for (e in this) {
             cache.append('"').append(e.id).append('"')
             cache.append(',')
-            cache.append('"').append(e.content).append('"')
+            cache.append('"').appendStringToJson(e.content).append('"')
             cache.append(',')
         }
         cache.deleteAt(cache.lastIndex)
@@ -414,7 +416,7 @@ class SubjectArray {
         for (one in subject) {
             cache.append('"').append(one.data!!.id).append('"')
             cache.append(',')
-            cache.append("\"#").append(one.data.content).append('"')
+            cache.append("\"#").appendStringToJson(one.data.content).append('"')
             cache.append(',')
             val lvTwo = one.subordinateData
             if (lvTwo != null) {
@@ -422,7 +424,7 @@ class SubjectArray {
                     if (two is SubjectLvTwo) {
                         cache.append('"').append(two.data!!.id).append('"')
                         cache.append(',')
-                        cache.append('"').append(two.data.content).append('"')
+                        cache.append('"').appendStringToJson(two.data.content).append('"')
                         cache.append(',')
                     }
                 }
@@ -434,10 +436,12 @@ class SubjectArray {
     }
 }
 
-class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null
-) : Data<StringWithId, SubjectLvOne.ViewHolder>(
-    R.layout.item_dialog_subject_level_one, data, children
-) {
+class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null) :
+    Data<StringWithId, SubjectLvOne.ViewHolder>(data, children) {
+
+    override fun getResId() = R.layout.item_dialog_subject_level_one
+
+    override fun getLevel() = 0
 
     override fun newViewHolder(view: View): ViewHolder {
         return ViewHolder().apply {
@@ -456,9 +460,11 @@ class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null
     }
 }
 
-class SubjectLvTwo(data: StringWithId) : Data<StringWithId, SubjectLvTwo.ViewHolder>(
-    R.layout.item_dialog_subject_level_two, data
-) {
+class SubjectLvTwo(data: StringWithId) : Data<StringWithId, SubjectLvTwo.ViewHolder>(data) {
+
+    override fun getResId() = R.layout.item_dialog_subject_level_two
+
+    override fun getLevel() = 1
 
     override fun newViewHolder(view: View): ViewHolder {
         return ViewHolder().apply {

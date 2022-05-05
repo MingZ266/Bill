@@ -1,8 +1,6 @@
 package com.mingz.billing.utils
 
 import android.content.Context
-import android.os.Build
-import android.provider.Settings
 import java.io.File
 import java.nio.charset.StandardCharsets
 import kotlin.reflect.KProperty
@@ -10,7 +8,7 @@ import kotlin.reflect.KProperty
 class Encryption(private val context: Context) : LocalEncryption() {
 
     companion object {
-        private lateinit var key: ByteArray
+        private var key = ByteArray(0)
 
         private val dir by InitDir()
         private val passwordFile by lazy { File(dir, Tools.md5("password")) }
@@ -18,19 +16,28 @@ class Encryption(private val context: Context) : LocalEncryption() {
         private val biometricsFile by lazy { File(dir, Tools.md5("biometrics")) }
         private val verify by InitVerify()
 
+        @JvmStatic
         fun init(applicationContext: Context) {
             InitDir.init(applicationContext)
             InitVerify.init(applicationContext)
         }
 
-        fun encrypt(data: ByteArray) = aesEncrypt(key, data)
+        @JvmStatic
+        fun encryptIfNeed(data: ByteArray): ByteArray {
+            return if (key.isEmpty()) data else aesEncrypt(key, data)
+        }
 
-        fun encrypt(data: String) = aesEncrypt(key, data.toByteArray(StandardCharsets.UTF_8))
+        @JvmStatic
+        fun encryptIfNeed(data: String) = encryptIfNeed(data.toByteArray(StandardCharsets.UTF_8))
 
-        fun decrypt(ciphertext: ByteArray) = aesDecrypt(key, ciphertext)
+        @JvmStatic
+        fun decryptIfNeed(ciphertext: ByteArray): ByteArray {
+            return if (key.isEmpty()) ciphertext else aesDecrypt(key, ciphertext)
+        }
 
-        fun decryptToString(ciphertext: ByteArray) =
-            String(aesDecrypt(key, ciphertext), StandardCharsets.UTF_8)
+        @JvmStatic
+        fun decryptIfNeedAndToString(ciphertext: ByteArray) =
+            String(decryptIfNeed(ciphertext), StandardCharsets.UTF_8)
     }
 
     override fun savePassword(password: ByteArray) {
@@ -85,7 +92,10 @@ class Encryption(private val context: Context) : LocalEncryption() {
             private lateinit var verify: ByteArray
 
             fun init(applicationContext: Context) {
-                verify = applicationContext.packageName.toByteArray(StandardCharsets.UTF_8)
+                applicationContext.packageName.let {
+                    MyLog.TEMP.v(it)
+                    verify = it.toByteArray(StandardCharsets.UTF_8)
+                }
             }
         }
 

@@ -37,8 +37,7 @@ class RecordExpenditureFragment : RecordFragment() {
         val context = context ?: return
         binding.subject.setOnClickListener {
             Tools.showSelectSubject(context, binding.subject.getTitle(),
-                DataSource.expenditureSubject,
-                if (subject != null) subject!!.id else -1) {
+                DataSource.expenditureSubject) {
                 subject = it
                 binding.subject.setContent(it.content)
             }
