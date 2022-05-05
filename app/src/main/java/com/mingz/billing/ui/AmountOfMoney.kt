@@ -8,21 +8,17 @@ import android.widget.FrameLayout
 import com.mingz.billing.R
 import com.mingz.billing.databinding.LayoutAmountOfMoneyBinding
 import com.mingz.billing.utils.DataSource
-import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
 import java.math.BigDecimal
 
 class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
     : FrameLayout(context, attrs) {
     private val binding: LayoutAmountOfMoneyBinding
-    private var theType: StringWithId? = null
+    private var theType = DataSource.typeList[0]
 
     init {
         binding = LayoutAmountOfMoneyBinding.inflate(LayoutInflater.from(context),
             this, true)
-        if (DataSource.typeList.isNotEmpty()) {
-            theType = DataSource.typeList[0]
-        }
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.AmountOfMoney)
         try {
             binding.root.isEnabled = typedArray.getBoolean(
@@ -32,12 +28,11 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
                 titleText = "金额"
             }
             binding.title.text = titleText
-            binding.type.text = if (theType != null) theType!!.content else "null"
+            binding.type.text = theType.content
             val showType = typedArray.getBoolean(R.styleable.AmountOfMoney_showType, true)
             binding.type.visibility = if (showType) View.VISIBLE else View.GONE
             binding.type.setOnClickListener {
-                Tools.showSelectPopup(context, titleText.toString(), DataSource.typeList,
-                    if (theType != null) theType!!.id else -1, {
+                Tools.showSelectPopup(context, titleText.toString(), DataSource.typeList, theType.id, {
                     theType = it
                     binding.type.text = it.content
                 }) {
@@ -54,7 +49,7 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
 
     fun getAmount() = binding.amount.text.toString()
 
-    fun getType() = binding.type.text.toString()
+    fun getType() = theType
 
     fun setAmount(amount: String) {
         binding.amount.text = amount

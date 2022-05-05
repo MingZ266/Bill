@@ -1,6 +1,9 @@
 package com.mingz.billing.entities
 
+import com.mingz.billing.utils.MyLog
 import com.mingz.billing.utils.StringWithId
+import com.mingz.billing.utils.Tools.Companion.appendStringToJson
+import org.json.JSONArray
 
 class Expenditure(
     // 时间
@@ -24,10 +27,27 @@ class Expenditure(
     companion object {
         const val typeId = 1
         const val typeDesc = "支出"
+        private val myLog by lazy { MyLog("Expenditure") }
 
         @JvmStatic
         fun fromStringData(data: String): Expenditure? {
-            TODO("逆向解析")
+            myLog.v("解析支出: $data")
+            try {
+                val jsonArray = JSONArray(data)
+                return Expenditure(
+                    jsonArray.getString(0).toLong(),
+                    StringWithId(jsonArray.getString(1).toInt(), jsonArray.getString(2)),
+                    StringWithId(jsonArray.getString(3).toInt(), jsonArray.getString(4)),
+                    StringWithId(jsonArray.getString(5).toInt(), jsonArray.getString(6)),
+                    jsonArray.getString(7),
+                    jsonArray.getString(8),
+                    jsonArray.getString(9),
+                    jsonArray.getString(10)
+                )
+            } catch (e: Exception) {
+                myLog.e("支出数据解析失败", e)
+                return null
+            }
         }
     }
 
@@ -37,6 +57,43 @@ class Expenditure(
 
     override fun toStringData(): String {
         val cache = StringBuilder()
-        TODO("Not yet implemented")
+        cache.append('[')
+        cache.append('"').append(time).append('"')
+        cache.append(',')
+        cache.append('"').append(subject.id).append('"')
+        cache.append(',')
+        cache.append('"').appendStringToJson(subject.content).append('"')
+        cache.append(',')
+        cache.append('"').append(account.id).append('"')
+        cache.append(',')
+        cache.append('"').appendStringToJson(account.content).append('"')
+        cache.append(',')
+        cache.append('"').append(type.id).append('"')
+        cache.append(',')
+        cache.append('"').appendStringToJson(type.content).append('"')
+        cache.append(',')
+        cache.append('"').append(price).append('"')
+        cache.append(',')
+        cache.append('"').append(originalPrice).append('"')
+        cache.append(',')
+        cache.append('"').append(discount).append('"')
+        cache.append(',')
+        cache.append('"').appendStringToJson(remarks).append('"')
+        cache.append(']')
+        myLog.v("保存支出: $cache")
+        return cache.toString()
+    }
+
+    override fun toString(): String {
+        return "Expenditure{ " +
+                "time: $time, " +
+                "subject: ${subject.id}、${subject.content}, " +
+                "account: ${account.id}、${account.content}, " +
+                "type: ${type.id}、${type.content}, " +
+                "price: $price, " +
+                "originalPrice: $originalPrice, " +
+                "discount: $discount, " +
+                "remarks: $remarks " +
+                "}"
     }
 }

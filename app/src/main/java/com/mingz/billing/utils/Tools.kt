@@ -245,7 +245,7 @@ class Tools {
             // 设置监听
             binding.putAway.setOnClickListener { dialog.cancel() }
             var select: StringWithId? = null
-            var checkedPosition = -1
+            var checkedPosition = DataSource.checkedPosition
             binding.subjectList.setOnItemClickListener { data, position ->
                 if (data is SubjectLvOne) {
                     select = data.data
@@ -257,6 +257,9 @@ class Tools {
             }
             binding.selectIt.setOnClickListener {
                 if (select == null) {
+                    if (checkedPosition >= 0) {
+                        dialog.cancel()
+                    }
                     return@setOnClickListener
                 }
                 DataSource.checkedPosition = checkedPosition
@@ -305,19 +308,13 @@ class Tools {
 
         //******其它******
         /**
-         * 追加[str]，并将[str]中未转义的引号进行转义.
+         * 以适合JSON的方式添加字符串.
          */
         @JvmStatic
         fun StringBuilder.appendStringToJson(str: String): StringBuilder {
-            var hasNot = true // 标记上一个字符是否为转义字符
             for (c in str) {
-                hasNot = if (c == '\\') {
-                    false
-                } else {
-                    if (hasNot && c == '"') {
-                        append('\\')
-                    }
-                    true
+                if (c == '\\' || c == '"') {
+                    append('\\')
                 }
                 append(c)
             }

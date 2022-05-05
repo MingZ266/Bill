@@ -16,7 +16,7 @@ import com.mingz.billing.utils.DataSource
 
 class HomeActivity : AppCompatActivity() {
     private val activity = this
-    private val billing by lazy { HomeBillingFragment.newInstance() }
+    private val billing = HomeBillingFragment.newInstance()
     private val balance by lazy { HomeBalanceFragment.newInstance() }
 
     private lateinit var binding: ActivityHomeBinding

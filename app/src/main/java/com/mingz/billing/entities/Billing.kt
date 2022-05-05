@@ -24,9 +24,11 @@ abstract class Billing {
         fun init(applicationContext: Context) = InitDir.init(applicationContext)
 
         @JvmStatic
-        fun readMonthBilling(context: Context, year: Int, @IntRange(from = 1, to = 12) month: Int) {
+        fun readMonthBilling(year: Int, @IntRange(from = 1, to = 12) month: Int) {
+            MyLog.TEMP.v("读取${year}年${month}月的账单")
             if (this::monthBilling.isInitialized &&
                 monthBilling.year == year && monthBilling.month == month) {
+                MyLog.TEMP.v("当前读取的月账单即为目标月账单")
                 return
             }
             monthBilling = MonthBilling(year, month)
@@ -39,7 +41,10 @@ abstract class Billing {
                 for (i in 0 until len step 2) {
                     val typeId = jsonArray.getString(i).toInt()
                     val data = jsonArray.getString(i + 1)
-                    generateBilling(typeId, data)?.let { monthBilling.add(it) }
+                    generateBilling(typeId, data)?.let {
+                        MyLog.TEMP.v(it)
+                        monthBilling.add(it)
+                    }
                 }
             } catch (e: Exception) {
                 myLog.w("${year}年${month}月账单读取失败", e)
@@ -47,9 +52,9 @@ abstract class Billing {
         }
 
         @JvmStatic
-        fun saveBilling(context: Context, year: Int, @IntRange(from = 1, to = 12) month: Int,
+        fun saveBilling(year: Int, @IntRange(from = 1, to = 12) month: Int,
                         billing: Billing): Boolean {
-            readMonthBilling(context, year, month)
+            readMonthBilling(year, month)
             monthBilling.add(billing)
             val cache = StringBuilder()
             cache.append('[')
@@ -64,9 +69,11 @@ abstract class Billing {
             }
             cache.deleteAt(cache.lastIndex)
             cache.append(']')
-            MyLog.TEMP.v(cache)
+            MyLog.TEMP.v("保存内容: $cache")
             val data = Encryption.encryptIfNeed(cache.toString())
-            return Tools.saveFile(File(dir, getFileName(year, month)), data)
+            return Tools.saveFile(File(dir, getFileName(year, month)).apply {
+                MyLog.TEMP.v("保存路径: $absolutePath")
+            }, data)
         }
 
         private fun getFileName(year: Int, month: Int) =
@@ -92,7 +99,7 @@ abstract class Billing {
     abstract val typeId: Int
 
     /**
-     * 账单类型描述.
+     * 账单类型简短描述.
      *
      * · 请定义一个静态常量并引用它.
      */

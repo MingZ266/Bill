@@ -43,6 +43,7 @@ public class MultilevelListView extends ListView {
 
     public void setData(Data<?, ?>[] data) {
         adapter.dataList = new ArrayList<>(Arrays.asList(data));
+        adapter.recordExpand = null;
         adapter.notifyDataSetChanged();
     }
 

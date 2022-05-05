@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mingz.billing.databinding.FragmentRecordExpenditureBinding
+import com.mingz.billing.entities.Billing
+import com.mingz.billing.entities.Expenditure
 import com.mingz.billing.utils.DataSource
 import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
@@ -117,7 +119,23 @@ class RecordExpenditureFragment : RecordFragment() {
         } else if (price <= BigDecimal.ZERO) {
             Tools.showToast(context, "${binding.price.getTitle()}必须大于零")
         } else {
-            Tools.showToast(context, "保存支出")
+            val format = "%.2f"
+            val expenditure = Expenditure(
+                binding.time.getTimestamp(),
+                subject!!,
+                account!!,
+                binding.price.getType(),
+                String.format(format, price),
+                String.format(format, originalPrice),
+                String.format(format, discount),
+                binding.remarks.getContent()
+            )
+            if (Billing.saveBilling(binding.time.year, binding.time.month, expenditure)) {
+                Tools.showToast(context, "已保存")
+                activity?.onBackPressed()
+            } else {
+                Tools.showToast(context, "保存失败")
+            }
         }
     }
 }

@@ -66,10 +66,11 @@
             android:clickable="true"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            tools:text="选    择"
+            android:text="选    择"
             android:textSize="@dimen/mostTextSize"
             android:textColor="@color/white"
-            android:background="@drawable/bg_subject_select_btn"/>
+            android:background="@drawable/bg_subject_select_btn"
+            tools:ignore="HardcodedText"/>
         
     </LinearLayout>
 
