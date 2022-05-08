@@ -7,9 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.mingz.billing.R
 import com.mingz.billing.databinding.ActivityHomeBinding
-import com.mingz.billing.fragments.HomeBalanceFragment
-import com.mingz.billing.fragments.HomeBillingFragment
-import com.mingz.billing.fragments.HomeFragment
+import com.mingz.billing.fragments.*
 import com.mingz.billing.ui.SwitchAnimView
 import com.mingz.billing.utils.Constant
 import com.mingz.billing.utils.DataSource
@@ -18,6 +16,8 @@ class HomeActivity : AppCompatActivity() {
     private val activity = this
     private val billing = HomeBillingFragment.newInstance()
     private val balance by lazy { HomeBalanceFragment.newInstance() }
+    private val adminAccount by lazy { HomeAdminAccountFragment.newInstance() }
+    private val adminSubject by lazy { HomeAdminSubjectFragment.newInstance() }
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -59,6 +59,8 @@ class HomeActivity : AppCompatActivity() {
         // 菜单选项
         binding.menuLayout.browseBilling.setOnClickListener { replaceFragment(billing) }
         binding.menuLayout.browseBalance.setOnClickListener { replaceFragment(balance) }
+        binding.menuLayout.settingAccount.setOnClickListener { replaceFragment(adminAccount) }
+        binding.menuLayout.settingSubject.setOnClickListener { replaceFragment(adminSubject) }
     }
 
     private fun replaceFragment(fragment: HomeFragment) {

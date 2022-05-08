@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:orientation="vertical"
+    android:background="@color/themeWhite"
+    android:theme="@style/Theme.Billing.Activity"
+    tools:context=".activities.AccountInfoActivity"
+    tools:ignore="HardcodedText">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+        
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_back"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="账户信息"
+            android:textSize="@dimen/titleTextSize"
+            android:textColor="@color/themeColor"/>
+        
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="账户名称"
+        android:textSize="@dimen/smallTextSize"
+        android:textColor="@color/themeColor"/>
+    
+    <EditText
+        android:id="@+id/accountName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        tools:text="账户名称"
+        android:textSize="@dimen/mostTextSize"
+        android:textColor="@color/themeGrey"
+        android:textCursorDrawable="@drawable/cursor_color"
+        android:hint="请输入账户名称"
+        android:inputType="textNoSuggestions"
+        android:autofillHints="none"
+        android:background="@drawable/bg_blue_outline_with_color"/>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="账户资产"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <ImageView
+            android:id="@+id/addAssets"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_add_record"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+    
+    </RelativeLayout>
+    
+    <ListView
+        android:id="@+id/assetsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"/>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="未设置的资产类型将自动视为其初始储值为0"
+        android:textSize="@dimen/smallTextSize"
+        android:textColor="@color/themeColor"/>
+    
+    <TextView
+        android:id="@+id/okBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="确    定"
+        android:textSize="@dimen/mostTextSize"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_subject_select_btn"/>
+
+</LinearLayout>

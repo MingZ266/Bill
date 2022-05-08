@@ -16,6 +16,10 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
     
+    <style name="Theme.Billing.Activity" parent="Theme.Billing">
+        <item name="android:statusBarColor">@color/themeWhite</item>
+    </style>
+    
     <style name="DateTimePicker">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/themeGrey</item>
@@ -27,5 +31,9 @@
     <style name="CheckBoxStyle">
         <item name="colorControlNormal">@color/themeColor</item>
         <item name="colorControlActivated">@color/themeColor</item>
+    </style>
+    
+    <style name="RoundCornerDialog" parent="Theme.AppCompat.Dialog">
+        <item name="dialogCornerRadius">@dimen/radius</item>
     </style>
 </resources>

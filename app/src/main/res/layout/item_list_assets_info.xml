@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".activities.HomeActivity">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:layout_marginBottom="7.5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_blue_outline_with_color_and_feedback"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent,HardcodedText">
+        
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/themeRed"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="资产类型"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            tools:text="人民币"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeGrey"/>
+    
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="初始金额"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            tools:text="0.00"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeGrey"/>
+        
+    </LinearLayout>
+
+</FrameLayout>

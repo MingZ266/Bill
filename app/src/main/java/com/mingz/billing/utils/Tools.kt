@@ -5,24 +5,26 @@ import android.content.Context
 import android.os.Handler
 import android.util.Base64
 import android.view.*
+import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.Toast
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AlertDialog
-import com.mingz.billing.databinding.DialogInputAmountOfMoneyBinding
-import com.mingz.billing.databinding.DialogSelectItemBinding
-import com.mingz.billing.databinding.DialogSelectSubjectBinding
-import com.mingz.billing.databinding.ItemDialogContentListBinding
+import com.mingz.billing.R
+import com.mingz.billing.databinding.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+import java.util.*
 
 class Tools {
     companion object {
         private val myLog by lazy { MyLog("Tools") }
+        @IntRange(from = 0x0100, to = 0xFFFF)
+        private var requestCode = 0x0100
         //******弹窗******
         @JvmStatic
         fun setAsBottomPopupAndShow(dialog: AlertDialog, content: View) {
@@ -201,23 +203,53 @@ class Tools {
         }
 
         @JvmStatic
-        fun showSelectPopup(context: Context, title: String, contentList: StringList,
-                            checkedId: Int, onResult: (StringWithId) -> Unit,
-                            onEdit: (() -> Unit)? = null) {
+        fun showSelectAccount(context: Context, title: String, checkedId: Int, onResult: (Account) -> Unit) {
+            showSelect(context, title, DataSource.availableAccount, checkedId, { _, _, position, _ ->
+                DataSource.availableAccount.floatToTop(position)
+                onResult(DataSource.availableAccount[0])
+            }, { it.name }, { it.id })
+        }
+
+        @JvmStatic
+        fun showSelectType(context: Context, title: String, checkedId: Int, floatToTop: Boolean,
+                           onResult: (StringWithId) -> Unit, onEdit: () -> Unit) {
+            showSelect(context, title, DataSource.typeList, checkedId, { _, _, position, _ ->
+                if (floatToTop) {
+                    DataSource.typeList.floatToTop(position)
+                    onResult(DataSource.typeList[0])
+                } else {
+                    onResult(DataSource.typeList[position])
+                }
+            }, { it.content }, { it.id }, onEdit)
+        }
+
+        @JvmStatic
+        fun showSelectFund(context: Context, title: String, checkedId: Int,
+                           onResult: (Fund) -> Unit, onEdit: (() -> Unit)) {
+            showSelect(context, title, DataSource.fundList, checkedId, { _, _, position, _ ->
+                DataSource.fundList.floatToTop(position)
+                onResult(DataSource.fundList[0])
+            }, { "（${it.code}）${it.name}" }, { it.id }, onEdit)
+        }
+
+        private fun <T> showSelect(context: Context, title: String, contentList: List<T>,
+                                   checkedId: Int, listener: AdapterView.OnItemClickListener,
+                                   getContent: (T) -> String, getId: (T) -> Int,
+                                   onEdit: (() -> Unit)? = null) {
             val binding = DialogSelectItemBinding.inflate(LayoutInflater.from(context))
             val dialog = showBottomPopup(context, binding.root)
             dialog.setCanceledOnTouchOutside(false)
             // 初始化视图
             binding.title.text = title
-            binding.contentList.adapter = SelectContentAdapter(context, contentList, checkedId)
+            binding.contentList.adapter = SelectContentAdapter(
+                context, contentList, checkedId, getContent, getId)
             if (onEdit != null) {
                 binding.edit.visibility = View.VISIBLE
             }
             // 设置监听
             binding.putAway.setOnClickListener { dialog.cancel() }
-            binding.contentList.setOnItemClickListener { _, _, position, _ ->
-                contentList.floatToTop(position)
-                onResult(contentList[0])
+            binding.contentList.setOnItemClickListener { parent, view, position, id ->
+                listener.onItemClick(parent, view, position, id)
                 dialog.cancel()
             }
             binding.edit.setOnClickListener {
@@ -267,6 +299,33 @@ class Tools {
                 dialog.cancel()
             }
         }
+
+        @JvmStatic
+        fun showTipPopup(context: Context, message: String, whenOk: () -> Unit) =
+            showTipPopup(context, message, whenOk, null)
+
+        @JvmStatic
+        fun showTipPopup(context: Context, message: String,
+                         whenOk: () -> Unit, whenCancel: (() -> Unit)?) {
+            val binding = DialogTipMessageBinding.inflate(LayoutInflater.from(context))
+            val dialog = AlertDialog.Builder(context, R.style.RoundCornerDialog)
+                .setView(binding.root)
+                .create()
+            dialog.setCanceledOnTouchOutside(false)
+            dialog.show()
+            binding.message.text = message
+            binding.okBtn.setOnClickListener {
+                dialog.cancel()
+                whenOk()
+            }
+            binding.cancelBtn.setOnClickListener {
+                dialog.cancel()
+                if (whenCancel != null) {
+                    whenCancel()
+                }
+            }
+        }
+
         //******安全******
         private val digest = MessageDigest.getInstance("MD5")
 
@@ -331,12 +390,38 @@ class Tools {
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
         }
+
+        @JvmStatic
+        fun getRequestCode(): Int {
+            val code = requestCode++
+            if (requestCode > 0xFFFF) {
+                requestCode = 0x0100
+            }
+            return code
+        }
+
+        @JvmStatic
+        inline fun <reified T> Array<T>.add(data: T) = Array<T>(size + 1) {
+            if (it < size) {
+                this[it]
+            } else {
+                data
+            }
+        }
+
+        @JvmStatic
+        inline fun <reified T> Array<T>.remove(index: Int) = Array<T>(size - 1) {
+            var i = it
+            if (it >= index) {
+                i++
+            }
+            this[i]
+        }
     }
 
-    private class SelectContentAdapter(
-        private val context: Context,
-        private val contentList: StringList,
-        private val checkedId: Int
+    private class SelectContentAdapter<T>(
+        private val context: Context, private val contentList: List<T>, private val checkedId: Int,
+        private val getContent: (T) -> String, private val getId: (T) -> Int
     ) : BaseAdapter() {
         override fun getCount() = contentList.size
 
@@ -356,8 +441,8 @@ class Tools {
                 view = convertView
             }
             val data = contentList[position]
-            binding.content.text = data.content
-            binding.content.isChecked = data.id == checkedId
+            binding.content.text = getContent(data)
+            binding.content.isChecked = checkedId == getId(data)
             return view
         }
     }

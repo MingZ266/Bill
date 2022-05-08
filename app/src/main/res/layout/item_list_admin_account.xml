@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".activities.HomeActivity">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7.5dp"
+        android:layout_marginBottom="7.5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:background="@drawable/bg_blue_outline_with_color_and_feedback"
+        tools:ignore="UselessParent">
+    
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/themeRed"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+    
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/delete"
+            android:layout_marginStart="5dp"
+            tools:text="账户名称"
+            android:textColor="@color/themeColor"
+            android:textSize="@dimen/mostTextSize"
+            android:layout_centerVertical="true"
+            tools:ignore="RelativeOverlap"/>
+    
+        <ImageView
+            android:id="@+id/disable"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_disable"
+            android:tint="@color/whiteGrey"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+        
+    </RelativeLayout>
+
+</FrameLayout>

@@ -38,11 +38,13 @@
             <!--切换账单类型-->
             <ImageView
                 android:id="@+id/toggle"
-                android:layout_width="@dimen/drawableSize"
-                android:layout_height="@dimen/drawableSize"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/ic_switch_type"
-                android:tint="@color/themeColor"/>
+                android:tint="@color/themeColor"
+                android:background="@drawable/bg_btn_circle_feedback"/>
     
         </RelativeLayout>
     

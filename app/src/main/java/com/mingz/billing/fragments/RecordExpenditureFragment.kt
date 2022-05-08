@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.mingz.billing.databinding.FragmentRecordExpenditureBinding
 import com.mingz.billing.entities.Billing
 import com.mingz.billing.entities.Expenditure
+import com.mingz.billing.utils.Account
 import com.mingz.billing.utils.DataSource
 import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
@@ -16,7 +17,7 @@ class RecordExpenditureFragment : RecordFragment() {
     private lateinit var binding: FragmentRecordExpenditureBinding
 
     private var subject: StringWithId? = null
-    private var account: StringWithId? = null
+    private var account: Account? = null
     private lateinit var price: BigDecimal
     private lateinit var originalPrice: BigDecimal
     private lateinit var discount: BigDecimal
@@ -46,12 +47,11 @@ class RecordExpenditureFragment : RecordFragment() {
         }
 
         binding.account.setOnClickListener {
-            Tools.showSelectPopup(context, binding.account.getTitle(),
-                DataSource.accountList,
-                if (account != null) account!!.id else -1, {
-                    account = it
-                    binding.account.setContent(it.content)
-                })
+            Tools.showSelectAccount(context, binding.account.getTitle(),
+                if (account != null) account!!.id else -1) {
+                account = it
+                binding.account.setContent(it.name)
+            }
         }
 
         binding.price.setOnClickListener {
@@ -123,7 +123,7 @@ class RecordExpenditureFragment : RecordFragment() {
             val expenditure = Expenditure(
                 binding.time.getTimestamp(),
                 subject!!,
-                account!!,
+                StringWithId(account!!.id, account!!.name),
                 binding.price.getType(),
                 String.format(format, price),
                 String.format(format, originalPrice),

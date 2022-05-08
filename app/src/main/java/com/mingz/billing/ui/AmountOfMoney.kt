@@ -32,13 +32,13 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
             val showType = typedArray.getBoolean(R.styleable.AmountOfMoney_showType, true)
             binding.type.visibility = if (showType) View.VISIBLE else View.GONE
             binding.type.setOnClickListener {
-                Tools.showSelectPopup(context, titleText.toString(), DataSource.typeList, theType.id, {
+                Tools.showSelectType(context, titleText.toString(), theType.id, true, {
                     theType = it
                     binding.type.text = it.content
-                }) {
-                    // TODO: 修改货币类型
-                    Tools.showToast(context, "修改货币类型")
-                }
+                }, {
+                    // TODO: onEdit
+                    Tools.showToast(context, "编辑类型")
+                })
             }
         } finally {
             typedArray.recycle()

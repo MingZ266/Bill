@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:background="@color/themeWhite"
+    tools:context=".fragments.HomeAdminAccountFragment">
+    
+    <ListView
+        android:id="@+id/accountList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"/>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_save"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/white"
+        app:rippleColor="@color/themeColorHalfA"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="0dp"
+        tools:ignore="ContentDescription"/>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/save"
+        android:layout_alignBottom="@id/save"
+        android:layout_marginEnd="10dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_add_item"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/white"
+        app:rippleColor="@color/themeColorHalfA"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="0dp"
+        tools:ignore="ContentDescription"/>
+
+</RelativeLayout>

@@ -11,8 +11,7 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:openDrawer="start">
+        android:layout_height="match_parent">
     
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,10 +31,12 @@
             
                 <ImageView
                     android:id="@+id/menu"
-                    android:layout_width="@dimen/drawableSize"
-                    android:layout_height="@dimen/drawableSize"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
                     android:src="@drawable/ic_menu"
-                    android:tint="@color/themeColor"/>
+                    android:tint="@color/themeColor"
+                    android:background="@drawable/bg_btn_circle_feedback"/>
             
                 <TextView
                     android:id="@+id/title"
@@ -51,10 +52,12 @@
             
                 <ImageView
                     android:id="@+id/addRecord"
-                    android:layout_width="@dimen/drawableSize"
-                    android:layout_height="@dimen/drawableSize"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
                     android:src="@drawable/ic_add_record"
-                    android:tint="@color/themeColor"/>
+                    android:tint="@color/themeColor"
+                    android:background="@drawable/bg_btn_circle_feedback"/>
         
             </LinearLayout>
         

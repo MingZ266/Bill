@@ -7,10 +7,14 @@ import com.mingz.billing.R
 import com.mingz.billing.ui.DrawableTextView
 import com.mingz.billing.ui.MultilevelListView.Data
 import com.mingz.billing.utils.Tools.Companion.appendStringToJson
+import com.mingz.billing.utils.Tools.Companion.add
+import com.mingz.billing.utils.Tools.Companion.remove
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.KProperty
 
 class DataSource private constructor() {
@@ -23,7 +27,13 @@ class DataSource private constructor() {
          * 所有账户.
          */
         @JvmField
-        val accountList = StringList()
+        val accountList = AccountList()
+
+        /**
+         * 所有可用账户.
+         */
+        @JvmField
+        val availableAccount = AccountList()
 
         /**
          * 所有货币类型.
@@ -35,7 +45,7 @@ class DataSource private constructor() {
          * 所有基金.
          */
         @JvmField
-        val fundList = StringList()
+        val fundList = FundList()
 
         /**
          * 支出科目.
@@ -57,6 +67,7 @@ class DataSource private constructor() {
 
         @JvmStatic
         fun initData(context: Context) {
+            clearDataSource()
             val json = Tools.readFile(file)?.let {
                 Encryption.decryptIfNeedAndToString(it)
             }
@@ -72,38 +83,43 @@ class DataSource private constructor() {
                     incomeSubject.init(jsonObj.getJSONArray("in"))
                 } catch (e: Exception) {
                     myLog.w("数据源存储文件解析失败", e)
-                    accountList.clear()
-                    typeList.clear()
-                    fundList.clear()
-                    expenditureSubject.clear()
-                    incomeSubject.clear()
+                    clearDataSource()
                     initUseDefault(context)
                 }
             }
         }
 
+        private fun clearDataSource() {
+            accountList.clear()
+            typeList.clear()
+            fundList.clear()
+            expenditureSubject.clear()
+            incomeSubject.clear()
+        }
+
         private fun initUseDefault(context: Context) {
-            // TODO: delete it
-            if (myLog.debug) {
-                accountList.add("账户A")
-                accountList.add("账户B")
-                accountList.add("账户C")
-                accountList.add("账户D")
-                accountList.add("账户E")
-                accountList.add("账户F")
-                accountList.add("账户G")
-                accountList.add("账户H")
-                fundList.add("基金A")
-                fundList.add("基金B")
-                fundList.add("基金C")
-                fundList.add("基金D")
-                fundList.add("基金E")
-                fundList.add("基金F")
-            }
             val res = context.resources
             typeList.init(res.getStringArray(R.array.defaultType))
             expenditureSubject.init(res.getStringArray(R.array.defaultExpenditure))
             incomeSubject.init(res.getStringArray(R.array.defaultIncome))
+            // TODO: delete it
+            if (myLog.debug) {
+                accountList.add("账户A", arrayOf(Assets(typeList[0], "0.00", "2.00")))
+                accountList.add("账户B", arrayOf(Assets(typeList[0], "0.00", "-6.00")))
+                accountList.add("账户C", arrayOf(Assets(typeList[0], "0.00")))
+                accountList.add("账户D", arrayOf(Assets(typeList[0], "0.00")))
+                accountList.add("账户E", arrayOf(Assets(typeList[0], "0.00")))
+                accountList.add("账户F", arrayOf(Assets(typeList[0], "0.00")))
+                accountList.add("账户G", arrayOf(Assets(typeList[0], "0.00")))
+                accountList.add("账户H", arrayOf(Assets(typeList[0], "0.00")))
+                availableAccount.addAll(accountList)
+                fundList.add("基金A", "001")
+                fundList.add("基金B", "002")
+                fundList.add("基金C", "003")
+                fundList.add("基金D", "004")
+                fundList.add("基金E", "005")
+                fundList.add("基金F", "006")
+            }
         }
 
         @JvmStatic
@@ -114,15 +130,15 @@ class DataSource private constructor() {
         private fun toJson(): String {
             val cache = StringBuilder()
             cache.append('{')
-            cache.append("\"ac\":").append(accountList.toString())
+            cache.append("\"ac\":").append(accountList.toJson())
             cache.append(',')
-            cache.append("\"ty\":").append(typeList.toString())
+            cache.append("\"ty\":").append(typeList.toJson())
             cache.append(',')
-            cache.append("\"fu\":").append(fundList.toString())
+            cache.append("\"fu\":").append(fundList.toJson())
             cache.append(',')
-            cache.append("\"ex\":").append(expenditureSubject.toString())
+            cache.append("\"ex\":").append(expenditureSubject.toJson())
             cache.append(',')
-            cache.append("\"in\":").append(incomeSubject.toString())
+            cache.append("\"in\":").append(incomeSubject.toJson())
             cache.append('}')
             return cache.toString()
         }
@@ -150,30 +166,14 @@ class DataSource private constructor() {
 
 class StringWithId(val id: Int, val content: String)
 
-class StringList : ArrayList<StringWithId>() {
-    private var nextId = 1
+abstract class MyArrayList<E> : ArrayList<E>() {
+    protected var nextId = 1
 
-    fun init(source: Array<String>) {
-        for (data in source) {
-            add(data)
-        }
-    }
+    abstract fun init(jsonArr: JSONArray)
 
-    fun init(jsonArr: JSONArray) {
-        var id: Int? = null
-        val len = jsonArr.length()
-        for (i in 0 until len) {
-            val str = jsonArr.getString(i)
-            id = if (id == null) {
-                str.toInt()
-            } else {
-                if (nextId <= id) {
-                    nextId = id + 1
-                }
-                add(StringWithId(id, str))
-                null
-            }
-        }
+    fun floatToTop(index: Int) {
+        val element = removeAt(index)
+        add(0, element)
     }
 
     override fun clear() {
@@ -181,17 +181,35 @@ class StringList : ArrayList<StringWithId>() {
         nextId = 1
     }
 
+    abstract fun toJson(): String
+
+    override fun toString() = "nextId: $nextId; content: ${toJson()}"
+}
+
+class StringList : MyArrayList<StringWithId>() {
+    fun init(source: Array<String>) {
+        for (data in source) {
+            add(data)
+        }
+    }
+
+    override fun init(jsonArr: JSONArray) {
+        val len = jsonArr.length()
+        for (i in 0 until len step 2) {
+            val id = jsonArr.getString(i).toInt()
+            add(StringWithId(id, jsonArr.getString(i + 1)))
+            if (nextId <= id) {
+                nextId = id + 1
+            }
+        }
+    }
+
     fun add(content: String) {
         add(StringWithId(nextId++, content))
     }
 
-    fun floatToTop(index: Int) {
-        val element = removeAt(index)
-        add(0, element)
-    }
-
-    // 形如：["id_1","content_1","id_2","content_2","id_2","content_2"]
-    override fun toString(): String {
+    // ["id_1","content_1","id_2","content_2", ...]
+    override fun toJson(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (e in this) {
@@ -206,6 +224,340 @@ class StringList : ArrayList<StringWithId>() {
     }
 }
 
+// 账户
+class AccountList : MyArrayList<Account>() {
+
+    override fun init(jsonArr: JSONArray) {
+        val len = jsonArr.length()
+        for (i in 0 until len) {
+            val arr = jsonArr.getJSONArray(i)
+            val id = arr.getString(0).toInt()
+            val name = arr.getString(1)
+            val availability = arr.getString(2).toBoolean()
+            val assetsList = LinkedList<Assets>()
+            var unusedAssetsList: LinkedList<UnusedAssets>? = null
+            val arrLen = arr.length()
+            for (j in 3 until arrLen step 4) {
+                val idStr = arr.getString(j)
+                if (idStr == "$") {
+                    unusedAssetsList = LinkedList()
+                    for (k in (j + 1) until arrLen step 3) {
+                        unusedAssetsList.add(
+                            UnusedAssets(
+                                StringWithId(arr.getString(k).toInt(), arr.getString(k + 1)),
+                                arr.getString(k + 2)
+                            )
+                        )
+                    }
+                    break
+                } else {
+                    assetsList.add(
+                        Assets(
+                            StringWithId(arr.getString(j).toInt(), arr.getString(j + 1)),
+                            arr.getString(j + 2), arr.getString(j + 3)
+                        )
+                    )
+                }
+            }
+            if (nextId <= id) {
+                nextId = id + 1
+            }
+            val account = if (unusedAssetsList == null) {
+                Account(id, name, availability, assetsList.toArray(emptyArray<Assets>()))
+            } else {
+                Account(id, name, availability, assetsList.toArray(emptyArray<Assets>()),
+                    unusedAssetsList.toArray(emptyArray<UnusedAssets>()))
+            }
+            add(account)
+            if (availability) {
+                DataSource.availableAccount.add(account)
+            }
+        }
+    }
+
+    /**
+     * 添加账户.
+     *
+     * !! 仅允许[DataSource.accountList]调用.
+     */
+    fun add(name: String, assetsList: Array<Assets>) {
+        add(Account(nextId++, name, true, assetsList))
+    }
+
+    /**
+     * 添加账户.
+     */
+    fun addAccount(account: Account) {
+        if (nextId <= account.id) {
+            nextId = account.id + 1
+        }
+        add(account)
+    }
+
+    /**
+     * 替换账户列表的内容.
+     *
+     * !! 仅允许[DataSource.accountList]调用.
+     */
+    fun replace(accountList: AccountList) {
+        clear()
+        for (account in accountList) {
+            addAccount(account.copy())
+        }
+    }
+
+    fun copy(): AccountList {
+        val copy = AccountList()
+        for (account in this) {
+            copy.add(account.copy())
+        }
+        return copy
+    }
+
+    /**
+     * 使用[nextId]生成一个空账户.
+     *
+     * !! 仅允许[DataSource.accountList]调用.
+     */
+    fun generateEmptyAccount() = Account(nextId, "", true, emptyArray())
+
+    // [[id, name, availability, typeId_1, typeContent_1, initValue_1, nowValue_1, ...,
+    // $, unusedTypeId_1, unusedTypeContent_1, unusedValue_1, ...], [...], ...]
+    override fun toJson(): String {
+        val cache = StringBuilder()
+        cache.append('[')
+        for (account in this) {
+            cache.append('[')
+            cache.append('"').append(account.id).append('"')
+            cache.append(',')
+            cache.append('"').appendStringToJson(account.name).append('"')
+            cache.append(',')
+            cache.append('"').append(account.availability).append('"')
+            cache.append(',')
+            for (assets in account.assetsList) {
+                cache.append('"').append(assets.type.id).append('"')
+                cache.append(',')
+                cache.append('"').appendStringToJson(assets.type.content).append('"')
+                cache.append(',')
+                cache.append('"').append(assets.initValue).append('"')
+                cache.append(',')
+                cache.append('"').append(assets.nowValue).append('"')
+                cache.append(',')
+            }
+            if (account.unusedAssetsList != null) {
+                cache.append('"').append('$').append('"')
+                cache.append(',')
+                for (unusedAssets in account.unusedAssetsList!!) {
+                    cache.append('"').append(unusedAssets.type.id).append('"')
+                    cache.append(',')
+                    cache.append('"').appendStringToJson(unusedAssets.type.content).append('"')
+                    cache.append(',')
+                    cache.append('"').append(unusedAssets.value).append('"')
+                    cache.append(',')
+                }
+            }
+            cache.deleteAt(cache.lastIndex)
+            cache.append("],")
+        }
+        cache.deleteAt(cache.lastIndex)
+        cache.append(']')
+        return cache.toString()
+    }
+}
+
+/**
+ * 账户.
+ *
+ * 参数[name]为账号名称；参数[availability]为账户可用性；
+ * 参数[assetsList]为该账号下现存资产；
+ * 参数[unusedAssetsList]为该账号下被移除的资产.
+ *
+ * 所有资产（[assetsList]与[unusedAssetsList]）中各资产项type需不同。
+ */
+class Account(val id: Int, val name: String, val availability: Boolean,
+              theAssetsList: Array<Assets>, theUnusedAssetsList: Array<UnusedAssets>? = null) {
+    var assetsList = theAssetsList
+        private set
+    var unusedAssetsList = theUnusedAssetsList
+        private set
+
+    fun setName(name: String) = Account(id, name, availability, assetsList, unusedAssetsList)
+
+    fun setAvailability(availability: Boolean) = Account(id, name, availability, assetsList, unusedAssetsList)
+
+    /**
+     * 从[assetsList]中移除[index]处的资产.
+     *
+     * 若被移除资产的[Assets.nowValue]与[Assets.initValue]不等，将记录到[unusedAssetsList]中.
+     */
+    fun deleteAssets(index: Int) {
+        val assets = assetsList[index]
+        val initValue = BigDecimal(assets.initValue)
+        val nowValue = BigDecimal(assets.nowValue)
+        // 从现存资产中移除
+        assetsList = assetsList.remove(index)
+        // 若被移除资产现值与初值相等，则不必记录
+        if (initValue == nowValue) {
+            return
+        }
+        // 记录移除的资产
+        val unusedAssets = UnusedAssets(assets.type, String.format(Assets.format, nowValue.minus(initValue)))
+        unusedAssetsList = if (unusedAssetsList == null) {
+            arrayOf(unusedAssets)
+        } else {
+            unusedAssetsList!!.add(unusedAssets)
+        }
+    }
+
+    /**
+     * 根据[type]查找资产是否存在于[assetsList]中.
+     */
+    fun existsAssets(type: StringWithId): Boolean {
+        for (assets in assetsList) {
+            if (assets.type.id == type.id) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * 根据[type]查找或添加资产.
+     *
+     * · 若查找的资产位于[assetsList]，则直接返回该资产.
+     *
+     * · 若查找的资产位于[unusedAssetsList]，将会将该资产以初值0加入[assetsList]后返回.
+     *
+     * · 若查找的资产不存在，将会新建该资产加入[assetsList]后返回.
+     */
+    fun findOrAddAssets(type: StringWithId): Assets {
+        // 在现存资产中查找
+        for (assets in assetsList) {
+            if (assets.type.id == type.id) {
+                return assets
+            }
+        }
+        val zero = String.format(Assets.format, BigDecimal.ZERO)
+        // 在被移除资产中查找
+        if (unusedAssetsList != null) {
+            for (i in unusedAssetsList!!.indices) {
+                val unusedAssets = unusedAssetsList!![i]
+                if (unusedAssets.type.id == type.id) {
+                    // 以初值0创建该资产
+                    val assets = Assets(unusedAssets.type, zero, unusedAssets.value)
+                    // 从记录中移除
+                    unusedAssetsList = unusedAssetsList!!.remove(i)
+                    if (unusedAssetsList!!.isEmpty()) {
+                        unusedAssetsList = null
+                    }
+                    // 添加到现存资产
+                    assetsList = assetsList.add(assets)
+                    return assets
+                }
+            }
+        }
+        // 新建该资产
+        val assets = Assets(type, zero)
+        // 添加到现存资产
+        assetsList = assetsList.add(assets)
+        return assets
+    }
+
+    fun copy(): Account {
+        val newAssets = Array(assetsList.size) { assetsList[it].copy() }
+        val newAccount = Account(id, name, availability, newAssets)
+        if (this.unusedAssetsList != null) {
+            newAccount.unusedAssetsList = Array(this.unusedAssetsList!!.size) { this.unusedAssetsList!![it] }
+        }
+        return newAccount
+    }
+}
+
+/**
+ * 资产.
+ *
+ * 参数[type]为资产类型，参数[initValue]为该资产初值，参数[nowValue]为资产现值.
+ *
+ * 参数[initValue]、[nowValue]须是"%.2f"格式化后的值.
+ */
+class Assets(val type: StringWithId, val initValue: String, theNowValue: String = initValue) {
+    var nowValue = theNowValue
+        private set
+
+    companion object {
+        const val format = "%.2f"
+    }
+
+    fun copy() = Assets(type, initValue, nowValue)
+
+    fun setInitValue(initValue: String): Assets {
+        val diff = BigDecimal(initValue).minus(BigDecimal(this.initValue))
+        val nowValue = BigDecimal(this.nowValue).add(diff)
+        return Assets(type, initValue, String.format(format, nowValue))
+    }
+
+    operator fun plusAssign(value: String) {
+        nowValue = String.format(format, BigDecimal(nowValue).add(BigDecimal(value)))
+    }
+
+    operator fun minusAssign(value: String) {
+        nowValue = String.format(format, BigDecimal(nowValue).minus(BigDecimal(value)))
+    }
+}
+
+/**
+ * 记录被移除资产的使用情况.
+ *
+ * 参数[type]是被移除的资产类型.
+ *
+ * 参数[value]是资产移除时[Assets.nowValue]与[Assets.initValue]的差.
+ */
+class UnusedAssets(val type: StringWithId, val value: String)
+
+// 基金
+class FundList : MyArrayList<Fund>() {
+
+    override fun init(jsonArr: JSONArray) {
+        val len = jsonArr.length()
+        for (i in 0 until len step 3) {
+            val id = jsonArr.getString(i).toInt()
+            add(Fund(id, jsonArr.getString(i + 1), jsonArr.getString(i + 2)))
+            if (nextId <= id) {
+                nextId = id + 1
+            }
+        }
+    }
+
+    fun add(name: String, code: String) {
+        add(Fund(nextId++, name, code))
+    }
+
+    // ["id_1","name_1","code_1","id_2","name_2","code_2", ...]
+    override fun toJson(): String {
+        val cache = StringBuilder()
+        cache.append('[')
+        for (fund in this) {
+            cache.append('"').append(fund.id).append('"')
+            cache.append(',')
+            cache.append('"').appendStringToJson(fund.name).append('"')
+            cache.append(',')
+            cache.append('"').append(fund.code).append('"')
+            cache.append(',')
+        }
+        cache.deleteAt(cache.lastIndex)
+        cache.append(']')
+        return cache.toString()
+    }
+}
+
+/**
+ * 基金.
+ *
+ * 参数[name]为基金名称，参数[code]为基金代码.
+ */
+class Fund(val id: Int, val name: String, val code: String)
+
+// 科目
 class SubjectArray {
     private var nextId = 1
     private lateinit var subject : Array<SubjectLvOne>
@@ -410,7 +762,7 @@ class SubjectArray {
         }
     }
 
-    override fun toString(): String {
+    fun toJson(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (one in subject) {
@@ -434,6 +786,8 @@ class SubjectArray {
         cache.append(']')
         return cache.toString()
     }
+
+    override fun toString() = toJson()
 }
 
 class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null) :
