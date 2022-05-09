@@ -9,8 +9,6 @@
     android:paddingBottom="10dp"
     android:orientation="vertical"
     android:background="@color/themeWhite"
-    android:theme="@style/Theme.Billing.Activity"
-    tools:context=".activities.AccountInfoActivity"
     tools:ignore="HardcodedText">
     
     <LinearLayout
@@ -125,6 +123,6 @@
         android:text="确    定"
         android:textSize="@dimen/mostTextSize"
         android:textColor="@color/white"
-        android:background="@drawable/bg_subject_select_btn"/>
+        android:background="@drawable/bg_common_btn"/>
 
 </LinearLayout>

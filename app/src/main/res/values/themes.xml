@@ -16,7 +16,7 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
     
-    <style name="Theme.Billing.Activity" parent="Theme.Billing">
+    <style name="FullScreenDialog" parent="Theme.Billing">
         <item name="android:statusBarColor">@color/themeWhite</item>
     </style>
     
@@ -31,6 +31,11 @@
     <style name="CheckBoxStyle">
         <item name="colorControlNormal">@color/themeColor</item>
         <item name="colorControlActivated">@color/themeColor</item>
+    </style>
+    
+    <style name="BottomDialogAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom_dialog_exit</item>
     </style>
     
     <style name="RoundCornerDialog" parent="Theme.AppCompat.Dialog">

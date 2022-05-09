@@ -5,8 +5,10 @@ import android.content.Context
 import android.os.Handler
 import android.util.Base64
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.BaseAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AlertDialog
@@ -18,7 +20,6 @@ import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import java.util.*
 
 class Tools {
     companion object {
@@ -27,15 +28,20 @@ class Tools {
         private var requestCode = 0x0100
         //******弹窗******
         @JvmStatic
-        fun setAsBottomPopupAndShow(dialog: AlertDialog, content: View) {
+        fun setAsBottomPopupAndShow(dialog: AlertDialog, content: View, fullScreen: Boolean = false) {
             dialog.show() // 必须先调用show()再设置参数
             dialog.window?.let { window ->
                 window.setContentView(content)
+                window.setWindowAnimations(R.style.BottomDialogAnim)
                 // 必须调用以铺满空间
                 window.setBackgroundDrawable(null)
                 val params = window.attributes
                 params.width = WindowManager.LayoutParams.MATCH_PARENT
-                params.height = WindowManager.LayoutParams.WRAP_CONTENT
+                params.height = if (fullScreen) {
+                    WindowManager.LayoutParams.MATCH_PARENT
+                } else {
+                    WindowManager.LayoutParams.WRAP_CONTENT
+                }
                 params.gravity = Gravity.BOTTOM
                 window.attributes = params
             }
@@ -276,26 +282,14 @@ class Tools {
             }
             // 设置监听
             binding.putAway.setOnClickListener { dialog.cancel() }
-            var select: StringWithId? = null
-            var checkedPosition = DataSource.checkedPosition
             binding.subjectList.setOnItemClickListener { data, position ->
                 if (data is SubjectLvOne) {
-                    select = data.data
-                    checkedPosition = position
+                    DataSource.checkedPosition = position
+                    onResult(data.data!!)
                 } else if (data is SubjectLvTwo) {
-                    select = data.data
-                    checkedPosition = position
+                    DataSource.checkedPosition = position
+                    onResult(data.data!!)
                 }
-            }
-            binding.selectIt.setOnClickListener {
-                if (select == null) {
-                    if (checkedPosition >= 0) {
-                        dialog.cancel()
-                    }
-                    return@setOnClickListener
-                }
-                DataSource.checkedPosition = checkedPosition
-                onResult(select!!)
                 dialog.cancel()
             }
         }
@@ -366,6 +360,19 @@ class Tools {
         }
 
         //******其它******
+        @JvmStatic
+        fun clearFocusOnEnter(context: Context, editText: EditText) {
+            val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            editText.setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                    inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
+                    editText.clearFocus()
+                    return@setOnKeyListener true
+                }
+                false
+            }
+        }
+
         /**
          * 以适合JSON的方式添加字符串.
          */
@@ -401,7 +408,7 @@ class Tools {
         }
 
         @JvmStatic
-        inline fun <reified T> Array<T>.add(data: T) = Array<T>(size + 1) {
+        inline fun <reified T> Array<T>.add(data: T) = Array(size + 1) {
             if (it < size) {
                 this[it]
             } else {
@@ -410,7 +417,7 @@ class Tools {
         }
 
         @JvmStatic
-        inline fun <reified T> Array<T>.remove(index: Int) = Array<T>(size - 1) {
+        inline fun <reified T> Array<T>.remove(index: Int) = Array(size - 1) {
             var i = it
             if (it >= index) {
                 i++

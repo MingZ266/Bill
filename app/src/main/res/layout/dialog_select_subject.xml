@@ -51,26 +51,10 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:choiceMode="singleChoice"
             android:scrollbars="none"
             android:divider="@null"
             android:listSelector="@android:color/transparent"/>
-        
-        <TextView
-            android:id="@+id/selectIt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:focusable="true"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="选    择"
-            android:textSize="@dimen/mostTextSize"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_subject_select_btn"
-            tools:ignore="HardcodedText"/>
         
     </LinearLayout>
 

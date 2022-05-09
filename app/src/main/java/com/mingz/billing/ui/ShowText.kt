@@ -40,15 +40,7 @@ class ShowText(context: Context, attrs: AttributeSet? = null)
                     binding.content.textCursorDrawable = ContextCompat.getDrawable(context, R.drawable.cursor_color)
                 }
                 // 回车时收起键盘，清除焦点
-                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                binding.content.setOnKeyListener { _, keyCode, event ->
-                    if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                        inputMethodManager.hideSoftInputFromWindow(binding.content.windowToken, 0)
-                        binding.content.clearFocus()
-                        return@setOnKeyListener true
-                    }
-                    false
-                }
+                Tools.clearFocusOnEnter(context, binding.content)
             } else {
                 // 禁止长按以插入文本（如粘贴）
                 binding.content.customInsertionActionModeCallback = object : ActionMode.Callback {

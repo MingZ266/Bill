@@ -1,28 +1,24 @@
 package com.mingz.billing.fragments
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.BaseAdapter
+import androidx.appcompat.app.AlertDialog
 import com.mingz.billing.R
-import com.mingz.billing.activities.AccountInfoActivity
-import com.mingz.billing.databinding.FragmentHomeAdminAccountBinding
-import com.mingz.billing.databinding.ItemListAdminAccountBinding
+import com.mingz.billing.databinding.*
 import com.mingz.billing.utils.Account
 import com.mingz.billing.utils.DataSource
-import com.mingz.billing.utils.MyLog
 import com.mingz.billing.utils.Tools
 import java.util.*
 
 class HomeAdminAccountFragment : HomeFragment() {
     private lateinit var binding: FragmentHomeAdminAccountBinding
     private lateinit var adapter: AccountListAdapter
-    private val requestCode = Tools.getRequestCode()
     private var position = -1
 
     companion object {
@@ -45,50 +41,70 @@ class HomeAdminAccountFragment : HomeFragment() {
         val context = context ?: return
         adapter = AccountListAdapter(context)
         binding.accountList.adapter = adapter
-        MyLog.TEMP.v("accountList:")
-        MyLog.TEMP.d(DataSource.accountList)
-        MyLog.TEMP.v("sort:")
-        MyLog.TEMP.d(adapter.sortAccountList)
         binding.accountList.setOnItemClickListener { _, _, position, _ ->
             this.position = position
-            addOrEditAccountInfo(adapter.getData(position).copy())
+            addOrEditAccountInfo(context, adapter.getData(position).copy())
         }
         binding.addAccount.setOnClickListener {
             position = adapter.count
-            addOrEditAccountInfo(DataSource.accountList.generateEmptyAccount())
+            addOrEditAccountInfo(context, DataSource.accountList.generateEmptyAccount())
         }
         binding.save.setOnClickListener {
-            MyLog.TEMP.v("保存 => sort:")
-            MyLog.TEMP.d(adapter.sortAccountList)
-            MyLog.TEMP.v("保存前 => accountList:")
-            MyLog.TEMP.d(DataSource.accountList)
             DataSource.accountList.replace(adapter.sortAccountList)
-            MyLog.TEMP.v("保存后 => accountList:")
-            MyLog.TEMP.d(DataSource.accountList)
             // TODO: 写入文件
             Tools.showToast(context, "已保存")
         }
     }
 
-    private fun addOrEditAccountInfo(account: Account) {
-        AccountInfoActivity.account = account
-        startActivityForResult(Intent(context, AccountInfoActivity::class.java), requestCode)
+    private fun addOrEditAccountInfo(context: Context, account: Account) {
+        val dialog = AlertDialog.Builder(context, R.style.FullScreenDialog).create()
+        val binding = DialogAccountInfoBinding.inflate(LayoutInflater.from(context))
+        Tools.setAsBottomPopupAndShow(dialog, binding.root, true)
+        dialog.setCanceledOnTouchOutside(false)
+        // 设置以避免窗口获取焦点使得不能正常弹出输入法
+        dialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        binding.accountName.setText(account.name)
+        val assetsAdapter = AssetsListAdapter(context, account)
+        binding.assetsList.adapter = assetsAdapter
+        accountInfoListener(context, binding, assetsAdapter, dialog, account)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == this.requestCode) {
-            MyLog.TEMP.v("返回结果: $resultCode")
-            if (resultCode == Activity.RESULT_OK) {
-                if (AccountInfoActivity.account != null) {
-                    if (position < adapter.count) {
-                        adapter.setData(position, AccountInfoActivity.account!!)
-                    } else {
-                        adapter.addData(AccountInfoActivity.account!!)
-                    }
+    private fun accountInfoListener(context: Context, binding: DialogAccountInfoBinding,
+                                    assetsAdapter: AssetsListAdapter, dialog: AlertDialog, account: Account) {
+        binding.back.setOnClickListener { dialog.cancel() }
+
+        // 回车时收起键盘，清除焦点
+        Tools.clearFocusOnEnter(context, binding.accountName)
+
+        binding.addAssets.setOnClickListener {
+            Tools.showSelectType(context, "选择资产类型", -1, false, {
+                if (account.existsAssets(it)) {
+                    Tools.showToast(context, "该类型资产已存在")
+                } else {
+                    account.findOrAddAssets(it)
+                    assetsAdapter.notifyDataSetChanged()
                 }
+            }, {
+                // TODO: onEdit
+                Tools.showToast(context, "编辑资产类型")
+                Tools.setAsBottomPopupAndShow(AlertDialog.Builder(context, R.style.FullScreenDialog).create(),
+                    DialogAdminTypeBinding.inflate(LayoutInflater.from(context)).root, true)
+            })
+        }
+
+        binding.okBtn.setOnClickListener {
+            val name = binding.accountName.text.toString()
+            if (name.isEmpty()) {
+                Tools.showToast(context, "请输入账户名称")
+                return@setOnClickListener
             }
-            AccountInfoActivity.account = null
+            val result = account.setName(name)
+            if (position < adapter.count) {
+                adapter.setData(position, result)
+            } else {
+                adapter.addData(result)
+            }
+            dialog.cancel()
         }
     }
 
@@ -147,6 +163,45 @@ class HomeAdminAccountFragment : HomeFragment() {
             binding.delete.setOnClickListener {
                 Tools.showTipPopup(context, "删除会丢失该账户下资产信息，确定要删除吗？") {
                     sortAccountList.removeAt(position)
+                    notifyDataSetChanged()
+                }
+            }
+            return view
+        }
+    }
+
+    private class AssetsListAdapter(
+        private val context: Context, private val account: Account
+    ) : BaseAdapter() {
+        override fun getCount() = account.assetsList.size
+
+        override fun getItem(position: Int) = null
+
+        override fun getItemId(position: Int) = position.toLong()
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val view: View
+            val binding: ItemListAssetsInfoBinding
+            if (convertView == null) {
+                binding = ItemListAssetsInfoBinding.inflate(LayoutInflater.from(context))
+                view = binding.root
+                view.tag = binding
+            } else {
+                view = convertView
+                binding = view.tag as ItemListAssetsInfoBinding
+            }
+            val assets = account.assetsList[position]
+            binding.type.text = assets.type.content
+            binding.amount.text = assets.initValue
+            binding.amount.setOnClickListener {
+                Tools.inputAmountOfMoney(context, "初始金额", assets.initValue, 2, true) {
+                    binding.amount.text = it
+                    account.assetsList[position] = assets.setInitValue(it)
+                }
+            }
+            binding.delete.setOnClickListener {
+                Tools.showTipPopup(context, "确定要移除该资产吗？") {
+                    account.deleteAssets(position)
                     notifyDataSetChanged()
                 }
             }
