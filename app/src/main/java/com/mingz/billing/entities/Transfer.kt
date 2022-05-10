@@ -1,5 +1,7 @@
 package com.mingz.billing.entities
 
+import org.json.JSONArray
+
 abstract class Transfer : Billing() {
 
     companion object {
@@ -7,7 +9,7 @@ abstract class Transfer : Billing() {
         const val typeDesc = "转账"
 
         @JvmStatic
-        fun fromStringData(data: String): Transfer? {
+        fun fromStringData(jsonArray: JSONArray): Transfer? {
             TODO("逆向解析")
         }
     }
@@ -15,7 +17,7 @@ abstract class Transfer : Billing() {
     override val typeId = Transfer.typeId
     override val typeDesc = Transfer.typeDesc
 
-    override fun toStringData(): String {
+    override fun toJsonArray(): String {
         TODO("Not yet implemented")
     }
 }

@@ -52,15 +52,10 @@ class RecordActivity : AppCompatActivity() {
     }
 
     private fun myListener() {
-        binding.toggle.setOnClickListener {
-            binding.drawer.openDrawer(Gravity.END)
-        }
-        binding.back.setOnClickListener {
-            onBackPressed()
-        }
-        binding.save.setOnClickListener {
-            current.save()
-        }
+        binding.backIcon.setOnClickListener { onBackPressed() }
+        binding.toggle.setOnClickListener { binding.drawer.openDrawer(Gravity.END) }
+        binding.back.setOnClickListener { onBackPressed() }
+        binding.save.setOnClickListener { current.save() }
         binding.optionList.setOnItemClickListener { data, _ ->
             if (data is OptionLevelOne) {
                 if (data.subordinateData == null) {

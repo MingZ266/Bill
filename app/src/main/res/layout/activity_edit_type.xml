@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/interval"
+    android:paddingEnd="@dimen/interval"
+    android:paddingTop="10dp"
+    android:paddingBottom="30dp"
+    android:orientation="vertical"
+    android:background="@color/themeWhite"
+    tools:ignore="HardcodedText">
+    
+    <LinearLayout
+        android:id="@+id/unused_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+        
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_back"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="编辑资产类型"
+            android:textSize="@dimen/titleTextSize"
+            android:textColor="@color/themeColor"/>
+    
+    </LinearLayout>
+    
+    <RelativeLayout
+        android:id="@+id/unused_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/unused_1"
+        android:layout_marginTop="20dp">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="资产类型"
+            android:textSize="@dimen/smallTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <ImageView
+            android:id="@+id/addType"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_add_record"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_btn_circle_feedback"
+            tools:ignore="ContentDescription"/>
+    
+    </RelativeLayout>
+    
+    <ListView
+        android:id="@+id/typeList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/unused_2"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"/>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/ic_save"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/white"
+        app:rippleColor="@color/themeColorHalfA"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="0dp"
+        tools:ignore="ContentDescription"/>
+
+</RelativeLayout>

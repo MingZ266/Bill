@@ -130,15 +130,15 @@ class DataSource private constructor() {
         private fun toJson(): String {
             val cache = StringBuilder()
             cache.append('{')
-            cache.append("\"ac\":").append(accountList.toJson())
+            cache.append("\"ac\":").append(accountList.toJsonArray())
             cache.append(',')
-            cache.append("\"ty\":").append(typeList.toJson())
+            cache.append("\"ty\":").append(typeList.toJsonArray())
             cache.append(',')
-            cache.append("\"fu\":").append(fundList.toJson())
+            cache.append("\"fu\":").append(fundList.toJsonArray())
             cache.append(',')
-            cache.append("\"ex\":").append(expenditureSubject.toJson())
+            cache.append("\"ex\":").append(expenditureSubject.toJsonArray())
             cache.append(',')
-            cache.append("\"in\":").append(incomeSubject.toJson())
+            cache.append("\"in\":").append(incomeSubject.toJsonArray())
             cache.append('}')
             return cache.toString()
         }
@@ -164,7 +164,9 @@ class DataSource private constructor() {
     }
 }
 
-class StringWithId(val id: Int, val content: String)
+class StringWithId(val id: Int, val content: String) {
+    fun setContent(content: String) = StringWithId(id, content)
+}
 
 abstract class MyArrayList<E> : ArrayList<E>() {
     protected var nextId = 1
@@ -181,9 +183,9 @@ abstract class MyArrayList<E> : ArrayList<E>() {
         nextId = 1
     }
 
-    abstract fun toJson(): String
+    abstract fun toJsonArray(): String
 
-    override fun toString() = "nextId: $nextId; content: ${toJson()}"
+    override fun toString() = "nextId: $nextId; content: ${toJsonArray()}"
 }
 
 class StringList : MyArrayList<StringWithId>() {
@@ -196,7 +198,7 @@ class StringList : MyArrayList<StringWithId>() {
     override fun init(jsonArr: JSONArray) {
         val len = jsonArr.length()
         for (i in 0 until len step 2) {
-            val id = jsonArr.getString(i).toInt()
+            val id = jsonArr.getInt(i)
             add(StringWithId(id, jsonArr.getString(i + 1)))
             if (nextId <= id) {
                 nextId = id + 1
@@ -208,12 +210,26 @@ class StringList : MyArrayList<StringWithId>() {
         add(StringWithId(nextId++, content))
     }
 
-    // ["id_1","content_1","id_2","content_2", ...]
-    override fun toJson(): String {
+    fun copy(): StringList {
+        val copy = StringList()
+        copy.addAll(this)
+        copy.nextId = nextId
+        return copy
+    }
+
+    fun replace(stringList: StringList) {
+        clear()
+        addAll(stringList)
+        nextId = stringList.nextId
+    }
+
+    // [id_1, content_1, id_2, content_2, ...]
+    // [Int, String, Int, String, ...]
+    override fun toJsonArray(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (e in this) {
-            cache.append('"').append(e.id).append('"')
+            cache.append(e.id)
             cache.append(',')
             cache.append('"').appendStringToJson(e.content).append('"')
             cache.append(',')
@@ -231,20 +247,20 @@ class AccountList : MyArrayList<Account>() {
         val len = jsonArr.length()
         for (i in 0 until len) {
             val arr = jsonArr.getJSONArray(i)
-            val id = arr.getString(0).toInt()
+            val id = arr.getInt(0)
             val name = arr.getString(1)
-            val availability = arr.getString(2).toBoolean()
+            val availability = arr.getBoolean(2)
             val assetsList = LinkedList<Assets>()
             var unusedAssetsList: LinkedList<UnusedAssets>? = null
             val arrLen = arr.length()
             for (j in 3 until arrLen step 4) {
-                val idStr = arr.getString(j)
-                if (idStr == "$") {
+                val idStr = arr.get(j).toString()
+                if (idStr == "#") {
                     unusedAssetsList = LinkedList()
                     for (k in (j + 1) until arrLen step 3) {
                         unusedAssetsList.add(
                             UnusedAssets(
-                                StringWithId(arr.getString(k).toInt(), arr.getString(k + 1)),
+                                StringWithId(arr.getInt(k), arr.getString(k + 1)),
                                 arr.getString(k + 2)
                             )
                         )
@@ -253,7 +269,7 @@ class AccountList : MyArrayList<Account>() {
                 } else {
                     assetsList.add(
                         Assets(
-                            StringWithId(arr.getString(j).toInt(), arr.getString(j + 1)),
+                            StringWithId(idStr.toInt(), arr.getString(j + 1)),
                             arr.getString(j + 2), arr.getString(j + 3)
                         )
                     )
@@ -302,8 +318,9 @@ class AccountList : MyArrayList<Account>() {
     fun replace(accountList: AccountList) {
         clear()
         for (account in accountList) {
-            addAccount(account.copy())
+            add(account.copy())
         }
+        nextId = accountList.nextId
     }
 
     fun copy(): AccountList {
@@ -311,6 +328,7 @@ class AccountList : MyArrayList<Account>() {
         for (account in this) {
             copy.add(account.copy())
         }
+        copy.nextId = this.nextId
         return copy
     }
 
@@ -322,20 +340,22 @@ class AccountList : MyArrayList<Account>() {
     fun generateEmptyAccount() = Account(nextId, "", true, emptyArray())
 
     // [[id, name, availability, typeId_1, typeContent_1, initValue_1, nowValue_1, ...,
-    // $, unusedTypeId_1, unusedTypeContent_1, unusedValue_1, ...], [...], ...]
-    override fun toJson(): String {
+    // #, unusedTypeId_1, unusedTypeContent_1, unusedValue_1, ...], [...], ...]
+    // [[Int, String, Boolean, Int, String, String, String, ...,
+    // String, Int, String, String, ...], [...], ...]
+    override fun toJsonArray(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (account in this) {
             cache.append('[')
-            cache.append('"').append(account.id).append('"')
+            cache.append(account.id)
             cache.append(',')
             cache.append('"').appendStringToJson(account.name).append('"')
             cache.append(',')
-            cache.append('"').append(account.availability).append('"')
+            cache.append(account.availability)
             cache.append(',')
             for (assets in account.assetsList) {
-                cache.append('"').append(assets.type.id).append('"')
+                cache.append(assets.type.id)
                 cache.append(',')
                 cache.append('"').appendStringToJson(assets.type.content).append('"')
                 cache.append(',')
@@ -345,10 +365,10 @@ class AccountList : MyArrayList<Account>() {
                 cache.append(',')
             }
             if (account.unusedAssetsList != null) {
-                cache.append('"').append('$').append('"')
+                cache.append('#')
                 cache.append(',')
                 for (unusedAssets in account.unusedAssetsList!!) {
-                    cache.append('"').append(unusedAssets.type.id).append('"')
+                    cache.append(unusedAssets.type.id)
                     cache.append(',')
                     cache.append('"').appendStringToJson(unusedAssets.type.content).append('"')
                     cache.append(',')
@@ -520,7 +540,7 @@ class FundList : MyArrayList<Fund>() {
     override fun init(jsonArr: JSONArray) {
         val len = jsonArr.length()
         for (i in 0 until len step 3) {
-            val id = jsonArr.getString(i).toInt()
+            val id = jsonArr.getInt(i)
             add(Fund(id, jsonArr.getString(i + 1), jsonArr.getString(i + 2)))
             if (nextId <= id) {
                 nextId = id + 1
@@ -532,12 +552,13 @@ class FundList : MyArrayList<Fund>() {
         add(Fund(nextId++, name, code))
     }
 
-    // ["id_1","name_1","code_1","id_2","name_2","code_2", ...]
-    override fun toJson(): String {
+    // [id_1, name_1, code_1, id_2, name_2, code_2, ...]
+    // [Int, String, String, Int, String, String, ...]
+    override fun toJsonArray(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (fund in this) {
-            cache.append('"').append(fund.id).append('"')
+            cache.append(fund.id)
             cache.append(',')
             cache.append('"').appendStringToJson(fund.name).append('"')
             cache.append(',')
@@ -586,33 +607,28 @@ class SubjectArray {
     }
 
     fun init(jsonArr: JSONArray) {
-        var id: Int? = null
         val lvOneList = LinkedList<SubjectLvOne>()
         val lvTwoList = LinkedList<SubjectLvTwo>()
         var lvOne: StringWithId? = null
         val len = jsonArr.length()
-        for (i in 0 until len) {
-            val str = jsonArr.getString(i)
-            id = if (id == null) {
-                str.toInt()
-            } else {
-                if (str.startsWith('#')) {
-                    if (lvOne != null) {
-                        lvOneList.add(SubjectLvOne(lvOne, if (lvTwoList.isEmpty()) null
-                        else lvTwoList.toArray(emptyArray<SubjectLvTwo>())))
-                        lvTwoList.clear()
-                    }
-                    lvOne = StringWithId(id, str.substring(1))
-                    if (nextId <= id) {
-                        nextId = id + 1
-                    }
-                } else if (lvOne != null) {
-                    lvTwoList.add(SubjectLvTwo(StringWithId(id, str)))
-                    if (nextId <= id) {
-                        nextId = id + 1
-                    }
+        for (i in 0 until len step 2) {
+            val id = jsonArr.getInt(i)
+            val content = jsonArr.getString(i + 1)
+            if (content.startsWith('#')) {
+                if (lvOne != null) {
+                    lvOneList.add(SubjectLvOne(lvOne, if (lvTwoList.isEmpty()) null
+                    else lvTwoList.toArray(emptyArray<SubjectLvTwo>())))
+                    lvTwoList.clear()
                 }
-                null
+                lvOne = StringWithId(id, content.substring(1))
+                if (nextId <= id) {
+                    nextId = id + 1
+                }
+            } else if (lvOne != null) {
+                lvTwoList.add(SubjectLvTwo(StringWithId(id, content)))
+                if (nextId <= id) {
+                    nextId = id + 1
+                }
             }
         }
         if (lvOne != null) {
@@ -762,11 +778,13 @@ class SubjectArray {
         }
     }
 
-    fun toJson(): String {
+    // [id, #一级科目_1, id, 二级科目_1_1, ..., id, #一级科目_2, id, 二级科目_2_1, ...]
+    // [Int, String, Int, String, ..., Int, String, Int, String, ...]
+    fun toJsonArray(): String {
         val cache = StringBuilder()
         cache.append('[')
         for (one in subject) {
-            cache.append('"').append(one.data!!.id).append('"')
+            cache.append(one.data!!.id)
             cache.append(',')
             cache.append("\"#").appendStringToJson(one.data.content).append('"')
             cache.append(',')
@@ -774,7 +792,7 @@ class SubjectArray {
             if (lvTwo != null) {
                 for (two in lvTwo) {
                     if (two is SubjectLvTwo) {
-                        cache.append('"').append(two.data!!.id).append('"')
+                        cache.append(two.data!!.id)
                         cache.append(',')
                         cache.append('"').appendStringToJson(two.data.content).append('"')
                         cache.append(',')
@@ -787,7 +805,7 @@ class SubjectArray {
         return cache.toString()
     }
 
-    override fun toString() = toJson()
+    override fun toString() = toJsonArray()
 }
 
 class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null) :

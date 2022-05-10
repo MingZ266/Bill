@@ -1,11 +1,13 @@
 package com.mingz.billing.ui
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.mingz.billing.R
+import com.mingz.billing.activities.EditTypeActivity
 import com.mingz.billing.databinding.LayoutAmountOfMoneyBinding
 import com.mingz.billing.utils.DataSource
 import com.mingz.billing.utils.Tools
@@ -35,10 +37,7 @@ class AmountOfMoney(context: Context, attrs: AttributeSet? = null)
                 Tools.showSelectType(context, titleText.toString(), theType.id, true, {
                     theType = it
                     binding.type.text = it.content
-                }, {
-                    // TODO: onEdit
-                    Tools.showToast(context, "编辑类型")
-                })
+                }, { context.startActivity(Intent(context, EditTypeActivity::class.java)) })
             }
         } finally {
             typedArray.recycle()

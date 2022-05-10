@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.mingz.billing.databinding.FragmentHomeBillingBinding
 import com.mingz.billing.entities.Billing
-import com.mingz.billing.utils.MyLog
 import java.util.*
 
 class HomeBillingFragment : HomeFragment() {
@@ -33,10 +32,4 @@ class HomeBillingFragment : HomeFragment() {
         val now = Calendar.getInstance()
         Billing.readMonthBilling(now[Calendar.YEAR], now[Calendar.MONTH] + 1)
     }
-
-    private data class DayData(val data: String)
-
-    private data class MonthData(val data: String, val dayData: List<DayData>)
-
-    private data class YearData(val data: String, val monthData: List<MonthData>)
 }

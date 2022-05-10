@@ -1,6 +1,8 @@
 package com.mingz.billing.fragments
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import android.view.WindowManager
 import android.widget.BaseAdapter
 import androidx.appcompat.app.AlertDialog
 import com.mingz.billing.R
+import com.mingz.billing.activities.EditTypeActivity
 import com.mingz.billing.databinding.*
 import com.mingz.billing.utils.Account
 import com.mingz.billing.utils.DataSource
@@ -19,7 +22,7 @@ import java.util.*
 class HomeAdminAccountFragment : HomeFragment() {
     private lateinit var binding: FragmentHomeAdminAccountBinding
     private lateinit var adapter: AccountListAdapter
-    private var position = -1
+    private val requestCode = Tools.getRequestCode()
 
     companion object {
         @JvmStatic
@@ -42,12 +45,10 @@ class HomeAdminAccountFragment : HomeFragment() {
         adapter = AccountListAdapter(context)
         binding.accountList.adapter = adapter
         binding.accountList.setOnItemClickListener { _, _, position, _ ->
-            this.position = position
-            addOrEditAccountInfo(context, adapter.getData(position).copy())
+            addOrEditAccountInfo(context, position, adapter.getData(position).copy())
         }
         binding.addAccount.setOnClickListener {
-            position = adapter.count
-            addOrEditAccountInfo(context, DataSource.accountList.generateEmptyAccount())
+            addOrEditAccountInfo(context, -1, DataSource.accountList.generateEmptyAccount())
         }
         binding.save.setOnClickListener {
             DataSource.accountList.replace(adapter.sortAccountList)
@@ -56,7 +57,15 @@ class HomeAdminAccountFragment : HomeFragment() {
         }
     }
 
-    private fun addOrEditAccountInfo(context: Context, account: Account) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == this.requestCode && resultCode == Activity.RESULT_OK) {
+            // TODO: 编辑资产类型后，将被移除的资产类型移入记录中
+            return
+        }
+    }
+
+    private fun addOrEditAccountInfo(context: Context, position: Int, account: Account) {
         val dialog = AlertDialog.Builder(context, R.style.FullScreenDialog).create()
         val binding = DialogAccountInfoBinding.inflate(LayoutInflater.from(context))
         Tools.setAsBottomPopupAndShow(dialog, binding.root, true)
@@ -66,10 +75,10 @@ class HomeAdminAccountFragment : HomeFragment() {
         binding.accountName.setText(account.name)
         val assetsAdapter = AssetsListAdapter(context, account)
         binding.assetsList.adapter = assetsAdapter
-        accountInfoListener(context, binding, assetsAdapter, dialog, account)
+        accountInfoListener(context, binding, position, assetsAdapter, dialog, account)
     }
 
-    private fun accountInfoListener(context: Context, binding: DialogAccountInfoBinding,
+    private fun accountInfoListener(context: Context, binding: DialogAccountInfoBinding, position: Int,
                                     assetsAdapter: AssetsListAdapter, dialog: AlertDialog, account: Account) {
         binding.back.setOnClickListener { dialog.cancel() }
 
@@ -84,12 +93,7 @@ class HomeAdminAccountFragment : HomeFragment() {
                     account.findOrAddAssets(it)
                     assetsAdapter.notifyDataSetChanged()
                 }
-            }, {
-                // TODO: onEdit
-                Tools.showToast(context, "编辑资产类型")
-                Tools.setAsBottomPopupAndShow(AlertDialog.Builder(context, R.style.FullScreenDialog).create(),
-                    DialogAdminTypeBinding.inflate(LayoutInflater.from(context)).root, true)
-            })
+            }, { startActivityForResult(Intent(context, EditTypeActivity::class.java), requestCode) })
         }
 
         binding.okBtn.setOnClickListener {
@@ -99,7 +103,7 @@ class HomeAdminAccountFragment : HomeFragment() {
                 return@setOnClickListener
             }
             val result = account.setName(name)
-            if (position < adapter.count) {
+            if (position >= 0) {
                 adapter.setData(position, result)
             } else {
                 adapter.addData(result)

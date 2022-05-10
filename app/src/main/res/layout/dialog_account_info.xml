@@ -6,37 +6,38 @@
     android:paddingStart="@dimen/interval"
     android:paddingEnd="@dimen/interval"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:paddingBottom="30dp"
     android:orientation="vertical"
     android:background="@color/themeWhite"
     tools:ignore="HardcodedText">
     
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        tools:ignore="UseCompoundDrawables">
+        android:orientation="horizontal">
+    
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_centerInParent="true"
+            android:text="账户信息"
+            android:textSize="@dimen/titleTextSize"
+            android:textColor="@color/themeColor"/>
         
         <ImageView
             android:id="@+id/back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:padding="5dp"
-            android:src="@drawable/ic_back"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_arrow_put_away"
             android:tint="@color/themeColor"
             android:background="@drawable/bg_btn_circle_feedback"
             tools:ignore="ContentDescription"/>
         
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="账户信息"
-            android:textSize="@dimen/titleTextSize"
-            android:textColor="@color/themeColor"/>
-        
-    </LinearLayout>
+    </RelativeLayout>
     
     <TextView
         android:layout_width="wrap_content"

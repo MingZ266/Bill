@@ -39,9 +39,9 @@ abstract class Billing {
                 val jsonArray = JSONArray(dataGroup)
                 val len = jsonArray.length()
                 for (i in 0 until len step 2) {
-                    val typeId = jsonArray.getString(i).toInt()
-                    val data = jsonArray.getString(i + 1)
-                    generateBilling(typeId, data)?.let {
+                    val typeId = jsonArray.getInt(i)
+                    val typeJSONArray = jsonArray.getJSONArray(i + 1)
+                    generateBilling(typeId, typeJSONArray)?.let {
                         MyLog.TEMP.v(it)
                         monthBilling.add(it)
                     }
@@ -51,6 +51,8 @@ abstract class Billing {
             }
         }
 
+        // [typeId_1, typeJsonArray_1, typeId_2, typeJsonArray_2, ...]
+        // [Int, JsonArray, Int, JsonArray, ...]
         @JvmStatic
         fun saveBilling(year: Int, @IntRange(from = 1, to = 12) month: Int,
                         billing: Billing): Boolean {
@@ -61,9 +63,9 @@ abstract class Billing {
             // 从新到旧保存，避免或减少读取时add中的数组中间插入操作
             for (day in monthBilling) {
                 for (data in day) {
-                    cache.append('"').append(data.typeId).append('"')
+                    cache.append(data.typeId)
                     cache.append(',')
-                    cache.append('"').appendStringToJson(data.toStringData()).append('"')
+                    cache.append(data.toJsonArray())
                     cache.append(',')
                 }
             }
@@ -79,11 +81,11 @@ abstract class Billing {
         private fun getFileName(year: Int, month: Int) =
             Tools.md5("$year-${month.toString().padStart(2, '0')}")
 
-        private fun generateBilling(typeId: Int, data: String): Billing? {
+        private fun generateBilling(typeId: Int, jsonArray: JSONArray): Billing? {
             return when (typeId) {
-                Expenditure.typeId -> Expenditure.fromStringData(data)
-                Income.typeId -> Income.fromStringData(data)
-                Transfer.typeId -> Transfer.fromStringData(data)
+                Expenditure.typeId -> Expenditure.fromStringData(jsonArray)
+                Income.typeId -> Income.fromStringData(jsonArray)
+                Transfer.typeId -> Transfer.fromStringData(jsonArray)
                 else -> null
             }
         }
@@ -115,7 +117,11 @@ abstract class Billing {
      *
      * · 尽可能减少空间占用.
      */
-    abstract fun toStringData(): String
+    abstract fun toJsonArray(): String
+
+    override fun toString(): String {
+        return "$typeId, $typeDesc, ${toJsonArray()}"
+    }
 
     /**
      * 以时间戳倒序排列，即由新到旧.

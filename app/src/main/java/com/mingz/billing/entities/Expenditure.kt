@@ -30,15 +30,14 @@ class Expenditure(
         private val myLog by lazy { MyLog("Expenditure") }
 
         @JvmStatic
-        fun fromStringData(data: String): Expenditure? {
-            myLog.v("解析支出: $data")
-            try {
-                val jsonArray = JSONArray(data)
-                return Expenditure(
-                    jsonArray.getString(0).toLong(),
-                    StringWithId(jsonArray.getString(1).toInt(), jsonArray.getString(2)),
-                    StringWithId(jsonArray.getString(3).toInt(), jsonArray.getString(4)),
-                    StringWithId(jsonArray.getString(5).toInt(), jsonArray.getString(6)),
+        fun fromStringData(jsonArray: JSONArray): Expenditure? {
+            myLog.v("解析支出: $jsonArray")
+            return try {
+                Expenditure(
+                    jsonArray.getLong(0),
+                    StringWithId(jsonArray.getInt(1), jsonArray.getString(2)),
+                    StringWithId(jsonArray.getInt(3), jsonArray.getString(4)),
+                    StringWithId(jsonArray.getInt(5), jsonArray.getString(6)),
                     jsonArray.getString(7),
                     jsonArray.getString(8),
                     jsonArray.getString(9),
@@ -46,7 +45,7 @@ class Expenditure(
                 )
             } catch (e: Exception) {
                 myLog.e("支出数据解析失败", e)
-                return null
+                null
             }
         }
     }
@@ -55,20 +54,24 @@ class Expenditure(
     override val typeDesc = Expenditure.typeDesc
     override val timestamp = time
 
-    override fun toStringData(): String {
+    // [time, subjectId, subjectContent, accountId, accountContent,
+    //  typeId, typeContent, price, originalPrice, discount, remarks]
+    // [Long, Int, String, Int, String,
+    //  Int, String, String, String, String, String]
+    override fun toJsonArray(): String {
         val cache = StringBuilder()
         cache.append('[')
-        cache.append('"').append(time).append('"')
+        cache.append(time)
         cache.append(',')
-        cache.append('"').append(subject.id).append('"')
+        cache.append(subject.id)
         cache.append(',')
         cache.append('"').appendStringToJson(subject.content).append('"')
         cache.append(',')
-        cache.append('"').append(account.id).append('"')
+        cache.append(account.id)
         cache.append(',')
         cache.append('"').appendStringToJson(account.content).append('"')
         cache.append(',')
-        cache.append('"').append(type.id).append('"')
+        cache.append(type.id)
         cache.append(',')
         cache.append('"').appendStringToJson(type.content).append('"')
         cache.append(',')

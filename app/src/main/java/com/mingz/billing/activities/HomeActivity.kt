@@ -20,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
     private val adminSubject by lazy { HomeAdminSubjectFragment.newInstance() }
 
     private lateinit var binding: ActivityHomeBinding
+    private var resumeHomeBilling = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +45,24 @@ class HomeActivity : AppCompatActivity() {
         myListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (resumeHomeBilling) {
+            resumeHomeBilling = false
+            replaceFragment(billing)
+        }
+    }
+
     private fun initView() {
         binding.title.text = billing.getTitle()
         supportFragmentManager.beginTransaction().add(R.id.frame, billing).commit()
     }
 
     private fun myListener() {
-        binding.menu.setOnClickListener {
-            binding.drawer.openDrawer(Gravity.START)
-        }
+        binding.menu.setOnClickListener { binding.drawer.openDrawer(Gravity.START) }
         binding.addRecord.setOnClickListener {
             startActivity(Intent(activity, RecordActivity::class.java))
+            resumeHomeBilling = true
         }
         // 菜单选项
         binding.menuLayout.browseBilling.setOnClickListener { replaceFragment(billing) }
