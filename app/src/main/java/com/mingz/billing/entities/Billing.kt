@@ -6,7 +6,6 @@ import com.mingz.billing.utils.Constant
 import com.mingz.billing.utils.Encryption
 import com.mingz.billing.utils.MyLog
 import com.mingz.billing.utils.Tools
-import com.mingz.billing.utils.Tools.Companion.appendStringToJson
 import org.json.JSONArray
 import java.io.File
 import kotlin.reflect.KProperty

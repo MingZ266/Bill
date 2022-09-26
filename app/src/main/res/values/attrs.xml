@@ -59,4 +59,22 @@
         <attr name="editable" format="boolean"/>
         <attr name="android:hint"/>
     </declare-styleable>
+    
+    <declare-styleable name="ExampleView">
+        <!--按钮和输入文本的颜色.-->
+        <attr name="android:textColor" />
+        <!--按钮的背景颜色.-->
+        <attr format="color" name="btnBgColor" />
+    </declare-styleable>
+    
+    <!-- 测试. -->
+    <declare-styleable name="TestViewGroup">
+        <attr format="string" name="myTagGroup" />
+        <attr format="color" name="colorGroup" />
+    </declare-styleable>
+    
+    <declare-styleable name="TestView">
+        <attr format="string" name="myTag" />
+        <attr format="color" name="color" />
+    </declare-styleable>
 </resources>

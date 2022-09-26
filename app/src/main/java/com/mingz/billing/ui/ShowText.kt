@@ -5,20 +5,18 @@ import android.graphics.PointF
 import android.os.Build
 import android.util.AttributeSet
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.mingz.billing.R
 import com.mingz.billing.databinding.LayoutShowTextBinding
-import com.mingz.billing.utils.StringList
-import com.mingz.billing.utils.StringWithId
 import com.mingz.billing.utils.Tools
 
 class ShowText(context: Context, attrs: AttributeSet? = null)
     : FrameLayout(context, attrs) {
     private val binding: LayoutShowTextBinding
     private val editable: Boolean
-    private var position = PointF(0.0f, 0.0f)
+    private val position = PointF(0.0f, 0.0f)
+    private var click = false
 
     init {
         binding = LayoutShowTextBinding.inflate(LayoutInflater.from(context),
@@ -61,9 +59,17 @@ class ShowText(context: Context, attrs: AttributeSet? = null)
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (!editable) {
             when (ev.action and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_DOWN -> position.set(ev.x, ev.y)
+                MotionEvent.ACTION_DOWN -> {
+                    click = true
+                    position.set(ev.x, ev.y)
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (click) {
+                        click = position.equals(ev.x, ev.y)
+                    }
+                }
                 MotionEvent.ACTION_UP -> {
-                    if (position.equals(ev.x, ev.y)) {
+                    if (click) {
                         // 模拟点击
                         performClick()
                         // 不再继续分发

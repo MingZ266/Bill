@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/App/Billing/app/src/main/res/drawable/bg_common_btn.xml" value="0.20677083333333332" />
+        <entry key="..\:/App/Billing/app/src/main/res/layout/activity_start.xml" value="0.1" />
+        <entry key="..\:/App/Billing/app/src/main/res/layout/activity_test.xml" value="0.22" />
+        <entry key="..\:/App/Billing/app/src/main/res/layout/activity_test_home.xml" value="0.16666666666666666" />
+        <entry key="..\:/App/Billing/app/src/main/res/layout/fragment_record_fund_dividend.xml" value="0.16666666666666666" />
+      </map>
+    </option>
+  </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>

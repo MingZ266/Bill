@@ -4,12 +4,19 @@ import android.app.Application
 import com.mingz.billing.entities.Billing
 import com.mingz.billing.utils.DataSource
 import com.mingz.billing.utils.Encryption
+import com.mingz.billing.utils.MyLog
 import java.io.File
 
 class MyApplication : Application() {
+    companion object {
+        @JvmField
+        val testLog = MyLog("TEST")
+    }
+
     override fun onCreate() {
         super.onCreate()
         applicationContext.let {
+            testLog.setLogFile(it, "TEMP.log")
             Encryption.init(it)
             DataSource.init(it)
             Billing.init(it)

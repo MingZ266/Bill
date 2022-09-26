@@ -12,18 +12,23 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Billing">
-        <activity android:name=".activities.EditTypeActivity"></activity>
+        <activity
+            android:name=".activities.TestActivity"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".activities.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-    
+        
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.RecordActivity" />
+        <activity android:name=".activities.EditTypeActivity" />
+        <activity android:name=".activities.EditSubjectActivity" />
     </application>
 
 </manifest>

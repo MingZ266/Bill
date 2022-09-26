@@ -29,7 +29,7 @@
                 android:id="@+id/backIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:padding="10dp"
+                android:padding="7.5dp"
                 android:src="@drawable/ic_back"
                 android:tint="@color/themeColor"
                 android:background="@drawable/bg_btn_circle_feedback"/>

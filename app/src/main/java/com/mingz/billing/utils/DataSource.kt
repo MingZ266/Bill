@@ -310,6 +310,15 @@ class AccountList : MyArrayList<Account>() {
         add(account)
     }
 
+    fun copy(): AccountList {
+        val copy = AccountList()
+        for (account in this) {
+            copy.add(account.copy())
+        }
+        copy.nextId = this.nextId
+        return copy
+    }
+
     /**
      * 替换账户列表的内容.
      *
@@ -321,15 +330,6 @@ class AccountList : MyArrayList<Account>() {
             add(account.copy())
         }
         nextId = accountList.nextId
-    }
-
-    fun copy(): AccountList {
-        val copy = AccountList()
-        for (account in this) {
-            copy.add(account.copy())
-        }
-        copy.nextId = this.nextId
-        return copy
     }
 
     /**
@@ -552,6 +552,19 @@ class FundList : MyArrayList<Fund>() {
         add(Fund(nextId++, name, code))
     }
 
+    fun copy(): FundList {
+        val copy = FundList()
+        copy.addAll(this)
+        copy.nextId = nextId
+        return copy
+    }
+
+    fun replace(fundList: FundList) {
+        clear()
+        addAll(fundList)
+        nextId = fundList.nextId
+    }
+
     // [id_1, name_1, code_1, id_2, name_2, code_2, ...]
     // [Int, String, String, Int, String, String, ...]
     override fun toJsonArray(): String {
@@ -579,9 +592,36 @@ class FundList : MyArrayList<Fund>() {
 class Fund(val id: Int, val name: String, val code: String)
 
 // 科目
-class SubjectArray {
+class SubjectArray() {
     private var nextId = 1
     private lateinit var subject : Array<SubjectLvOne>
+
+    private constructor(subject : Array<SubjectLvOne>) : this() {
+        this.subject = subject
+    }
+
+    fun getNextId() = nextId
+
+    fun size() = subject.size
+
+    operator fun get(index: Int) = subject[index]
+
+    operator fun set(index: Int, data: SubjectLvOne) {
+        subject[index] = data
+    }
+
+    fun set(nextId: Int, index: Int, data: SubjectLvOne) {
+        this.nextId = nextId
+        subject[index] = data
+    }
+
+    fun remove(index: Int) {
+        subject = subject.remove(index)
+    }
+
+    fun add(content: String) {
+        subject.add(SubjectLvOne(StringWithId(nextId++, content)))
+    }
 
     fun init(source: Array<String>) {
         val lvOneList = LinkedList<SubjectLvOne>()
@@ -638,6 +678,19 @@ class SubjectArray {
         subject = lvOneList.toArray(emptyArray<SubjectLvOne>())
     }
 
+    fun copy(): SubjectArray {
+        val copy = SubjectArray(toArray())
+        copy.nextId = nextId
+        return copy
+    }
+
+    fun replace(subject: SubjectArray) {
+        clear()
+        val subjectCopy = subject.copy()
+        this.nextId = subjectCopy.nextId
+        this.subject = subjectCopy.subject
+    }
+
     fun clear() {
         nextId = 1
         subject = emptyArray()
@@ -646,13 +699,11 @@ class SubjectArray {
     fun toArray() = Array(subject.size) copy@{ i ->
         val lvOne = subject[i]
         val children = lvOne.subordinateData
-        if (children == null) {
-            return@copy SubjectLvOne(lvOne.data!!, null)
+        return@copy SubjectLvOne(lvOne.data!!, if (children != null) {
+            Array(children.size) { two -> SubjectLvTwo(children[two].data as StringWithId) }
         } else {
-            return@copy SubjectLvOne(lvOne.data!!, Array(children.size) { j ->
-                SubjectLvTwo(children[j].data as StringWithId)
-            })
-        }
+            null
+        })
     }
 
     /**
@@ -662,6 +713,7 @@ class SubjectArray {
      * 否则，添加为[lvOneId]所属一级科目的二级科目，
      * 若未找到所属一级科目则将[content]添加为一级科目.
      */
+    @Deprecated("")
     fun addSubject(content: String, lvOneId: Int? = null) {
         if (lvOneId != null) { // 添加到二级科目
             for (i in subject.indices) {
@@ -690,6 +742,7 @@ class SubjectArray {
     }
 
     // 添加到一级科目
+    @Deprecated("")
     private fun addSubject(content: String) {
         subject = Array(subject.size + 1) {
             if (it < subject.size) {
@@ -705,6 +758,7 @@ class SubjectArray {
      *
      * 删除[id]对应的科目.
      */
+    @Deprecated("")
     fun delSubject(id: Int) {
         for (i in subject.indices) {
             val lvOne = subject[i]
@@ -757,6 +811,7 @@ class SubjectArray {
      *
      * 将[id]对应的科目名称修改为[newName].
      */
+    @Deprecated("")
     fun alterSubject(id: Int, newName: String) {
         for (i in subject.indices) {
             val lvOne = subject[i]
@@ -810,6 +865,19 @@ class SubjectArray {
 
 class SubjectLvOne(data: StringWithId, children: Array<Data<*, *>>? = null) :
     Data<StringWithId, SubjectLvOne.ViewHolder>(data, children) {
+
+    fun size() = subordinateData!!.size
+
+    operator fun get(index: Int) = subordinateData!![index] as SubjectLvTwo
+
+    operator fun set(index: Int, data: SubjectLvTwo) {
+        subordinateData!![index] = data
+    }
+
+    fun remove(index: Int) = SubjectLvOne(data!!, subordinateData!!.remove(index))
+
+    fun add(id: Int, content: String) =
+        SubjectLvOne(data!!, subordinateData!!.add(SubjectLvTwo(StringWithId(id, content))))
 
     override fun getResId() = R.layout.item_dialog_subject_level_one
 

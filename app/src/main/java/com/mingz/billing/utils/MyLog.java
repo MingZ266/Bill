@@ -1,15 +1,26 @@
 package com.mingz.billing.utils;
 
+import android.content.Context;
 import android.util.Log;
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import kotlin.reflect.KClass;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class MyLog {
     public final String tag;
     public final boolean debug;
+    // 日志文件相关
+    private File logFile = null;
+    private SimpleDateFormat format = null;
 
     public static final MyLog TEMP = new MyLog("TEMP");
 
@@ -36,6 +47,34 @@ public class MyLog {
 
     public MyLog(Object obj, boolean debug) {
         this(obj.getClass(), debug);
+    }
+
+    public void setLogFile(Context context, String fileName) {
+        try {
+            File dir = context.getExternalFilesDir("");
+            if (dir == null) {
+                dir = context.getFilesDir();
+            }
+            dir = new File(dir, "log");
+            logFile = new File(dir, fileName);
+            // 创建日志文件
+            if (dir.exists() || dir.mkdirs()) {
+                if (logFile.exists() || logFile.createNewFile()) {
+                    format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",
+                            Locale.getDefault());
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        logFile = null;
+        format = null;
+    }
+
+    @Nullable
+    public File getLogFile() {
+        return logFile;
     }
 
     public void v(Object msg) {
@@ -84,7 +123,17 @@ public class MyLog {
                 return;
             }
         }
-        Log.println(priority, tag, msg.toString());
+        String msgStr = msg.toString();
+        Log.println(priority, tag, msgStr);
+        if (logFile != null) {
+            String content = format.format(System.currentTimeMillis()) + " "
+                    + tag + " : " + msgStr + "\n\n";
+            try (FileOutputStream fos = new FileOutputStream(logFile, true)) {
+                fos.write(content.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 
     private void core(@Level int priority, Object errorInfo, Throwable e) {

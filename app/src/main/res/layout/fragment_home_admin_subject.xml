@@ -1,8 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HomeAdminSubjectFragment">
-
-</FrameLayout>
+    android:background="@color/themeWhite"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="20dp"
+    android:orientation="vertical"
+    tools:context=".fragments.HomeAdminSubjectFragment"
+    tools:ignore="HardcodedText,ContentDescription">
+    
+    <LinearLayout
+        android:id="@+id/expenditure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/interval"
+        android:paddingEnd="@dimen/interval"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_blue_outline_with_color_and_feedback">
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="收入科目"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_arrow_open"
+            android:tint="@color/themeColor"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/income"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="@dimen/interval"
+        android:paddingEnd="@dimen/interval"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_blue_outline_with_color_and_feedback">
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="支出科目"
+            android:textSize="@dimen/mostTextSize"
+            android:textColor="@color/themeColor"/>
+        
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_arrow_open"
+            android:tint="@color/themeColor"/>
+    
+    </LinearLayout>
+    
+</LinearLayout>
