@@ -8,3 +8,13 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Bill"
 include ':app'
+include ':data'
+include ':billDetails'
+include ':security'
+include ':recordBill'
+include ':browseBill'
+include ':alterBill'
+include ':adminSubject'
+include ':adminAccount'
+include ':adminType'
+include ':backup'

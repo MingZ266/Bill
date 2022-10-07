@@ -9,7 +9,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/adminAccount" />
+            <option value="$PROJECT_DIR$/adminSubject" />
+            <option value="$PROJECT_DIR$/adminType" />
+            <option value="$PROJECT_DIR$/alterBill" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/backup" />
+            <option value="$PROJECT_DIR$/billDetails" />
+            <option value="$PROJECT_DIR$/browseBill" />
+            <option value="$PROJECT_DIR$/data" />
+            <option value="$PROJECT_DIR$/recordBill" />
+            <option value="$PROJECT_DIR$/security" />
           </set>
         </option>
       </GradleProjectSettings>
