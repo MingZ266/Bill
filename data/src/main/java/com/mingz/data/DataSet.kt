@@ -3,13 +3,19 @@ package com.mingz.data
 import android.util.JsonReader
 import android.util.JsonWriter
 import android.util.Xml
+import com.mingz.share.AES_MODE
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlSerializer
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.FileInputStream
+import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
+import javax.crypto.Cipher
 
 /**
  * 支出科目.
@@ -35,6 +41,7 @@ lateinit var accountSet: Array<Account>
 lateinit var typeSet: Array<Type>
     private set
 
+private val encoding = StandardCharsets.UTF_8
 // 宏变量
 private const val ERR_ID = -1
 private const val ERR_NAME = "Null"
@@ -56,32 +63,74 @@ private const val INIT_VAL = "initVal"
 private const val NOW_VAL = "nowVal"
 
 /**
- * 将基础数据集转为字节数据以便存储.
- * @see parsingDataSet
+ * 初始化基础数据集.
+ *
+ * 只能在“安全访问”模块设置安全密钥后调用.
  */
-fun getDataSetBytes(subjectOutSet: Array<Subject>, subjectInSet: Array<Subject>,
-                    accountSet: Array<Account>, typeSet: Array<Type>): ByteArray {
-    // 序列化
+suspend fun initDataSet() {
+    withContext(Dispatchers.IO) {
+        // TODO: 文件不存在时使用默认数据集
+        try {
+            var data = FileInputStream(dataSetFile.file).use { it.readBytes() }
+            val cipher = Cipher.getInstance(AES_MODE)
+            cipher.init(Cipher.DECRYPT_MODE, safeKey)
+            data = cipher.doFinal(data)
+            //parsingDataSet(data)
+        } catch (e: Exception) {
+            subjectOutSet = emptyArray()
+            subjectInSet = emptyArray()
+            accountSet = emptyArray()
+            typeSet = emptyArray()
+            // TODO: log
+        }
+    }
+}
+
+// TODO: 检查属性含有特殊字符时功能是否正常
+
+/**
+ * 将“科目”数据集转为字节数据.
+ * @see parsingSubjectSet
+ */
+private fun getSubjectSetBytes(subjectSet: Array<Subject>): ByteArray {
     val xml = Xml.newSerializer()
-    val encoding = StandardCharsets.UTF_8
     val encodingName = encoding.name()
-    // 科目
-    val subject: ByteArray
-    ByteArrayOutputStream().use { bos ->
+    return ByteArrayOutputStream().use { bos ->
         xml.setOutput(bos, encodingName)
         xml.startDocument(encodingName, true)
         xml.startTag(null, ROOT)
-        // 支出科目
-        subjectSetToXml(subjectOutSet, EXPENDITURE, xml)
-        // 收入科目
-        subjectSetToXml(subjectInSet, INCOME, xml)
+        for (main in subjectSet) {
+            // 主分类
+            xml.startTag(null, MAIN)
+            xml.attribute(null, ID, main.id.toString())
+            xml.attribute(null, NAME, main.name)
+            xml.attribute(null, COUNT, main.count.toString())
+            if (main.allVice != null) {
+                for (vice in main.allVice) {
+                    // 副分类
+                    xml.startTag(null, VICE)
+                    xml.attribute(null, ID, vice.id.toString())
+                    xml.attribute(null, NAME, vice.name)
+                    xml.attribute(null, COUNT, vice.count.toString())
+                    xml.endTag(null, VICE)
+                }
+            }
+            xml.endTag(null, MAIN)
+        }
         xml.endTag(null, ROOT)
         xml.endDocument()
-        subject = bos.toByteArray()
+        bos.toByteArray()
     }
-    // 账户
-    val account: ByteArray
-    ByteArrayOutputStream().use { bos ->
+}
+
+/**
+ * 将“账户”数据集转为字节数据.
+ * @see parsingAccountSet
+ */
+private fun getAccountSetBytes(): ByteArray {
+    val xml = Xml.newSerializer()
+    val encodingName = encoding.name()
+    return ByteArrayOutputStream().use { bos ->
         xml.setOutput(bos, encodingName)
         xml.startDocument(encodingName, true)
         xml.startTag(null, ROOT)
@@ -104,11 +153,16 @@ fun getDataSetBytes(subjectOutSet: Array<Subject>, subjectInSet: Array<Subject>,
         }
         xml.endTag(null, ROOT)
         xml.endDocument()
-        account = bos.toByteArray()
+        bos.toByteArray()
     }
-    // 币种
-    val type: ByteArray
-    ByteArrayOutputStream().use { bos ->
+}
+
+/**
+ * 将“币种”数据集转为字节数据.
+ * @see parsingTypeSet
+ */
+private fun getTypeSetBytes(): ByteArray {
+    return ByteArrayOutputStream().use { bos ->
         OutputStreamWriter(bos, encoding).use { osw ->
             JsonWriter(osw).use { jw ->
                 jw.beginArray()
@@ -122,83 +176,20 @@ fun getDataSetBytes(subjectOutSet: Array<Subject>, subjectInSet: Array<Subject>,
                 jw.endArray()
             }
         }
-        type = bos.toByteArray()
+        bos.toByteArray()
     }
-    // 以“数据长度、数据内容”形式拼合数据
-    val data = ByteArray(Int.SIZE_BYTES * 3 + subject.size + account.size + type.size)
-    // 科目
-    var start = connectData(data, subject, 0)
-    // 账户
-    start = connectData(data, account, start)
-    // 币种
-    connectData(data, type, start)
-    return data
-}
-
-private fun subjectSetToXml(subjectSet: Array<Subject>, root: String, xml: XmlSerializer) {
-    xml.startTag(null, root)
-    for (main in subjectSet) {
-        // 主分类
-        xml.startTag(null, MAIN)
-        xml.attribute(null, ID, main.id.toString())
-        xml.attribute(null, NAME, main.name)
-        xml.attribute(null, COUNT, main.count.toString())
-        if (main.allVice != null) {
-            for (vice in main.allVice) {
-                // 副分类
-                xml.startTag(null, VICE)
-                xml.attribute(null, ID, vice.id.toString())
-                xml.attribute(null, NAME, vice.name)
-                xml.attribute(null, COUNT, vice.count.toString())
-                xml.endTag(null, VICE)
-            }
-        }
-        xml.endTag(null, MAIN)
-    }
-    xml.endTag(null, root)
-}
-
-private fun connectData(data: ByteArray, set: ByteArray, start: Int): Int {
-    // 写入数据长度
-    // 小端存储（低字节写到低地址，高字节写到高地址）
-    var size = set.size
-    val loc = start + Int.SIZE_BYTES
-    for (i in start until loc) {
-        data[i] = size.toByte()
-        size = size ushr 8
-    }
-    // 写入数据内容
-    System.arraycopy(set, 0, data, loc, set.size)
-    return (loc + set.size)
 }
 
 /**
- * 从字节数据中解析出基础数据集.
- * @see getDataSetBytes
+ * 从字节数据中解析出“科目”数据集.
+ * @see getSubjectSetBytes
  */
-@Suppress("DuplicatedCode")
-fun parsingDataSet(data: ByteArray) {
-    // 拆分数据块
-    // 科目
-    var start = 0
-    val subject = splitData(data, start)
-    // 账户
-    start += (Int.SIZE_BYTES + subject.size)
-    val account = splitData(data, start)
-    // 币种
-    start += (Int.SIZE_BYTES + account.size)
-    val type = splitData(data, start)
-    // 反序列化
+private fun parsingSubjectSet(data: ByteArray): Array<Subject> {
     val xml = Xml.newPullParser()
-    val encoding = StandardCharsets.UTF_8
     val encodingName = encoding.name()
-    // 科目
-    ByteArrayInputStream(subject).use { bis ->
-        val subjectOutList = ArrayList<Subject>() // 支出科目
-        val subjectInList = ArrayList<Subject>() // 收入科目
+    return ByteArrayInputStream(data).use { bis ->
+        val subjectList = ArrayList<Subject>()
         xml.setInput(bis, encodingName)
-        var isExpenditure = false // 是否为支出科目
-        var isIncome = false // 是否为收入科目
         // 主分类信息
         var mainId = ERR_ID
         var mainName = ERR_NAME
@@ -240,39 +231,37 @@ fun parsingDataSet(data: ByteArray) {
                             // 添加副分类
                             mainVices.add(Subject(id, name, count = count))
                         }
-                        EXPENDITURE -> isExpenditure = true
-                        INCOME -> isIncome = true
                     }
                 }
                 XmlPullParser.END_TAG -> {
                     when(xml.name) {
                         MAIN -> {
                             // 当前主分类结束
-                            val s = Subject(mainId, mainName,
-                                mainVices.toArray(emptyArray<Subject>()), mainCount)
-                            if (isExpenditure) {
-                                subjectOutList.add(s)
-                            } else if (isIncome) {
-                                subjectInList.add(s)
-                            }
+                            subjectList.add(Subject(mainId, mainName,
+                                mainVices.toArray(emptyArray<Subject>()), mainCount))
                             // 重置信息
                             mainId = ERR_ID
                             mainName = ERR_NAME
                             mainCount = ERR_COUNT
                             mainVices.clear()
                         }
-                        EXPENDITURE -> isExpenditure = false
-                        INCOME -> isIncome = false
                         ROOT -> break
                     }
                 }
             }
         } while (event != XmlPullParser.END_DOCUMENT)
-        subjectOutSet = subjectOutList.toArray(emptyArray<Subject>())
-        subjectInSet = subjectInList.toArray(emptyArray<Subject>())
+        subjectList.toArray(emptyArray<Subject>())
     }
-    // 账户
-    ByteArrayInputStream(account).use { bis ->
+}
+
+/**
+ * 从字节数据中解析出“账户”数据集.
+ * @see getAccountSetBytes
+ */
+private fun parsingAccountSet(data: ByteArray) {
+    val xml = Xml.newPullParser()
+    val encodingName = encoding.name()
+    ByteArrayInputStream(data).use { bis ->
         val accountList = ArrayList<Account>() // 账户数据集
         xml.setInput(bis, encodingName)
         // 账户信息
@@ -339,8 +328,14 @@ fun parsingDataSet(data: ByteArray) {
         } while (event != XmlPullParser.END_DOCUMENT)
         accountSet = accountList.toArray(emptyArray<Account>())
     }
-    // 币种
-    ByteArrayInputStream(type).use { bis ->
+}
+
+/**
+ * 从字节数据中解析出“币种”数据集.
+ * @see getTypeSetBytes
+ */
+private fun parsingTypeSet(data: ByteArray) {
+    ByteArrayInputStream(data).use { bis ->
         InputStreamReader(bis, encoding).use { isr ->
             JsonReader(isr).use { jr ->
                 val typeList = ArrayList<Type>() // 币种数据集
@@ -365,19 +360,6 @@ fun parsingDataSet(data: ByteArray) {
             }
         }
     }
-}
-
-private fun splitData(data: ByteArray, start: Int): ByteArray {
-    // 读取数据长度
-    var size = 0
-    for (i in 0 until Int.SIZE_BYTES) {
-        size = (data[start + i].toInt() and 0xFF) shl (8 * i) or size
-    }
-    val loc = start + Int.SIZE_BYTES
-    // 读取数据内容
-    val set = ByteArray(size)
-    System.arraycopy(data, loc, set, 0, size)
-    return set
 }
 
 /**
