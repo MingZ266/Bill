@@ -3,16 +3,14 @@ package com.mingz.data
 import android.content.Context
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import javax.crypto.SecretKey
 import kotlin.reflect.KProperty
 
 // 安全密钥存储文件名称
-private const val FILE_NAME_SAFE_KEY = "db_data.dat"
-
-// 基础数据集存储文件名称
-private const val FILE_NAME_DATA_SET = "base_data.dat"
+private const val FILE_SAFE_KEY = "db_data.dat"
 
 /**
  * 安全密钥.
@@ -22,18 +20,7 @@ private const val FILE_NAME_DATA_SET = "base_data.dat"
 internal val safeKey by InitSafeKey()
 
 // 安全密钥读写文件
-private val safeKeyFile = InternalFilePack(FILE_NAME_SAFE_KEY)
-
-// 基础数据集
-internal val dataSetFile = InternalFilePack(FILE_NAME_DATA_SET)
-
-/**
- * 进行存储文件的初始化.
- */
-fun initFiles(applicationContext: Context) {
-    safeKeyFile.init(applicationContext)
-    dataSetFile.init(applicationContext)
-}
+private val safeKeyFile = InternalFilePack(FILE_SAFE_KEY)
 
 /**
  * 存储安全密钥密文.
@@ -54,8 +41,12 @@ fun writeSafeKeyCiphertext(ciphertext: ByteArray) {
  * 读取安全密钥存储密文.
  * @see writeSafeKeyCiphertext
  */
-fun readSafeKeyCiphertext() = try {
+fun readSafeKeyCiphertext(applicationContext: Context) = try {
+    safeKeyFile.init(applicationContext)
     FileInputStream(safeKeyFile.file).use { it.readBytes() }
+} catch (e: FileNotFoundException) {
+    // 视为首次使用软件（一般情况下确实如此）
+    null
 } catch (e: IOException) {
     // TODO: log
     null
@@ -83,6 +74,7 @@ internal class InternalFilePack(private val childPath: String) {
     }
 }
 
+// TODO: 在“安全访问”模块验证成功后调用[InitSafeKey.init]
 // 代理类
 class InitSafeKey {
     companion object {

@@ -1,5 +1,9 @@
+// 科目主分类与账户属性反序列化解析有部分代码相似
+@file:Suppress("DuplicatedCode")
+
 package com.mingz.data
 
+import android.content.Context
 import android.util.JsonReader
 import android.util.JsonWriter
 import android.util.Xml
@@ -7,13 +11,7 @@ import com.mingz.share.AES_MODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlSerializer
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.FileInputStream
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
+import java.io.*
 import java.nio.charset.StandardCharsets
 import javax.crypto.Cipher
 
@@ -49,8 +47,6 @@ private const val ERR_COUNT = 0
 private const val ERR_VAL = "0.00"
 // 节点
 private const val ROOT = "root"
-private const val EXPENDITURE = "expenditure"
-private const val INCOME = "income"
 private const val MAIN = "main"
 private const val VICE = "vice"
 private const val ACCOUNT = "account"
@@ -61,26 +57,124 @@ private const val NAME = "name"
 private const val COUNT = "count"
 private const val INIT_VAL = "initVal"
 private const val NOW_VAL = "nowVal"
+// 文件名
+private const val FILE_DATA_SET_DIR = "base_data" // 基础数据集存储目录
+private const val FILE_SUBJECT_OUT = "data1.dat" // 支出科目数据集文件名
+private const val FILE_SUBJECT_IN = "data2.dat" // 收入科目数据集文件名
+private const val FILE_ACCOUNT = "data3.dat" // 账户数据集文件名
+private const val FILE_TYPE = "data4.dat" // 币种数据集文件名
 
+// 数据集文件
+private val subjectOutFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_OUT")
+private val subjectInFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_IN")
+private val accountFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_ACCOUNT")
+private val typeFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_TYPE")
+
+// TODO: 在获取safeKey后调用
 /**
  * 初始化基础数据集.
  *
  * 只能在“安全访问”模块设置安全密钥后调用.
  */
-suspend fun initDataSet() {
+suspend fun initDataSet(applicationContext: Context) {
+    val time = System.currentTimeMillis()
+    subjectOutFile.init(applicationContext)
+    subjectInFile.init(applicationContext)
+    accountFile.init(applicationContext)
+    typeFile.init(applicationContext)
     withContext(Dispatchers.IO) {
-        // TODO: 文件不存在时使用默认数据集
         try {
-            var data = FileInputStream(dataSetFile.file).use { it.readBytes() }
             val cipher = Cipher.getInstance(AES_MODE)
             cipher.init(Cipher.DECRYPT_MODE, safeKey)
-            data = cipher.doFinal(data)
-            //parsingDataSet(data)
+            // TODO: 文件不存在时使用默认数据集
+            // 支出科目
+            readDataSet(subjectOutFile, cipher, { subjectOutSet = parsingSubjectSet(it) }, {
+            }, { subjectOutSet = emptyArray() })
+            // 收入科目
+            readDataSet(subjectInFile, cipher, { subjectInSet = parsingSubjectSet(it) }, {
+            }, { subjectInSet = emptyArray() })
+            // 账户
+            readDataSet(accountFile, cipher, { parsingAccountSet(it) }, {
+            }, { accountSet = emptyArray() })
+            // 币种
+            readDataSet(typeFile, cipher, { parsingTypeSet(it) }, {
+            }, { typeSet = emptyArray() })
         } catch (e: Exception) {
             subjectOutSet = emptyArray()
             subjectInSet = emptyArray()
             accountSet = emptyArray()
             typeSet = emptyArray()
+            // TODO: log
+        }
+    }
+    println("初始化基础数据集耗时${System.currentTimeMillis() - time}ms")
+}
+
+// 在[onData]中将字节数据格式化为数据集，若发生异常则会转到[onException]以避免影响后续数据集的读取
+private inline fun readDataSet(
+    filePack: InternalFilePack, cipher: Cipher, onData: (ByteArray) -> Unit,
+    onNothing: () -> Unit, onException: () -> Unit
+) {
+    try {
+        onData(cipher.doFinal(FileInputStream(filePack.file).use { it.readBytes() }))
+    } catch (e: FileNotFoundException) { // 数据文件不存在
+        onNothing()
+    } catch (e: Exception) {
+        // TODO: log
+        onException()
+    }
+}
+
+/**
+ * 保存支出科目数据集.
+ *
+ * 只有[initDataSet]被调用过才能调用该方法.
+ */
+suspend fun saveSubjectOutSet() = saveDataSet(subjectOutFile) {
+    getSubjectSetBytes(subjectOutSet)
+}
+
+/**
+ * 保存收入科目数据集.
+ *
+ * 只有[initDataSet]被调用过才能调用该方法.
+ */
+suspend fun saveSubjectInSet() = saveDataSet(subjectInFile) {
+    getSubjectSetBytes(subjectInSet)
+}
+
+/**
+ * 保存账户数据集.
+ *
+ * 只有[initDataSet]被调用过才能调用该方法.
+ */
+suspend fun saveAccountSet() = saveDataSet(accountFile) {
+    getAccountSetBytes()
+}
+
+/**
+ * 保存币种数据集.
+ *
+ * 只有[initDataSet]被调用过才能调用该方法.
+ */
+suspend fun saveTypeSet() = saveDataSet(typeFile) {
+    getTypeSetBytes()
+}
+
+// 在[getData]中序列化数据集，以避免发生异常影响后续数据集的存储
+private suspend inline fun saveDataSet(filePack: InternalFilePack,
+                                       crossinline getData: () -> ByteArray) {
+    withContext(Dispatchers.IO) {
+        try {
+            val cipher = Cipher.getInstance(AES_MODE)
+            cipher.init(Cipher.ENCRYPT_MODE, safeKey)
+            val data = cipher.doFinal(getData())
+            with(filePack.file) {
+                if (exists() || createNewFile()) {
+                    FileOutputStream(this).use { it.write(data) }
+                }
+            }
+        } catch (e: Exception) {
             // TODO: log
         }
     }
