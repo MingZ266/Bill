@@ -4,11 +4,15 @@ import android.content.Context
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteOpenHelper
 
-class KeyDBSQLHelper(context: Context) : SQLiteOpenHelper(context, KEY_DB_NAME, null, KEY_DB_VERSION) {
+/**
+ * 存储月账单数据库密钥的密钥数据库.
+ */
+internal class KeyDBSQLHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_KEY_DB,
+    null, KEY_DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE $KEY_BILL_NAME (" +
-                "`$KEY_BILL_MONTH` TEXT PRIMARY KEY," +
-                "`$KEY_BILL_KEY` BLOB NOT NULL" +
+        db.execSQL("CREATE TABLE $TABLE_BILL_KEY (" +
+                "`$FIELD_MONTH` STRING PRIMARY KEY, " +
+                "`$FIELD_KEY` BLOB NOT NULL" +
                 ")")
     }
 

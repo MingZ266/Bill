@@ -20,7 +20,7 @@ private const val FILE_SAFE_KEY = "db_data.dat"
 internal val safeKey by InitSafeKey()
 
 // 安全密钥读写文件
-private val safeKeyFile = InternalFilePack(FILE_SAFE_KEY)
+private val safeKeyFile = FilePack(FILE_SAFE_KEY)
 
 /**
  * 存储安全密钥密文.
@@ -42,7 +42,7 @@ fun writeSafeKeyCiphertext(ciphertext: ByteArray) {
  * @see writeSafeKeyCiphertext
  */
 fun readSafeKeyCiphertext(applicationContext: Context) = try {
-    safeKeyFile.init(applicationContext)
+    safeKeyFile.init(applicationContext, true)
     FileInputStream(safeKeyFile.file).use { it.readBytes() }
 } catch (e: FileNotFoundException) {
     // 视为首次使用软件（一般情况下确实如此）
@@ -53,21 +53,27 @@ fun readSafeKeyCiphertext(applicationContext: Context) = try {
 }
 
 /**
- * 用于初始化存储在内部存储files目录下的文件.
- * @param childPath 在内部存储files目录下的路径，其中包含的目录将会被创建（不保证创建成功），但不会创建文件.
+ * 用于初始化存储在files目录下的文件.
+ * @param childPath 在files目录下的路径，其中包含的目录将会被创建（不保证创建成功），但不会创建文件.
  */
-internal class InternalFilePack(private val childPath: String) {
+internal class FilePack(private val childPath: String) {
     lateinit var file: File
         private set
     private var noInit = true
 
     /**
      * 初始化文件.
+     *
+     * 若希望存储在外部存储但获取外部存储目录为空时，将返回内部存储目录.
+     * @param atInternal 是否存储在内部存储，默认为否
      */
-    fun init(applicationContext: Context) {
+    fun init(applicationContext: Context, atInternal: Boolean = false) {
         if (noInit) {
             noInit = false
-            file = File(applicationContext.filesDir, childPath).apply {
+            val dir = if (atInternal) applicationContext.filesDir else {
+                applicationContext.getExternalFilesDir("") ?: applicationContext.filesDir
+            }
+            file = File(dir, childPath).apply {
                 parentFile?.let { if (!it.exists()) it.mkdirs() }
             }
         }

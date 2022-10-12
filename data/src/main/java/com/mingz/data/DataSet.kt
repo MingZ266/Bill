@@ -58,17 +58,17 @@ private const val COUNT = "count"
 private const val INIT_VAL = "initVal"
 private const val NOW_VAL = "nowVal"
 // 文件名
-private const val FILE_DATA_SET_DIR = "base_data" // 基础数据集存储目录
+private const val FILE_DATA_SET_DIR = "data_base" // 基础数据集外部存储files下存储目录
 private const val FILE_SUBJECT_OUT = "data1.dat" // 支出科目数据集文件名
 private const val FILE_SUBJECT_IN = "data2.dat" // 收入科目数据集文件名
 private const val FILE_ACCOUNT = "data3.dat" // 账户数据集文件名
 private const val FILE_TYPE = "data4.dat" // 币种数据集文件名
 
 // 数据集文件
-private val subjectOutFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_OUT")
-private val subjectInFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_IN")
-private val accountFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_ACCOUNT")
-private val typeFile = InternalFilePack("$FILE_DATA_SET_DIR/$FILE_TYPE")
+private val subjectOutFile = FilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_OUT")
+private val subjectInFile = FilePack("$FILE_DATA_SET_DIR/$FILE_SUBJECT_IN")
+private val accountFile = FilePack("$FILE_DATA_SET_DIR/$FILE_ACCOUNT")
+private val typeFile = FilePack("$FILE_DATA_SET_DIR/$FILE_TYPE")
 
 // TODO: 在获取safeKey后调用
 /**
@@ -112,7 +112,7 @@ suspend fun initDataSet(applicationContext: Context) {
 
 // 在[onData]中将字节数据格式化为数据集，若发生异常则会转到[onException]以避免影响后续数据集的读取
 private inline fun readDataSet(
-    filePack: InternalFilePack, cipher: Cipher, onData: (ByteArray) -> Unit,
+    filePack: FilePack, cipher: Cipher, onData: (ByteArray) -> Unit,
     onNothing: () -> Unit, onException: () -> Unit
 ) {
     try {
@@ -162,7 +162,7 @@ suspend fun saveTypeSet() = saveDataSet(typeFile) {
 }
 
 // 在[getData]中序列化数据集，以避免发生异常影响后续数据集的存储
-private suspend inline fun saveDataSet(filePack: InternalFilePack,
+private suspend inline fun saveDataSet(filePack: FilePack,
                                        crossinline getData: () -> ByteArray) {
     withContext(Dispatchers.IO) {
         try {
