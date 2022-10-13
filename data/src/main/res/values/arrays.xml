@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 科目.
+    
+    格式为：
+        <主分类/> <该主分类下副分类的数量/>
+        <副分类/>
+        <副分类/>
+        ...
+     -->
+    <!-- 支出科目. -->
+    <string-array name="defaultSubjectOut">
+        <item>饮食开支</item> <item>2</item>
+        <item>早午晚餐</item>
+        <item>烟酒茶饮</item>
+        
+        <item>居家生活</item> <item>3</item>
+        <item>日常用品</item>
+        <item>生活缴费</item>
+        <item>数码设备</item>
+        
+        <item>其它支出</item> <item>0</item>
+    </string-array>
+    
+    <!-- 收入科目. -->
+    <string-array name="defaultSubjectIn">
+        <item>职业收入</item> <item>4</item>
+        <item>工资</item>
+        <item>劳务外快</item>
+        <item>经营所得</item>
+        <item>福利补贴</item>
+        
+        <item>其它收入</item> <item>1</item>
+        <item>奖金红包</item>
+    </string-array>
+    
+    <!-- 币种. -->
+    <string-array name="defaultType">
+        <item>人民币</item>
+    </string-array>
+</resources>
