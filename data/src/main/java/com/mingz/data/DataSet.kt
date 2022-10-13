@@ -8,6 +8,7 @@ import android.util.JsonReader
 import android.util.JsonWriter
 import android.util.Xml
 import com.mingz.share.AES_MODE
+import com.mingz.share.MyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
@@ -39,6 +40,9 @@ lateinit var accountSet: Array<Account>
 lateinit var typeSet: Array<Type>
     private set
 
+private val myLog by lazy(LazyThreadSafetyMode.NONE) {
+    MyLog("DataSetKt", false)
+}
 private val encoding = StandardCharsets.UTF_8
 // 宏变量
 private const val ERR_ID = -1
@@ -104,7 +108,7 @@ suspend fun initDataSet(applicationContext: Context) {
             subjectInSet = emptyArray()
             accountSet = emptyArray()
             typeSet = emptyArray()
-            // TODO: log
+            myLog.w("初始化数据集失败", e, true)
         }
     }
     println("初始化基础数据集耗时${System.currentTimeMillis() - time}ms")
@@ -120,7 +124,7 @@ private inline fun readDataSet(
     } catch (e: FileNotFoundException) { // 数据文件不存在
         onNothing()
     } catch (e: Exception) {
-        // TODO: log
+        myLog.w("数据集读取失败", e)
         onException()
     }
 }
@@ -175,7 +179,7 @@ private suspend inline fun saveDataSet(filePack: FilePack,
                 }
             }
         } catch (e: Exception) {
-            // TODO: log
+            myLog.w("数据集存储失败", e)
         }
     }
 }
@@ -585,6 +589,8 @@ abstract class Count(count: Int) {
     fun reduceCount() {
         if (count > 0) {
             count--
-        } // TODO: else -> Log
+        } else {
+            myLog.i("减少账单计数异常，当前计数: $count")
+        }
     }
 }

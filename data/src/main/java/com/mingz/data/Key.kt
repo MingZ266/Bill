@@ -1,6 +1,7 @@
 package com.mingz.data
 
 import android.content.Context
+import com.mingz.share.MyLog
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -8,6 +9,10 @@ import java.io.FileOutputStream
 import java.io.IOException
 import javax.crypto.SecretKey
 import kotlin.reflect.KProperty
+
+private val myLog by lazy(LazyThreadSafetyMode.NONE) {
+    MyLog("KeyKt", false)
+}
 
 // 安全密钥存储文件名称
 private const val FILE_SAFE_KEY = "db_data.dat"
@@ -32,7 +37,7 @@ fun writeSafeKeyCiphertext(ciphertext: ByteArray) {
         try {
             FileOutputStream(file).use { it.write(ciphertext) }
         } catch (e: IOException) {
-            // TODO: log
+            myLog.w("安全密钥存储失败", e)
         }
     }
 }
@@ -48,7 +53,7 @@ fun readSafeKeyCiphertext(applicationContext: Context) = try {
     // 视为首次使用软件（一般情况下确实如此）
     null
 } catch (e: IOException) {
-    // TODO: log
+    myLog.w("安全密钥读取失败", e)
     null
 }
 
