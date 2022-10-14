@@ -29,6 +29,8 @@ private val safeKeyFile = FilePack(FILE_SAFE_KEY)
 
 /**
  * 存储安全密钥密文.
+ *
+ * 只有[readSafeKeyCiphertext]被调用过才能调用该方法.
  * @see readSafeKeyCiphertext
  */
 fun writeSafeKeyCiphertext(ciphertext: ByteArray) {

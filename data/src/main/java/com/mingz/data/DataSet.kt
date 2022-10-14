@@ -14,31 +14,61 @@ import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.io.*
 import java.nio.charset.StandardCharsets
+import java.util.Arrays
+import java.util.Collections
 import javax.crypto.Cipher
 
 /**
  * 支出科目.
+ *
+ * 由高度为2的无序树组成的森林，对应的有序数组为[orderedSubjectOutSet].
+ * 不应在外部调用中修改其内部的值.
+ *
+ * 应保持同步的对象：[nextSubjectOutId]、[orderedSubjectOutSet].
  */
 lateinit var subjectOutSet: Array<Subject>
     private set
 
 /**
  * 收入科目.
+ *
+ * 由高度为2的无序树组成的森林，对应的有序数组为[orderedSubjectInSet].
+ * 不应在外部调用中修改其内部的值.
+ *
+ * 应保持同步的对象：[nextSubjectInId]、[orderedSubjectInSet].
  */
 lateinit var subjectInSet: Array<Subject>
     private set
 
 /**
  * 账户.
+ *
+ * 按[Account.id]升序排列，不应在外部调用中修改其内部的值.
+ *
+ * 应保持同步的对象：[nextAccountId].
  */
 lateinit var accountSet: Array<Account>
     private set
 
 /**
  * 币种.
+ *
+ * 按[Type.id]升序排列，不应在外部调用中修改其内部的值.
+ *
+ * 应保持同步的对象：[nextTypeId].
  */
 lateinit var typeSet: Array<Type>
     private set
+
+/**
+ * 按[Subject.id]升序排列的[subjectOutSet]的有序副本.
+ */
+private lateinit var orderedSubjectOutSet: Array<SubjectPack>
+
+/**
+ * 按[Subject.id]升序排列的[subjectInSet]的有序副本.
+ */
+private lateinit var orderedSubjectInSet: Array<SubjectPack>
 
 private val myLog by lazy(LazyThreadSafetyMode.NONE) {
     MyLog("DataSetKt", false)
@@ -49,6 +79,7 @@ private const val ERR_ID = -1
 private const val ERR_NAME = "Null"
 private const val ERR_COUNT = 0
 private const val ERR_VAL = "0.00"
+private const val START_ID = 1
 // 节点
 private const val ROOT = "root"
 private const val MAIN = "main"
@@ -97,64 +128,64 @@ suspend fun initDataSet(applicationContext: Context) {
             val cipher = Cipher.getInstance(AES_MODE)
             cipher.init(Cipher.DECRYPT_MODE, safeKey)
             // 支出科目
-            readDataSet(subjectOutFile, cipher, {
-                val nextIdResult = IntArray(1)
-                subjectOutSet = parsingSubjectSet(it, nextIdResult)
-                nextSubjectOutId = nextIdResult[0]
-            }, { // 使用默认数据集
-                val nextIdResult = IntArray(1)
-                subjectOutSet = readDefaultSubjectSet(applicationContext.resources.getStringArray(
-                    R.array.defaultSubjectOut
-                ), nextIdResult)
-                nextSubjectOutId = nextIdResult[0]
+            readDataSet(subjectOutFile, cipher, { parsingSubjectSet(it, false) }, {
+                // 使用默认数据集
+                readDefaultSubjectSet(applicationContext, false)
+                saveSubjectOutSet()
             }, { // 读取或解析异常
                 subjectOutSet = emptyArray()
-                nextSubjectOutId = 1
+                nextSubjectOutId = START_ID
+                orderedSubjectOutSet = emptyArray()
             })
             // 收入科目
-            readDataSet(subjectInFile, cipher, {
-                val nextIdResult = IntArray(1)
-                subjectInSet = parsingSubjectSet(it, nextIdResult)
-                nextSubjectInId = nextIdResult[0]
-            }, { // 使用默认数据集
-                val nextIdResult = IntArray(1)
-                subjectInSet = readDefaultSubjectSet(applicationContext.resources.getStringArray(
-                    R.array.defaultSubjectIn
-                ), nextIdResult)
-                nextSubjectInId = nextIdResult[0]
+            readDataSet(subjectInFile, cipher, { parsingSubjectSet(it, true) }, {
+                // 使用默认数据集
+                readDefaultSubjectSet(applicationContext, true)
+                saveSubjectInSet()
             }, { // 读取或解析异常
                 subjectInSet = emptyArray()
-                nextSubjectInId = 1
+                nextSubjectInId = START_ID
+                orderedSubjectInSet = emptyArray()
             })
             // 账户
             readDataSet(accountFile, cipher, { parsingAccountSet(it) }, {
                 accountSet = emptyArray() // 默认为空数据集
-                nextAccountId = 1
+                nextAccountId = START_ID
+                //saveAccountSet() // 默认数据集为空，不保存
             }, { // 读取或解析异常
                 accountSet = emptyArray()
-                nextAccountId = 1
+                nextAccountId = START_ID
             })
             // 币种
             readDataSet(typeFile, cipher, { parsingTypeSet(it) }, {
                 // 使用默认数据集
                 val arr = applicationContext.resources.getStringArray(R.array.defaultType)
-                typeSet = Array(arr.size) { i ->
-                    Type(i + 1, arr[i])
-                }
+                typeSet = Array(arr.size) { Type(it + 1, arr[it]) }
                 nextTypeId = arr.size + 1
+                saveTypeSet()
             }, { // 读取或解析异常
                 typeSet = emptyArray()
-                nextTypeId = 1
+                nextTypeId = START_ID
             })
-        } catch (e: Exception) {
+        } catch (e: Exception) { // 保证初始化但不保存
+            // 支出科目
             subjectOutSet = emptyArray()
+            nextSubjectOutId = START_ID
+            orderedSubjectOutSet = emptyArray()
+            // 收入科目
             subjectInSet = emptyArray()
+            nextSubjectInId = START_ID
+            orderedSubjectInSet = emptyArray()
+            // 账户
             accountSet = emptyArray()
+            nextAccountId = START_ID
+            // 币种
             typeSet = emptyArray()
+            nextTypeId = START_ID
             myLog.w("初始化数据集失败", e, true)
         }
     }
-    println("初始化基础数据集耗时${System.currentTimeMillis() - time}ms")
+    myLog.v("初始化基础数据集耗时${System.currentTimeMillis() - time}ms")
 }
 
 // 在[onData]中将字节数据格式化为数据集，若发生异常则会转到[onException]以避免影响后续数据集的读取
@@ -174,11 +205,15 @@ private inline fun readDataSet(
 
 /**
  * 读取默认的科目数据集.
- * @param nextIdResult 长度至少为1的数组，用于返回下一个id
+ * @param isIncome 是否为收入科目
  */
-private fun readDefaultSubjectSet(subjectArray: Array<String>, nextIdResult: IntArray): Array<Subject> {
+private fun readDefaultSubjectSet(context: Context, isIncome: Boolean) {
+    val subjectArray = context.resources.getStringArray(
+        if (isIncome) R.array.defaultSubjectIn else R.array.defaultSubjectOut
+    )
     val subjectList = ArrayList<Subject>() // 默认科目数据集
-    var nextId = 1 // 下一个id
+    var nextId = START_ID // 下一个id
+    val orderedSubjectList = ArrayList<SubjectPack>()
     var mainId = ERR_ID // 主分类id
     var mainName: String? = null // 主分类名称
     val mainVices = ArrayList<Subject>() // 当前主分类下的所有副分类
@@ -195,7 +230,9 @@ private fun readDefaultSubjectSet(subjectArray: Array<String>, nextIdResult: Int
             }
             if (viceAmount <= 0) { // 该主分类下没有副分类
                 // 添加主分类
-                subjectList.add(Subject(mainId, mainName, emptyArray()))
+                val main = Subject(mainId, mainName, emptyArray())
+                subjectList.add(main)
+                orderedSubjectList.add(SubjectPack(main)) // 默认数据集分配递增的id值
                 // 重置
                 mainId = ERR_ID
                 mainName = null
@@ -206,7 +243,13 @@ private fun readDefaultSubjectSet(subjectArray: Array<String>, nextIdResult: Int
             mainVices.add(Subject(nextId++, e))
             if (++viceCount >= viceAmount) { // 已添加所有副分类
                 // 添加主分类
-                subjectList.add(Subject(mainId, mainName, mainVices.toArray(emptyArray<Subject>())))
+                val main = Subject(mainId, mainName, mainVices.toArray(emptyArray<Subject>()))
+                subjectList.add(main)
+                // 默认数据集先为主分类分配id值，再为其下的副分类分配id值
+                orderedSubjectList.add(SubjectPack(main))
+                for (vice in main.allVice!!) {
+                    orderedSubjectList.add(SubjectPack(vice, main))
+                }
                 // 重置
                 mainId = ERR_ID
                 mainName = null
@@ -219,8 +262,17 @@ private fun readDefaultSubjectSet(subjectArray: Array<String>, nextIdResult: Int
     if (mainName != null) {
         myLog.d("默认的科目数据集中最后一个主分类的副分类数量错误。")
     }
-    nextIdResult[0] = nextId
-    return subjectList.toArray(emptyArray<Subject>())
+    val subjectSet = subjectList.toArray(emptyArray<Subject>())
+    val orderedSubjectSet = orderedSubjectList.toArray(emptyArray<SubjectPack>())
+    if (isIncome) {
+        subjectInSet = subjectSet
+        nextSubjectInId = nextId
+        orderedSubjectInSet = orderedSubjectSet
+    } else {
+        subjectOutSet = subjectSet
+        nextSubjectOutId = nextId
+        orderedSubjectOutSet = orderedSubjectSet
+    }
 }
 
 /**
@@ -278,10 +330,8 @@ private suspend inline fun saveDataSet(filePack: FilePack,
     }
 }
 
-// TODO: 检查属性含有特殊字符时功能是否正常
-
 /**
- * 将“科目”数据集转为字节数据.
+ * 将[subjectOutSet]或[subjectInSet]转为字节数据.
  * @see parsingSubjectSet
  */
 private fun getSubjectSetBytes(subjectSet: Array<Subject>): ByteArray {
@@ -316,7 +366,7 @@ private fun getSubjectSetBytes(subjectSet: Array<Subject>): ByteArray {
 }
 
 /**
- * 将“账户”数据集转为字节数据.
+ * 将[accountSet]转为字节数据.
  * @see parsingAccountSet
  */
 private fun getAccountSetBytes(): ByteArray {
@@ -350,7 +400,7 @@ private fun getAccountSetBytes(): ByteArray {
 }
 
 /**
- * 将“币种”数据集转为字节数据.
+ * 将[typeSet]转为字节数据.
  * @see parsingTypeSet
  */
 private fun getTypeSetBytes(): ByteArray {
@@ -373,16 +423,17 @@ private fun getTypeSetBytes(): ByteArray {
 }
 
 /**
- * 从字节数据中解析出“科目”数据集.
- * @param nextIdResult 长度至少为1的数组，用于返回下一个id
+ * 从字节数据中解析出[subjectOutSet]或[subjectInSet].
+ * @param isIncome 是否为收入科目
  * @see getSubjectSetBytes
  */
-private fun parsingSubjectSet(data: ByteArray, nextIdResult: IntArray): Array<Subject> {
-    var nextId = ERR_ID // 记录下一个id
+private fun parsingSubjectSet(data: ByteArray, isIncome: Boolean) {
     val xml = Xml.newPullParser()
     val encodingName = encoding.name()
     return ByteArrayInputStream(data).use { bis ->
         val subjectList = ArrayList<Subject>()
+        var nextId = ERR_ID // 记录下一个id
+        val orderedSubjectList = ArrayList<SubjectPack>()
         xml.setInput(bis, encodingName)
         // 主分类信息
         var mainId = ERR_ID
@@ -439,8 +490,26 @@ private fun parsingSubjectSet(data: ByteArray, nextIdResult: IntArray): Array<Su
                     when(xml.name) {
                         MAIN -> {
                             // 当前主分类结束
-                            subjectList.add(Subject(mainId, mainName,
-                                mainVices.toArray(emptyArray<Subject>()), mainCount))
+                            val main = Subject(mainId, mainName,
+                                mainVices.toArray(emptyArray<Subject>()), mainCount)
+                            subjectList.add(main)
+                            // 二分法插入有序表
+                            for (i in -1 until main.allVice!!.size) {
+                                val pack = if (i < 0) {
+                                    SubjectPack(main)
+                                } else {
+                                    SubjectPack(main.allVice[i], main)
+                                }
+                                // 定位插入位置
+                                val index = Collections.binarySearch(orderedSubjectList, pack)
+                                if (index < 0) {
+                                    orderedSubjectList.add(- index - 1/*换算为插入位置*/, pack)
+                                } else {
+                                    myLog.d("科目id重复:")
+                                    myLog.d("    保留项: ${orderedSubjectList[index].subject}")
+                                    myLog.d("    丢弃项: ${pack.subject}")
+                                }
+                            }
                             // 重置信息
                             mainId = ERR_ID
                             mainName = ERR_NAME
@@ -452,13 +521,22 @@ private fun parsingSubjectSet(data: ByteArray, nextIdResult: IntArray): Array<Su
                 }
             }
         } while (event != XmlPullParser.END_DOCUMENT)
-        nextIdResult[0] = nextId
-        subjectList.toArray(emptyArray<Subject>())
+        val subjectSet = subjectList.toArray(emptyArray<Subject>())
+        val orderedSubjectSet = orderedSubjectList.toArray(emptyArray<SubjectPack>())
+        if (isIncome) {
+            subjectInSet = subjectSet
+            nextSubjectInId = nextId
+            orderedSubjectInSet = orderedSubjectSet
+        } else {
+            subjectOutSet = subjectSet
+            nextSubjectOutId = nextId
+            orderedSubjectOutSet = orderedSubjectSet
+        }
     }
 }
 
 /**
- * 从字节数据中解析出“账户”数据集.
+ * 从字节数据中解析出[accountSet].
  * @see getAccountSetBytes
  */
 private fun parsingAccountSet(data: ByteArray) {
@@ -466,6 +544,8 @@ private fun parsingAccountSet(data: ByteArray) {
     val encodingName = encoding.name()
     ByteArrayInputStream(data).use { bis ->
         val accountList = ArrayList<Account>() // 账户数据集
+        // 指示解析的结果是否按id值升序排列，通常为是
+        var ordered = true
         xml.setInput(bis, encodingName)
         // 账户信息
         var accountId = ERR_ID
@@ -520,8 +600,13 @@ private fun parsingAccountSet(data: ByteArray) {
                     when(xml.name) {
                         ACCOUNT -> {
                             // 当前账户结束
-                            accountList.add(Account(accountId, accountName,
-                                assets.toArray(emptyArray<Asset>()), accountCount))
+                            val account = Account(accountId, accountName,
+                                assets.toArray(emptyArray<Asset>()), accountCount)
+                            if (accountList.isNotEmpty() && ordered) {
+                                // 比较即将添加的数据与上一个数据以判定是否升序
+                                ordered = accountList[accountList.lastIndex].id <= account.id
+                            }
+                            accountList.add(account)
                             // 重置信息
                             accountId = ERR_ID
                             accountName = ERR_NAME
@@ -534,11 +619,15 @@ private fun parsingAccountSet(data: ByteArray) {
             }
         } while (event != XmlPullParser.END_DOCUMENT)
         accountSet = accountList.toArray(emptyArray<Account>())
+        if (!ordered) {
+            myLog.d("账户数据集存储乱序")
+            accountSet.sort()
+        }
     }
 }
 
 /**
- * 从字节数据中解析出“币种”数据集.
+ * 从字节数据中解析出[typeSet].
  * @see getTypeSetBytes
  */
 private fun parsingTypeSet(data: ByteArray) {
@@ -546,6 +635,8 @@ private fun parsingTypeSet(data: ByteArray) {
         InputStreamReader(bis, encoding).use { isr ->
             JsonReader(isr).use { jr ->
                 val typeList = ArrayList<Type>() // 币种数据集
+                // 指示解析的结果是否按id值升序排列，通常为是
+                var ordered = true
                 jr.beginArray()
                 while (jr.hasNext()) {
                     jr.beginObject()
@@ -563,16 +654,67 @@ private fun parsingTypeSet(data: ByteArray) {
                         nextTypeId = id + 1
                     }
                     // 添加币种
-                    typeList.add(Type(id, name))
+                    val type = Type(id, name)
+                    if (typeList.isNotEmpty() && ordered) {
+                        // 比较即将添加的数据与上一个数据以判定是否升序
+                        ordered = typeList[typeList.lastIndex].id <= type.id
+                    }
+                    typeList.add(type)
                     jr.endObject()
                 }
                 jr.endArray()
                 typeSet = typeList.toArray(emptyArray<Type>())
+                if (!ordered) {
+                    myLog.d("币种数据集存储乱序")
+                    Arrays.sort(typeSet)
+                }
             }
         }
     }
 }
 
+/**
+ * 通过[Subject.id]查找支出科目.
+ */
+fun findSubjectOut(id: Int) = find(orderedSubjectOutSet, id)
+
+/**
+ * 通过[Subject.id]查找收入科目.
+ */
+fun findSubjectIn(id: Int) = find(orderedSubjectInSet, id)
+
+/**
+ * 通过[Account.id]查找账户.
+ */
+fun findAccount(id: Int) = find(accountSet, id)
+
+/**
+ * 通过[Type.id]查找币种.
+ */
+fun findType(id: Int) = find(typeSet, id)
+
+// 按给定id值以二分法查找目标元素
+private fun <T> find(arr: Array<T>, id: Int): T? {
+    val index = Arrays.binarySearch(arr, id)
+    return if (index < 0) null else arr[index]
+}
+
+/**
+ * 对[Subject]类进行包装.
+ * @param subject 所代表的科目
+ * @param main 当[subject]为副分类时，该值为其所属的主分类，否则为空
+ */
+class SubjectPack(val subject: Subject, val main: Subject? = null) : Comparable<Any> {
+
+    override fun compareTo(other: Any) = subject.compareTo(other)
+
+    /**
+     * 是否为主分类.
+     */
+    fun isMain() = main == null
+}
+
+// 基础数据集实体类
 /**
  * 科目.
  */
@@ -591,6 +733,7 @@ class Subject(
      * 所有副科目.
      *
      * 若为空，则表示此为副分类，否则为主分类.
+     * 若为空集合，则表示此为没有副分类的主分类.
      */
     val allVice: Array<Subject>? = null,
 
@@ -598,7 +741,14 @@ class Subject(
      * 有关账单数量.
      */
     count: Int = 0
-) : Count(count) {
+) : Count(count), Comparable<Any> {
+    override fun compareTo(other: Any) = when (other) {
+        is Subject -> id.compareTo(other.id)
+        is Int -> id.compareTo(other)
+        is SubjectPack -> id.compareTo(other.subject.id)
+        else -> throw ClassCastException("${javaClass.name}: 不是可以比较的类型(${other.javaClass.name})")
+    }
+
     override fun toString(): String {
         if (allVice == null) { // 当前为副科目
             return "($id: $name, 相关账单数量: $count)"
@@ -631,7 +781,13 @@ class Account(
      * 有关账单数量.
      */
     count: Int = 0
-) : Count(count) {
+) : Count(count), Comparable<Any> {
+    override fun compareTo(other: Any) = when (other) {
+        is Account -> id.compareTo(other.id)
+        is Int -> id.compareTo(other)
+        else -> throw ClassCastException("${javaClass.name}: 不是可以比较的类型(${other.javaClass.name})")
+    }
+
     override fun toString() = "账户($id: $name, 相关账单数量: $count, 账户资产: ${assets.contentToString()})"
 }
 
@@ -648,7 +804,13 @@ class Type(
      * 币种名称.
      */
     val name: String
-) {
+) : Comparable<Any> {
+    override fun compareTo(other: Any) = when (other) {
+        is Type -> id.compareTo(other.id)
+        is Int -> id.compareTo(other)
+        else -> throw ClassCastException("${javaClass.name}: 不是可以比较的类型(${other.javaClass.name})")
+    }
+
     override fun toString() = "币种($id: $name)"
 }
 
@@ -704,6 +866,7 @@ abstract class Count(count: Int) {
             count--
         } else {
             myLog.i("减少账单计数异常，当前计数: $count")
+            myLog.i("发生计数异常的项为: $this")
         }
     }
 }
