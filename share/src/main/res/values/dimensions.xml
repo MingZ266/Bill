@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 所使用的圆角的半径. -->
+    <dimen name="cornerRadius">12dp</dimen>
+    <!-- 图标的边长. -->
+    <dimen name="iconSideLen">30dp</dimen>
+    <!-- 小号文本，用于小标题的文本尺寸. -->
+    <dimen name="smallText">14sp</dimen>
+    <!-- 中号文本，用于显示多数文本的大小. -->
+    <dimen name="mediumText">18sp</dimen>
+    <!-- 比中号大但比大号小，用于在中号文本中突显的文本. -->
+    <dimen name="aboveMText">20sp</dimen>
+    <!-- 大号文本，用于大标题的尺寸. -->
+    <dimen name="largeText">22sp</dimen>
+</resources>

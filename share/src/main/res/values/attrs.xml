@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DateTimePicker">
+        <!-- 选择工作模式：all-显示日期和时间选择器；date-只显示日期选择器；time-只显示时间选择器. -->
+        <attr name="pickerMode" format="enum">
+            <enum name="all" value="0"/>
+            <enum name="date" value="1"/>
+            <enum name="time" value="2"/>
+        </attr>
+    </declare-styleable>
+    
+    <declare-styleable name="ShowDateTime">
+        <!-- 控制背景是否有填充，及是否响应点击展示日期时间选择弹窗. -->
+        <attr name="android:enabled"/>
+        <attr name="pickerMode"/>
+    </declare-styleable>
+</resources>

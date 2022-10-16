@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:layout_height="wrap_content"
+    tools:layout_gravity="bottom"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="15dp"
+    android:background="@drawable/bg_bottom_dialog"
+    tools:ignore="HardcodedText">
+    
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="取消"
+        android:textSize="@dimen/aboveMText"
+        android:textColor="@color/themeBlue"/>
+    
+    <TextView
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="确定"
+        android:textSize="@dimen/aboveMText"
+        android:textColor="@color/themeBlue"/>
+    
+    <com.mingz.share.ui.DateTimePicker
+        android:id="@+id/picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cancel"
+        android:layout_marginTop="10dp"
+        android:theme="@style/DateTimePicker"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
