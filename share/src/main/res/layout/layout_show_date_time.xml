@@ -15,7 +15,7 @@
         android:layout_width="@dimen/iconSideLen"
         android:layout_height="@dimen/iconSideLen"
         android:src="@drawable/ic_date"
-        android:tint="@color/themeBlue"
+        android:tint="@color/themeColor"
         tools:ignore="ContentDescription"/>
     
     <TextView
@@ -27,14 +27,14 @@
         android:layout_marginEnd="10dp"
         tools:text="1970 - 01 - 01"
         android:textSize="@dimen/mediumText"
-        android:textColor="@color/themeGrey"/>
+        android:textColor="@color/commonText"/>
     
     <ImageView
         android:id="@+id/timeIcon"
         android:layout_width="@dimen/iconSideLen"
         android:layout_height="@dimen/iconSideLen"
         android:src="@drawable/ic_time"
-        android:tint="@color/themeBlue"
+        android:tint="@color/themeColor"
         tools:ignore="ContentDescription"/>
     
     <TextView
@@ -45,6 +45,6 @@
         android:layout_marginStart="10dp"
         tools:text="08 : 00"
         android:textSize="@dimen/mediumText"
-        android:textColor="@color/themeGrey"/>
+        android:textColor="@color/commonText"/>
 
 </merge>

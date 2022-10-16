@@ -1,13 +1,13 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Bill" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.Bill" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/themeBlue</item>
-        <item name="colorPrimaryVariant">@color/darkBlue</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/themeColor</item>
+        <item name="colorPrimaryVariant">@color/deepTheme</item>
+        <item name="colorOnPrimary">@color/bgLight</item>
         <!-- Customize your theme here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:navigationBarColor">@color/blueWhite</item>
+        <item name="android:statusBarColor">@color/bgLight</item>
+        <item name="android:navigationBarColor">@color/bgDeep</item>
     </style>
 </resources>

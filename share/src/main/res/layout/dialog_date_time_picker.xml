@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="取消"
         android:textSize="@dimen/aboveMText"
-        android:textColor="@color/themeBlue"/>
+        android:textColor="@color/themeColor"/>
     
     <TextView
         android:id="@+id/confirm"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="确定"
         android:textSize="@dimen/aboveMText"
-        android:textColor="@color/themeBlue"/>
+        android:textColor="@color/themeColor"/>
     
     <com.mingz.share.ui.DateTimePicker
         android:id="@+id/picker"

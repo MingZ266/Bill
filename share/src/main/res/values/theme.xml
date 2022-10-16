@@ -4,11 +4,11 @@
         <!-- 选择器内文本及分隔符文本尺寸. -->
         <item name="android:textSize">@dimen/mediumText</item>
         <!-- 分隔符文本颜色. -->
-        <item name="android:textColor">@color/themeGrey</item>
+        <item name="android:textColor">@color/commonText</item>
         <!-- 选择器内文本颜色. -->
-        <item name="android:editTextColor">@color/themeGrey</item>
+        <item name="android:editTextColor">@color/commonText</item>
         <!-- 选择器内分隔线颜色. -->
-        <item name="colorControlNormal">@color/themeBlue</item>
+        <item name="colorControlNormal">@color/themeColor</item>
     </style>
     
     <style name="BottomDialogAnim" parent="android:Animation">

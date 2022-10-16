@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 较亮的背景颜色. -->
+    <color name="bgLight">#666666</color>
+    <!-- 较深的背景颜色. -->
+    <color name="bgDeep">#444444</color>
+    <!-- 主题颜色. -->
+    <color name="themeColor">#225182</color>
+    <!-- 多数文本的颜色. -->
+    <color name="commonText">#AAAAAA</color>
+    
+    <!-- 较深的主题颜色. -->
+    <color name="deepTheme">#1F3B59</color>
+</resources>
