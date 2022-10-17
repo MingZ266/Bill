@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bgDeep"
     tools:context=".TempActivity"
     tools:ignore="HardcodedText">
     
@@ -15,6 +15,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="测试"
-        android:textSize="22sp"/>
+        android:textColor="@color/bgLight"
+        android:textSize="@dimen/aboveMText"
+        android:background="@color/themeColor"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/test1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/testBtn"
+        android:layout_marginTop="10dp"
+        android:enabled="true"
+        app:editable="true"
+        app:title="True - True"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/test2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/test1"
+        android:layout_marginTop="10dp"
+        android:enabled="true"
+        app:editable="false"
+        app:title="True - False"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/test3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/test2"
+        android:layout_marginTop="10dp"
+        android:enabled="false"
+        app:editable="true"
+        app:title="False - True"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/test4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/test3"
+        android:layout_marginTop="10dp"
+        android:enabled="false"
+        app:editable="false"
+        app:title="False - False"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

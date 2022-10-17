@@ -3,6 +3,8 @@ package com.mingz.share;
 import android.util.Log;
 import androidx.annotation.IntDef;
 import kotlin.reflect.KClass;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,31 +22,44 @@ public class MyLog {
     public final boolean debug;
 
     // 字符串
-    public MyLog(String tag, boolean debug) {
-        this.tag = PREFIX + tag;
+    public MyLog(@Nullable String tag, boolean debug) {
+        if (tag == null) {
+            this.tag = PREFIX.substring(0, PREFIX.length() - 1)/*MyTAG*/;
+        } else {
+            this.tag = PREFIX + tag;
+        }
         this.debug = debug;
     }
 
-    public MyLog(String tag) {
+    public MyLog(@Nullable String tag) {
         this(tag, true);
     }
 
     // Kotlin类
-    public MyLog(KClass<?> c, boolean debug) {
+    public MyLog(@NotNull KClass<?> c, boolean debug) {
         this(c.getSimpleName(), debug);
     }
 
-    public MyLog(KClass<?> c) {
+    public MyLog(@NotNull KClass<?> c) {
         this(c.getSimpleName());
     }
 
     // Java类
-    public MyLog(Class<?> c, boolean debug) {
+    public MyLog(@NotNull Class<?> c, boolean debug) {
         this(c.getSimpleName(), debug);
     }
 
-    public MyLog(Class<?> c) {
+    public MyLog(@NotNull Class<?> c) {
         this(c.getSimpleName());
+    }
+
+    // 使用默认标签
+    public MyLog(boolean debug) {
+        this((String) null, debug);
+    }
+
+    public MyLog() {
+        this((String) null);
     }
 
     // 打印日志

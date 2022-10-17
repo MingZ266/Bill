@@ -11,6 +11,8 @@
     
     <!-- 较深的主题颜色. -->
     <color name="deepTheme">#0060C5</color>
+    <!-- 透明度为一半的主题颜色. -->
+    <color name="halfATheme">#7F409EFF</color>
     
     <!--<color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

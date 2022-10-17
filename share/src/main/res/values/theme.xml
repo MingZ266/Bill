@@ -11,12 +11,25 @@
         <item name="colorControlNormal">@color/themeColor</item>
     </style>
     
+    <!-- 为底部弹窗设置进入和退出动画. -->
     <style name="BottomDialogAnim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/bottom_dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/bottom_dialog_exit</item>
     </style>
     
+    <!-- 为屏幕中间显示的弹窗设置圆角半径. -->
     <style name="RoundCornerDialog" parent="Theme.AppCompat.Dialog">
+        <!-- 弹窗的圆角半径. -->
         <item name="dialogCornerRadius">@dimen/cornerRadius</item>
+    </style>
+    
+    <!-- 用于EditText设置光标相关样式. -->
+    <style name="CursorStyle">
+        <!-- 光标的颜色. -->
+        <item name="android:textCursorDrawable">@drawable/cursor_color</item>
+        <!-- 选中高亮文本的颜色. -->
+        <item name="android:textColorHighlight">@color/halfATheme</item>
+        <!-- 光标定位图标（小泪滴）的颜色. -->
+        <item name="colorControlActivated">@color/themeColor</item>
     </style>
 </resources>

@@ -1,11 +1,14 @@
 package com.mingz.bill
 
 import android.os.Bundle
+import android.view.MotionEvent
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mingz.bill.databinding.ActivityTempBinding
-import com.mingz.data.*
+import com.mingz.share.MyLog
 
 class TempActivity : AppCompatActivity() {
+    private val myLog by lazy(LazyThreadSafetyMode.NONE) { MyLog(TempActivity::class) }
     private lateinit var binding: ActivityTempBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +59,35 @@ class TempActivity : AppCompatActivity() {
                 Type(3, "币种3")
             )
             parsingDataSet(getDataSetBytes(subjectOutSet, subjectInSet, accountSet, typeSet))*/
+            val content = "#1  qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM\n#2\n#3"
+            binding.test1.text = content
+            binding.test2.text = content
+            binding.test3.text = content
+            binding.test4.text = content
         }
+        binding.test1.setOnClickListener {
+            Toast.makeText(this, "T-T: ${binding.test1.text}", Toast.LENGTH_SHORT).show()
+        }
+        binding.test2.setOnClickListener {
+            Toast.makeText(this, "T-F: ${binding.test2.text}", Toast.LENGTH_SHORT).show()
+        }
+        binding.test3.setOnClickListener {
+            Toast.makeText(this, "F-T: ${binding.test3.text}", Toast.LENGTH_SHORT).show()
+        }
+        binding.test4.setOnClickListener {
+            Toast.makeText(this, "F-F: ${binding.test4.text}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+            val x = ev.x
+            val y = ev.y
+            binding.test1.clearFocusWhenParentDispatchDown(x, y)
+            binding.test2.clearFocusWhenParentDispatchDown(x, y)
+            binding.test3.clearFocusWhenParentDispatchDown(x, y)
+            binding.test4.clearFocusWhenParentDispatchDown(x, y)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }

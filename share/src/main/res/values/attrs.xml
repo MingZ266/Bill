@@ -14,4 +14,13 @@
         <attr name="android:enabled"/>
         <attr name="pickerMode"/>
     </declare-styleable>
+    
+    <declare-styleable name="ShowText">
+        <!-- 控制背景是否有填充，若为false，将不可编辑. -->
+        <attr name="android:enabled"/>
+        <!-- 控制是否允许编辑；同时，若为true，则为多行文本，否则为单行文本；默认为false. -->
+        <attr name="editable" format="boolean"/>
+        <!-- 标题. -->
+        <attr name="title" format="string"/>
+    </declare-styleable>
 </resources>

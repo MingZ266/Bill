@@ -5,10 +5,12 @@
     <!-- 较深的背景颜色. -->
     <color name="bgDeep">#444444</color>
     <!-- 主题颜色. -->
-    <color name="themeColor">#225182</color>
+    <!--<color name="themeColor">#225182</color>-->
     <!-- 多数文本的颜色. -->
     <color name="commonText">#AAAAAA</color>
     
     <!-- 较深的主题颜色. -->
-    <color name="deepTheme">#1F3B59</color>
+    <!--<color name="deepTheme">#1F3B59</color>-->
+    <!-- 透明度为一半的主题颜色. -->
+    <!--<color name="halfATheme">#7F225182</color>-->
 </resources>
