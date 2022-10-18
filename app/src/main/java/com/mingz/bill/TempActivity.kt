@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mingz.bill.databinding.ActivityTempBinding
 import com.mingz.share.MyLog
+import com.mingz.share.ui.ShowText
+import com.mingz.share.ui.TextWithUnits
 
 class TempActivity : AppCompatActivity() {
     private val myLog by lazy(LazyThreadSafetyMode.NONE) { MyLog(TempActivity::class) }
@@ -16,7 +18,7 @@ class TempActivity : AppCompatActivity() {
         binding = ActivityTempBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.testBtn.setOnClickListener {
+        //binding.testBtn.setOnClickListener {
             /*println("###### 全空 ######")
             var subjectOutSet = emptyArray<Subject>()
             var subjectInSet = emptyArray<Subject>()
@@ -59,34 +61,71 @@ class TempActivity : AppCompatActivity() {
                 Type(3, "币种3")
             )
             parsingDataSet(getDataSetBytes(subjectOutSet, subjectInSet, accountSet, typeSet))*/
-            val content = "#1  qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM\n#2\n#3"
-            binding.test1.text = content
-            binding.test2.text = content
-            binding.test3.text = content
-            binding.test4.text = content
+        //}
+        test()
+    }
+
+    private fun test() {
+        val a = arrayOf(binding.a1, binding.a2, binding.a3)
+        binding.aBtn1.setOnClickListener {
+            for (v in a) {
+                v.content = "#1: QqWwEeRrTtYyUuIiOoPpAaSsDdFfGgHhJjKkLlZzXxCcVvBbNnMm\n#2\n#3"
+            }
         }
-        binding.test1.setOnClickListener {
-            Toast.makeText(this, "T-T: ${binding.test1.text}", Toast.LENGTH_SHORT).show()
+        binding.aBtn2.setOnClickListener {
+            myLog.v("a1 ~ a3 enable:")
+            for (v in a) {
+                myLog.v("    ${v.isEnabled}")
+                v.toggleStatus()
+                v.setOnClickListener { aListener(v) }
+            }
+            myLog.v("================")
         }
-        binding.test2.setOnClickListener {
-            Toast.makeText(this, "T-F: ${binding.test2.text}", Toast.LENGTH_SHORT).show()
+        for (v in a) {
+            v.setOnClickListener { aListener(v) }
         }
-        binding.test3.setOnClickListener {
-            Toast.makeText(this, "F-T: ${binding.test3.text}", Toast.LENGTH_SHORT).show()
+
+        val b = arrayOf(binding.b1, binding.b2)
+        binding.bBtn.setOnClickListener {
+            myLog.v("b1 ~ b2 enable:")
+            for (v in b) {
+                val enable = v.isEnabled
+                myLog.v("    $enable")
+                v.isEnabled = !enable
+                v.setOnClickListener { bListener(v) }
+            }
+            myLog.v("================")
         }
-        binding.test4.setOnClickListener {
-            Toast.makeText(this, "F-F: ${binding.test4.text}", Toast.LENGTH_SHORT).show()
+        for (v in b) {
+            v.setOnClickListener { bListener(v) }
         }
+
+        binding.testBtn.setOnClickListener {
+            for (v in a) {
+                v.content = ""
+            }
+            for (v in b) {
+                amount = ""
+                v.setAmount("")
+            }
+        }
+    }
+
+    val aListener = { v: ShowText ->
+        Toast.makeText(this, v.content, Toast.LENGTH_SHORT).show()
+    }
+
+    var amount = ""
+
+    val bListener = { v: TextWithUnits ->
+        amount += "0"
+        v.setAmount(amount)
+        //Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
-            val x = ev.x
-            val y = ev.y
-            binding.test1.clearFocusWhenParentDispatchDown(x, y)
-            binding.test2.clearFocusWhenParentDispatchDown(x, y)
-            binding.test3.clearFocusWhenParentDispatchDown(x, y)
-            binding.test4.clearFocusWhenParentDispatchDown(x, y)
+            binding.a3.clearFocusWhenParentDispatchDown(ev.x, ev.y)
         }
         return super.dispatchTouchEvent(ev)
     }

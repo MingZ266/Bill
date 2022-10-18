@@ -8,6 +8,8 @@
     <!--<color name="themeColor">#225182</color>-->
     <!-- 多数文本的颜色. -->
     <color name="commonText">#AAAAAA</color>
+    <!-- 用于提示性的文本或禁用的文本的颜色. -->
+    <color name="hintColor">#888888</color>
     
     <!-- 较深的主题颜色. -->
     <!--<color name="deepTheme">#1F3B59</color>-->

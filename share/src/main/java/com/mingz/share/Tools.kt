@@ -1,11 +1,24 @@
 package com.mingz.share
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.viewbinding.ViewBinding
+
+/**
+ * 设置水平和垂直方向内边距.
+ *
+ * 单位为dp.
+ */
+internal fun View.setPadding(horizontal: Float, vertical: Float) {
+    val dm = context.resources.displayMetrics
+    val horizontalPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, horizontal, dm).toInt()
+    val verticalPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, vertical, dm).toInt()
+    setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+}
 
 /**
  * 对[AlertDialog]的包装，保持对[AlertDialog]的引用，使其只初始化一次.

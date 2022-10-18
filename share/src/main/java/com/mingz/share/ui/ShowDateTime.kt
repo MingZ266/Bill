@@ -3,7 +3,6 @@ package com.mingz.share.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import com.mingz.share.DialogPack
 import com.mingz.share.R
 import com.mingz.share.databinding.DialogDateTimePickerBinding
 import com.mingz.share.databinding.LayoutShowDateTimeBinding
+import com.mingz.share.setPadding
 import com.mingz.share.ui.DateTimePicker.MODE
 import java.util.*
 
@@ -35,12 +35,9 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null) : LinearLayout
 
     init {
         binding = LayoutShowDateTimeBinding.inflate(LayoutInflater.from(context), this)
-        val dm = context.resources.displayMetrics
         // 设置根布局参数
         gravity = Gravity.CENTER_VERTICAL
-        val horizontalPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f, dm).toInt()
-        val verticalPadding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, dm).toInt()
-        setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+        setPadding(10.0f, 5.0f)
         setBackgroundResource(R.drawable.bg_fill_when_enable)
         orientation = HORIZONTAL
         // 获取可选参数

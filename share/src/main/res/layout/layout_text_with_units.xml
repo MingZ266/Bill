@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
+    tools:layout_width="match_parent"
+    tools:layout_height="wrap_content"
+    tools:paddingHorizontal="10dp"
+    tools:paddingVertical="5dp"
+    tools:background="@drawable/bg_fill_when_enable">
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="标题"
+        android:textSize="@dimen/smallText"
+        android:textColor="@color/themeColor"/>
+    
+    <!-- 用于内容过长时可水平滑动显示. -->
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/units"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        tools:text="0.0000"
+        android:textSize="@dimen/mediumText"
+        android:textColor="@color/commonText"
+        android:hint="@null"
+        android:inputType="text"
+        android:autofillHints="@null"
+        android:background="@null"/>
+    
+    <TextView
+        android:id="@+id/units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/amount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="单位"
+        android:textSize="@dimen/smallText"
+        android:textColor="@color/themeColor"/>
+
+</merge>
