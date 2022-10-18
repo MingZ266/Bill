@@ -1,11 +1,13 @@
 package com.mingz.bill
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mingz.bill.databinding.ActivityTempBinding
 import com.mingz.share.MyLog
+import com.mingz.share.ui.InputAmount
 import com.mingz.share.ui.ShowText
 import com.mingz.share.ui.TextWithUnits
 
@@ -66,6 +68,12 @@ class TempActivity : AppCompatActivity() {
     }
 
     private fun test() {
+        binding.reset.setOnClickListener {
+            startActivity(Intent(this, TempActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            })
+        }
+
         val a = arrayOf(binding.a1, binding.a2, binding.a3)
         binding.aBtn1.setOnClickListener {
             for (v in a) {
@@ -100,15 +108,22 @@ class TempActivity : AppCompatActivity() {
             v.setOnClickListener { bListener(v) }
         }
 
-        binding.testBtn.setOnClickListener {
-            for (v in a) {
-                v.content = ""
-            }
-            for (v in b) {
-                amount = ""
-                v.setAmount("")
-            }
+        var accuracy = 2
+        var initValue = "0"
+        binding.cBtn.setOnClickListener {
+            binding.c.initParams(initValue, ++accuracy)
         }
+        binding.cBtn.setOnLongClickListener {
+            binding.c.initParams(initValue, ++accuracy, true)
+            true
+        }
+        binding.c.initParams()
+        binding.c.setInputListener(object : InputAmount.InputListener {
+            override fun onOk(value: String) {
+                Toast.makeText(this@TempActivity, value, Toast.LENGTH_SHORT).show()
+                initValue = value
+            }
+        })
     }
 
     val aListener = { v: ShowText ->

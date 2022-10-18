@@ -11,6 +11,8 @@
     <!-- 用于提示性的文本或禁用的文本的颜色. -->
     <color name="hintColor">#AAAAAA</color>
     
+    <!-- 透明度为一半的较亮的背景颜色. -->
+    <color name="halfABgLight">#7FFFFFFF</color>
     <!-- 较深的主题颜色. -->
     <color name="deepTheme">#0060C5</color>
     <!-- 透明度为一半的主题颜色. -->

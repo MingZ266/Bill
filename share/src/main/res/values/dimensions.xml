@@ -12,4 +12,6 @@
     <dimen name="aboveMText">20sp</dimen>
     <!-- 大号文本，用于大标题的尺寸. -->
     <dimen name="largeText">22sp</dimen>
+    <!-- 描边宽度. -->
+    <dimen name="strokeWidth">1dp</dimen>
 </resources>

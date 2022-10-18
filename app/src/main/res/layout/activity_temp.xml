@@ -14,10 +14,10 @@
         android:orientation="vertical">
     
         <Button
-            android:id="@+id/testBtn"
+            android:id="@+id/reset"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="测试"
+            android:text="重置"
             android:textColor="@color/bgLight"
             android:textSize="@dimen/aboveMText"
             android:background="@color/themeColor"/>
@@ -102,6 +102,25 @@
             android:enabled="true"
             app:title="可用"
             app:units="BBB"/>
+    
+        <Button
+            android:id="@+id/cBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="精确度加1"
+            android:textSize="@dimen/aboveMText"
+            android:textColor="@color/bgLight"
+            android:background="@color/themeColor"/>
+        
+        <com.mingz.share.ui.InputAmount
+            android:id="@+id/c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:background="@drawable/bg_bottom_dialog"/>
         
     </LinearLayout>
 
