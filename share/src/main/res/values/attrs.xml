@@ -9,6 +9,11 @@
         </attr>
     </declare-styleable>
     
+    <declare-styleable name="MenuLayout">
+        <!-- 是否预览菜单展开（应使用tools命名空间）. -->
+        <attr name="preview" format="boolean"/>
+    </declare-styleable>
+    
     <declare-styleable name="ShowDateTime">
         <!-- 控制背景是否有填充，及是否响应点击展示日期时间选择弹窗. -->
         <attr name="android:enabled"/>
