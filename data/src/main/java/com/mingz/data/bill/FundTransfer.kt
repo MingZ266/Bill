@@ -54,7 +54,14 @@ class FundTransfer(
     val inNetVal: String,
 
     /**
-     * 退补账户id.
+     * 动账时间.
+     *
+     * 格式为“yyyy-MM-dd HH:mm”，若实际尾差为0，则为空，否则非空.
+     */
+    val timeForAccount: String?,
+
+    /**
+     * 动账账户id.
      *
      * 当基金转换有尾差时，使用该账户多退少补，此时非空，否则为空.
      */
@@ -66,7 +73,7 @@ class FundTransfer(
     val type: Int,
 
     /**
-     * 实际退补金额.
+     * 实际动账金额.
      *
      * 即实际尾差；精确到百分位；正值表示退款，负值表示补款.
      * 若实际尾差为0，则为空，否则非空.

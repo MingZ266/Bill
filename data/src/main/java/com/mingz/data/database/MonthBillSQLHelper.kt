@@ -103,6 +103,7 @@ internal class MonthBillSQLHelper(context: Context, year: Int, month: Int) : SQL
                 "`$FIELD_IN_FUND` STRING NOT NULL, " +
                 "`$FIELD_IN_AMOUNT` STRING NOT NULL, " +
                 "`$FIELD_IN_NET_VAL` STRING NOT NULL, " +
+                "`$FIELD_TIME_FOR_ACCOUNT` STRING, " +
                 "`$FIELD_ACCOUNT` INTEGER, " +
                 "`$FIELD_TYPE` INTEGER NOT NULL, " +
                 "`$FIELD_PRICE` STRING, " +

@@ -243,3 +243,8 @@ internal const val FIELD_IN_AMOUNT = "in_amount"
  * 字段：基金转换 - 转入基金净值.
  */
 internal const val FIELD_IN_NET_VAL = "in_net_val"
+
+/**
+ * 字段：基金转换 - 动账时间.
+ */
+internal const val FIELD_TIME_FOR_ACCOUNT = "time_for_account"
