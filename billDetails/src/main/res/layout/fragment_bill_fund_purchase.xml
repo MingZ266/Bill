@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:background="@color/bgDeep"
+    tools:context=".BillFundPurchaseFragment">
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/fund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/fund"/>
+    
+    <TextView
+        android:id="@+id/useless1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fund"
+        android:layout_marginTop="10dp"
+        android:text="@string/purchaseTime"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/purchaseTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/useless1"
+        android:layout_marginTop="5dp"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/purchaseTime"
+        android:layout_marginTop="10dp"
+        app:title="@string/price"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/price"
+        app:layout_constraintTop_toTopOf="@id/price"
+        android:layout_marginEnd="10dp"
+        app:title="@string/expenditureAccount"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/discount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/purchasePrice"
+        app:layout_constraintTop_toBottomOf="@id/account"
+        android:layout_marginTop="10dp"
+        app:title="@string/discount"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/purchasePrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/discount"
+        android:layout_marginStart="10dp"
+        app:title="@string/purchasePrice"
+        android:enabled="false"/>
+    
+    <TextView
+        android:id="@+id/useless2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/discount"
+        android:layout_marginTop="10dp"
+        android:text="@string/confirmTime"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/confirmTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/confirmVal"
+        app:layout_constraintTop_toBottomOf="@id/useless2"
+        android:layout_marginTop="5dp"
+        app:pickerMode="date"/>
+    
+    <TextView
+        android:id="@+id/confirmVal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/confirmTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/confirmTime"
+        app:layout_constraintBottom_toBottomOf="@id/confirmTime"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/confirmVal"
+        app:layout_constraintTop_toTopOf="@id/useless2"
+        android:text="@string/confirmVal"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:id="@+id/useless3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/confirmTime"
+        android:layout_marginTop="10dp"
+        android:text="@string/charges"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:id="@+id/charges"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/confirmPrice"
+        app:layout_constraintTop_toBottomOf="@id/useless3"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/confirmPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/charges"
+        app:layout_constraintEnd_toStartOf="@id/confirmAmount"
+        app:layout_constraintTop_toTopOf="@id/charges"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_stroke"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/confirmAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/confirmPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/confirmPrice"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_stroke"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/confirmPrice"
+        app:layout_constraintTop_toTopOf="@id/useless3"
+        android:text="@string/confirmPrice"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/confirmAmount"
+        app:layout_constraintTop_toTopOf="@id/useless3"
+        android:text="@string/confirmAmount"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/charges"
+        android:layout_marginTop="10dp"
+        app:title="@string/remark"
+        app:editable="true"
+        android:hint="@string/remarkHint"
+        tools:text=""/>
+    
+    <include
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/layout_control_bill"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

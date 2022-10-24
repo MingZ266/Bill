@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mingz.share.ui.MenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:preview="true"
+    tools:theme="@style/Theme.Bill"
+    tools:ignore="ContentDescription">
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_floating_menu"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/bgLight"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="5dp"/>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/item1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_type"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/bgLight"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="5dp"/>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/item2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_save"
+        android:tint="@color/themeColor"
+        android:backgroundTint="@color/bgLight"
+        app:borderWidth="0dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="5dp"/>
+
+</com.mingz.share.ui.MenuLayout>

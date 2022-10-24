@@ -56,6 +56,13 @@ class TextWithUnits(context: Context, attrs: AttributeSet? = null) : ConstraintL
         binding.amount.setText(amount)
     }
 
+    /**
+     * 设置单位.
+     */
+    fun setUnits(units: String) {
+        binding.units.text = units
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {

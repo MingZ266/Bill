@@ -16,15 +16,13 @@ import java.util.ArrayList;
  * 弹出菜单布局.<br/>
  *
  * 子View中的第一个不为GONE的View将作为主菜单，其余的将作为菜单项.当点击主菜单时，将弹出或收起菜单条目.<br/>
- *
- * 所有子View垂直排列，主菜单位于最下方，菜单项从上到下依序排列，与主菜单中线对齐.
+ * 所有子View垂直排列，主菜单位于最下方，菜单项从上到下依序排列，与主菜单中线对齐.<br/>
+ * 主菜单有{@link View#setOnClickListener}调用以在被点击时展开或收起菜单.
  */
 public class MenuLayout extends ViewGroup {
     // 动画过程为：菜单项中心点 从 主菜单中心点位置 到 菜单展开后菜单项中心点位置 变化，菜单项透明度则是从0到1
-    // 动画开始值
-    private static final float ANIMATOR_START = 0.0f;
-    // 动画结束值
-    private static final float ANIMATOR_End = 1.0f;
+    private static final float ANIMATOR_START = 0.0f; // 动画开始值
+    private static final float ANIMATOR_End = 1.0f; // 动画结束值
 
     private int mainIndex = -1; // 主菜单在子View中的索引
     private final Rect mainRect = new Rect(); // 主菜单所在矩阵
@@ -33,8 +31,8 @@ public class MenuLayout extends ViewGroup {
     private final ArrayList<View> matchItems = new ArrayList<>();
     private final ValueAnimator animator; // 动画
     private float animatorValue = ANIMATOR_START; // 当前动画值
-    private boolean reverse = false; // 动画是否应该反向播放
-    private final OnClickListener mainClickListener;
+    private boolean isOpened = false; // 菜单是否已经展开了
+    private final OnClickListener mainClickListener; // 主菜单被点击时，展开或收起菜单
 
     public MenuLayout(Context context) {
         this(context, null);
@@ -67,12 +65,12 @@ public class MenuLayout extends ViewGroup {
             requestLayout();
         });
         mainClickListener = v -> {
-            if (reverse) {
+            if (isOpened) { // 反向播放动画以收起菜单
                 animator.reverse();
-            } else {
+            } else { // 正向播放动画以展开菜单
                 animator.start();
             }
-            reverse = !reverse;
+            isOpened = !isOpened;
         };
         setChildrenDrawingOrderEnabled(true);
     }
@@ -170,7 +168,7 @@ public class MenuLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int count = getChildCount();
-        int currentBottom = b - getPaddingBottom();
+        int currentBottom = getMeasuredHeight() - getPaddingBottom();
         int mainVerticalMid = 0; // 主菜单垂直中心线位置
         int mainHorizontalMid = 0; // 主菜单水平中心线位置
         int mainIndex = 0; // 主菜单在子View中的索引
@@ -183,7 +181,7 @@ public class MenuLayout extends ViewGroup {
             int widthHalf = main.getMeasuredWidth() / 2;
             int heightHalf = main.getMeasuredHeight() / 2;
             MarginLayoutParams lp = (MarginLayoutParams) main.getLayoutParams();
-            int mainLeft = l + getPaddingLeft() + leftLengthOfIncrease + lp.leftMargin;
+            int mainLeft = getPaddingLeft() + leftLengthOfIncrease + lp.leftMargin;
             mainVerticalMid = mainLeft + widthHalf;
             int mainRight = mainVerticalMid + widthHalf;
             int mainBottom = currentBottom - lp.bottomMargin;
@@ -259,12 +257,20 @@ public class MenuLayout extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        // 当菜单项未展开时，忽略不在主菜单矩阵范围内的触摸事件
-        if (animatorValue == ANIMATOR_START) {
-            if (!mainRect.contains((int) ev.getX(), (int) ev.getY())) {
-                return true;
-            }
+        if (isOpened || mainRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return super.dispatchTouchEvent(ev);
+        } else { // 当菜单项未展开时，忽略不在主菜单矩阵范围内的触摸事件
+            return false;
         }
-        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 将菜单折叠起来.
+     */
+    public void foldMenu() {
+        if (isOpened) {
+            animator.reverse(); // 反向播放动画以收起菜单
+            isOpened = false;
+        }
     }
 }

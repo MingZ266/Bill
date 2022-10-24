@@ -1,0 +1,37 @@
+<resources>
+    <string name="expenditureSubject">支出科目</string>
+    <string name="expenditureAccount">付款账户</string>
+    <string name="price">金额</string>
+    <string name="originalPrice">原价</string>
+    <string name="discount">优惠</string>
+    <string name="remark">备注</string>
+    <string name="remarkHint">添加备注</string>
+    <string name="incomeSubject">收入科目</string>
+    <string name="incomeAccount">收款账户</string>
+    <string name="outAccount">转出账户</string>
+    <string name="inAccount">转入账户</string>
+    <string name="charges">手续费</string>
+    <string name="fund">基金</string>
+    <string name="purchaseTime">购买时间</string>
+    <string name="purchasePrice">买入金额</string>
+    <string name="confirmTime">确认时间</string>
+    <string name="confirmVal">确认净值</string>
+    <string name="confirmPrice">确认金额</string>
+    <string name="confirmAmount">确认份额</string>
+    <string name="salesTime">卖出时间</string>
+    <string name="inAccountTime">到账时间</string>
+    <string name="redo">再投资</string>
+    <string name="fundNetVal">基金净值</string>
+    <string name="incrementAmount">增加份额</string>
+    <string name="transferTime">转换时间</string>
+    <string name="outFund">转出基金</string>
+    <string name="outAmount">转出份额</string>
+    <string name="outPrice">转出金额</string>
+    <string name="inFund">转入基金</string>
+    <string name="inAmount">转入份额</string>
+    <string name="inPrice">转入金额</string>
+    <string name="timeForAccount">动账时间</string>
+    <string name="theAccount">动账账户</string>
+    <string name="priceForAccount">动账金额</string>
+    <string name="actualPrice">实际金额</string>
+</resources>

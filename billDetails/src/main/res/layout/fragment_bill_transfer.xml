@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:background="@color/bgDeep"
+    tools:theme="@style/Theme.Bill"
+    tools:context=".BillTransferFragment">
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/outPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        android:layout_marginTop="20dp"
+        app:title="@string/price"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/charges"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outPrice"
+        app:layout_constraintEnd_toEndOf="@id/outPrice"
+        app:layout_constraintTop_toBottomOf="@id/outPrice"
+        android:layout_marginTop="10dp"
+        app:title="@string/charges"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/inPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outPrice"
+        app:layout_constraintEnd_toEndOf="@id/outPrice"
+        app:layout_constraintTop_toBottomOf="@id/charges"
+        android:layout_marginTop="10dp"
+        app:title="@string/price"
+        android:enabled="false"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/outAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/outPrice"
+        app:layout_constraintTop_toTopOf="@id/outPrice"
+        android:layout_marginEnd="10dp"
+        app:title="@string/outAccount"/>
+    
+    <ImageView
+        android:layout_width="@dimen/iconSideLen"
+        android:layout_height="@dimen/iconSideLen"
+        app:layout_constraintStart_toStartOf="@id/outAccount"
+        app:layout_constraintEnd_toEndOf="@id/outAccount"
+        app:layout_constraintTop_toTopOf="@id/charges"
+        app:layout_constraintBottom_toBottomOf="@id/charges"
+        android:src="@drawable/ic_transfer"
+        android:tint="@color/themeColor"
+        tools:ignore="ContentDescription"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/inAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outAccount"
+        app:layout_constraintEnd_toEndOf="@id/outAccount"
+        app:layout_constraintTop_toTopOf="@id/inPrice"
+        app:title="@string/inAccount"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inAccount"
+        android:layout_marginTop="10dp"
+        app:title="@string/remark"
+        app:editable="true"
+        android:hint="@string/remarkHint"
+        tools:text=""/>
+    
+    <include
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/layout_control_bill"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

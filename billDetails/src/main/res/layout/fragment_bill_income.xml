@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:background="@color/bgDeep"
+    tools:theme="@style/Theme.Bill"
+    tools:context=".BillIncomeFragment">
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time"
+        android:layout_marginTop="20dp"
+        app:title="@string/incomeSubject"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/price"
+        app:layout_constraintTop_toBottomOf="@id/subject"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:title="@string/incomeAccount"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/account"
+        app:title="@string/price"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/account"
+        android:layout_marginTop="10dp"
+        app:title="@string/remark"
+        app:editable="true"
+        android:hint="@string/remarkHint"
+        tools:text=""/>
+    
+    <include
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/layout_control_bill"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

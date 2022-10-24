@@ -25,6 +25,7 @@
         android:hint="@null"
         android:textColorHint="@color/hintColor"
         android:inputType="textMultiLine"
+        android:maxLines="5"
         android:autofillHints="@null"
         tools:text="展示的文本"
         android:textSize="@dimen/mediumText"

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:background="@color/bgDeep"
+    tools:context=".BillFundTransferFragment">
+    
+    <TextView
+        android:id="@+id/useless1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/transferTime"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/transferTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/useless1"
+        android:layout_marginTop="5dp"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/outFund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/transferTime"
+        android:layout_marginTop="10dp"
+        app:title="@string/outFund"/>
+    
+    <TextView
+        android:id="@+id/useless2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/outFund"
+        android:layout_marginTop="10dp"
+        android:text="@string/outAmount"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:id="@+id/outAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/outNetVal"
+        app:layout_constraintTop_toBottomOf="@id/useless2"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/outNetVal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/outAmount"
+        app:layout_constraintEnd_toStartOf="@id/outPrice"
+        app:layout_constraintTop_toTopOf="@id/outAmount"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/outPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/outNetVal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/outAmount"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_stroke"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outNetVal"
+        app:layout_constraintTop_toTopOf="@id/useless2"
+        android:text="@string/fundNetVal"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outPrice"
+        app:layout_constraintTop_toTopOf="@id/useless2"
+        android:text="@string/outPrice"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/charges"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/outPrice"
+        app:layout_constraintEnd_toEndOf="@id/outPrice"
+        app:layout_constraintTop_toBottomOf="@id/outPrice"
+        android:layout_marginTop="10dp"
+        app:title="@string/charges"/>
+    
+    <ImageView
+        android:layout_width="@dimen/iconSideLen"
+        android:layout_height="@dimen/iconSideLen"
+        app:layout_constraintStart_toStartOf="@id/outAmount"
+        app:layout_constraintEnd_toEndOf="@id/outNetVal"
+        app:layout_constraintTop_toTopOf="@id/charges"
+        app:layout_constraintBottom_toBottomOf="@id/charges"
+        android:src="@drawable/ic_transfer"
+        android:tint="@color/themeColor"
+        tools:ignore="ContentDescription"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/inFund"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/charges"
+        android:layout_marginTop="10dp"
+        app:title="@string/inFund"/>
+    
+    <TextView
+        android:id="@+id/useless3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inFund"
+        android:layout_marginTop="10dp"
+        android:text="@string/outPrice"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:id="@+id/inAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/inNetVal"
+        app:layout_constraintTop_toBottomOf="@id/useless3"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/inNetVal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/inAmount"
+        app:layout_constraintEnd_toStartOf="@id/inPrice"
+        app:layout_constraintTop_toTopOf="@id/inAmount"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:id="@+id/inPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/inNetVal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/inAmount"
+        android:layout_marginStart="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_fill_when_enable"
+        tools:text="0.0000"
+        android:textColor="@color/commonText"
+        android:textSize="@dimen/mediumText"
+        android:gravity="center_vertical"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/inNetVal"
+        app:layout_constraintTop_toTopOf="@id/useless3"
+        android:text="@string/fundNetVal"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/inPrice"
+        app:layout_constraintTop_toTopOf="@id/useless3"
+        android:text="@string/inPrice"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/needAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="gone"
+        app:constraint_referenced_ids="useless4,timeForAccount,account,priceForAccount,actualPrice"/>
+    
+    <TextView
+        android:id="@+id/useless4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inAmount"
+        android:layout_marginTop="20dp"
+        android:text="@string/timeForAccount"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/smallText"/>
+    
+    <com.mingz.share.ui.ShowDateTime
+        android:id="@+id/timeForAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/useless4"
+        android:layout_marginTop="5dp"
+        android:enabled="false"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeForAccount"
+        android:layout_marginTop="10dp"
+        app:title="@string/theAccount"
+        android:enabled="false"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/priceForAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/actualPrice"
+        app:layout_constraintTop_toBottomOf="@id/account"
+        android:layout_marginTop="10dp"
+        app:title="@string/priceForAccount"
+        android:enabled="false"/>
+    
+    <com.mingz.share.ui.TextWithUnits
+        android:id="@+id/actualPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/priceForAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/priceForAccount"
+        android:layout_marginStart="10dp"
+        app:title="@string/actualPrice"/>
+    
+    <com.mingz.share.ui.ShowText
+        android:id="@+id/remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actualPrice"
+        android:layout_marginTop="10dp"
+        app:title="@string/remark"
+        app:editable="true"
+        android:hint="@string/remarkHint"
+        tools:text=""/>
+    
+    <include
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/layout_control_bill"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
