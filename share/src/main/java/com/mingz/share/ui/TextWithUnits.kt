@@ -26,6 +26,13 @@ class TextWithUnits(context: Context, attrs: AttributeSet? = null) : ConstraintL
     private var isClick = false // 是否改为处理点击事件
     private val clickLocation = PointF(0.0f, 0.0f) // 记录DOWN时的坐标
 
+    /**
+     * 当前数额.
+     */
+    var amount: String
+        set(amount) { binding.amount.setText(amount) }
+        get() = binding.amount.text.toString()
+
     init {
         binding = LayoutTextWithUnitsBinding.inflate(LayoutInflater.from(context), this)
         // 设置根布局参数
@@ -47,13 +54,6 @@ class TextWithUnits(context: Context, attrs: AttributeSet? = null) : ConstraintL
         binding.amount.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) clearFocus()
         }
-    }
-
-    /**
-     * 设置数额.
-     */
-    fun setAmount(amount: String) {
-        binding.amount.setText(amount)
     }
 
     /**

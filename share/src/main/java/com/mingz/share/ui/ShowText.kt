@@ -86,6 +86,11 @@ class ShowText(context: Context, attrs: AttributeSet? = null) : LinearLayout(con
     }
 
     /**
+     * 获取文本内容，如果内容为空，则返回null.
+     */
+    fun getContentOrNull() = content.ifEmpty { null }
+
+    /**
      * 当组件处于“可编辑”状态时，调用使得触摸该组件外的区域时清除焦点.
      *
      * 应该在该组件的父组件复写[dispatchTouchEvent]分配[MotionEvent.ACTION_DOWN]时调用.

@@ -1,5 +1,8 @@
 package com.mingz.data.bill
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /**
  * 基金转换.
  */
@@ -94,5 +97,51 @@ class FundTransfer(
     /**
      * @see Bill.dataId
      */
-    id: Int = -1
-) : Bill(7, id, time)
+    id: Int = NULL_ID
+) : Bill(id, time), Parcelable {
+    companion object {
+        const val typeId = 7
+
+        val CREATOR = object : Parcelable.Creator<FundTransfer?> {
+            override fun createFromParcel(parcel: Parcel) = try {
+                FundTransfer(
+                    parcel.readString()!!, // outFund
+                    parcel.readString()!!, // outAmount
+                    parcel.readString()!!, // outNetVal
+                    parcel.readString()!!, // charges
+                    parcel.readString()!!, // inFund
+                    parcel.readString()!!, // inAmount
+                    parcel.readString()!!, // inNetVal
+                    parcel.readString(), // timeForAccount
+                    readIdIfCanBeNull(parcel), // account
+                    parcel.readInt(), // type
+                    parcel.readString(), // price
+                    parcel.readString(), // remark
+                    parcel.readString()!!, // time
+                    parcel.readInt() // dataId
+                )
+            } catch (e: NullPointerException) { null }
+
+            override fun newArray(size: Int) = arrayOfNulls<FundTransfer>(size)
+        }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(outFund)
+        parcel.writeString(outAmount)
+        parcel.writeString(outNetVal)
+        parcel.writeString(charges)
+        parcel.writeString(inFund)
+        parcel.writeString(inAmount)
+        parcel.writeString(inNetVal)
+        parcel.writeString(timeForAccount)
+        writeIdIfCanBeNull(parcel, account)
+        parcel.writeInt(type)
+        parcel.writeString(price)
+        parcel.writeString(remark)
+        parcel.writeString(time)
+        parcel.writeInt(dataId)
+    }
+
+    override fun describeContents() = 0
+}

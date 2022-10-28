@@ -7,6 +7,7 @@ import android.content.Context
 import android.util.JsonReader
 import android.util.JsonWriter
 import android.util.Xml
+import com.mingz.data.bill.Bill
 import com.mingz.share.AES_MODE
 import com.mingz.share.MyLog
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,7 @@ import java.util.Collections
 import javax.crypto.Cipher
 
 /**
- * 支出科目.
+ * 支出科目（可能为空集合）.
  *
  * 由高度为2的无序树组成的森林，对应的有序数组为[orderedSubjectOutSet].
  * 不应在外部调用中修改其内部的值.
@@ -30,7 +31,7 @@ lateinit var subjectOutSet: Array<Subject>
     private set
 
 /**
- * 收入科目.
+ * 收入科目（可能为空集合）.
  *
  * 由高度为2的无序树组成的森林，对应的有序数组为[orderedSubjectInSet].
  * 不应在外部调用中修改其内部的值.
@@ -41,7 +42,7 @@ lateinit var subjectInSet: Array<Subject>
     private set
 
 /**
- * 账户.
+ * 账户（可能为空集合）.
  *
  * 按[Account.id]升序排列，不应在外部调用中修改其内部的值.
  *
@@ -51,7 +52,7 @@ lateinit var accountSet: Array<Account>
     private set
 
 /**
- * 币种.
+ * 币种（可能为空集合）.
  *
  * 按[Type.id]升序排列，不应在外部调用中修改其内部的值.
  *
@@ -75,7 +76,7 @@ private val myLog by lazy(LazyThreadSafetyMode.NONE) {
 }
 private val encoding = StandardCharsets.UTF_8
 // 宏变量
-private const val ERR_ID = -1
+private const val ERR_ID = Bill.NULL_ID
 private const val ERR_NAME = "Null"
 private const val ERR_COUNT = 0
 private const val ERR_VAL = "0.00"
@@ -695,6 +696,7 @@ fun findType(id: Int) = find(typeSet, id)
 
 // 按给定id值以二分法查找目标元素
 private fun <T> find(arr: Array<T>, id: Int): T? {
+    if (id == Bill.NULL_ID) return null
     val index = Arrays.binarySearch(arr, id)
     return if (index < 0) null else arr[index]
 }

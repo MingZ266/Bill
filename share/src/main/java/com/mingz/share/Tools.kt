@@ -1,12 +1,26 @@
 package com.mingz.share
 
 import android.content.Context
+import android.os.Handler
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.viewbinding.ViewBinding
+
+/**
+ * 通过[Toast]显示[message].
+ */
+fun Context.showToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+/**
+ * 在UI线程上通过[Toast]显示[message].
+ */
+fun Context.showToastOnUi(message: String) {
+    Handler(mainLooper).post { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+}
 
 /**
  * 设置水平和垂直方向内边距.

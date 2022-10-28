@@ -1,5 +1,8 @@
 package com.mingz.data.bill
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /**
  * 支出.
  */
@@ -47,5 +50,40 @@ class Expenditure(
     /**
      * @see Bill.dataId
      */
-    id: Int = -1
-) : Bill(1, id, time)
+    id: Int = NULL_ID
+) : Bill(id, time), Parcelable {
+    companion object {
+        const val typeId = 1
+
+        val CREATOR = object : Parcelable.Creator<Expenditure?> {
+            override fun createFromParcel(parcel: Parcel) = try {
+                Expenditure(
+                    parcel.readInt(), // subject
+                    parcel.readInt(), // account
+                    parcel.readInt(), // type
+                    parcel.readString()!!, // price
+                    parcel.readString()!!, // discount
+                    parcel.readString(), // remark
+                    parcel.readString()!!, // time
+                    parcel.readInt() // dataId
+                )
+            } catch (e: NullPointerException) { null }
+
+            override fun newArray(size: Int) = arrayOfNulls<Expenditure>(size)
+        }
+    }
+
+    @Suppress("DuplicatedCode")
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(subject)
+        parcel.writeInt(account)
+        parcel.writeInt(type)
+        parcel.writeString(price)
+        parcel.writeString(discount)
+        parcel.writeString(remark)
+        parcel.writeString(time)
+        parcel.writeInt(dataId)
+    }
+
+    override fun describeContents() = 0
+}

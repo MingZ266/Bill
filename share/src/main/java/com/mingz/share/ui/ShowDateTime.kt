@@ -14,6 +14,7 @@ import com.mingz.share.databinding.DialogDateTimePickerBinding
 import com.mingz.share.databinding.LayoutShowDateTimeBinding
 import com.mingz.share.setPadding
 import com.mingz.share.ui.DateTimePicker.MODE
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ShowDateTime(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
@@ -22,16 +23,11 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null) : LinearLayout
     private val mode: Int
     private val dataTimePicker: DialogPack<DialogDateTimePickerBinding>
 
-    var year = 1970
-        private set
-    var month = 1
-        private set
-    var day = 1
-        private set
-    var hour = 0
-        private set
-    var minute = 0
-        private set
+    private var year = 1970
+    private var month = 1
+    private var day = 1
+    private var hour = 0
+    private var minute = 0
 
     init {
         binding = LayoutShowDateTimeBinding.inflate(LayoutInflater.from(context), this)
@@ -103,12 +99,36 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null) : LinearLayout
                 minute.toString().padStart(2, '0')
     }
 
-    fun updateToNowTime() {
-        val now = Calendar.getInstance()
-        setDateTime(
-            now[Calendar.YEAR], now[Calendar.MONTH] + 1,
-            now[Calendar.DAY_OF_MONTH], now[Calendar.HOUR_OF_DAY],
-            now[Calendar.MINUTE]
-        )
+    private fun setDateTime(calendar: Calendar) = setDateTime(
+        calendar[Calendar.YEAR], calendar[Calendar.MONTH] + 1,
+        calendar[Calendar.DAY_OF_MONTH], calendar[Calendar.HOUR_OF_DAY],
+        calendar[Calendar.MINUTE]
+    )
+
+    /**
+     * 按[format]格式解析[dateTime]以设置日期时间.
+     */
+    fun setDateTime(dateTime: String, format: String) {
+        SimpleDateFormat(format, Locale.getDefault()).parse(dateTime)?.let {
+            setDateTime(Calendar.getInstance().apply { time = it })
+        }
+    }
+
+    /**
+     * 更新到当前日期时间.
+     */
+    fun updateToNowTime() = setDateTime(Calendar.getInstance())
+
+    /**
+     * 按[format]格式获取日期时间.
+     */
+    fun getDateTime(format: String): String {
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.YEAR] = year
+        calendar[Calendar.MONTH] = month - 1
+        calendar[Calendar.DAY_OF_MONTH] = day
+        calendar[Calendar.HOUR_OF_DAY] = hour
+        calendar[Calendar.MINUTE] = minute
+        return SimpleDateFormat(format, Locale.getDefault()).format(calendar.time)
     }
 }

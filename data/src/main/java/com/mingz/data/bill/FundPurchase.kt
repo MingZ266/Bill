@@ -1,5 +1,8 @@
 package com.mingz.data.bill
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /**
  * 基金买入.
  */
@@ -70,5 +73,45 @@ class FundPurchase(
     /**
      * @see Bill.dataId
      */
-    id: Int = -1
-) : Bill(4, id, time)
+    id: Int = NULL_ID
+) : Bill(id, time), Parcelable {
+    companion object {
+        const val typeId = 4
+
+        val CREATOR = object : Parcelable.Creator<FundPurchase?> {
+            override fun createFromParcel(parcel: Parcel) = try {
+                FundPurchase(
+                    parcel.readString()!!, // fund
+                    parcel.readInt(), // account
+                    parcel.readInt(), // type
+                    parcel.readString()!!, // price
+                    parcel.readString()!!, // discount
+                    parcel.readString()!!, // confirmDate
+                    parcel.readString()!!, // netVal
+                    parcel.readString()!!, // charges
+                    parcel.readString(), // remark
+                    parcel.readString()!!, // time
+                    parcel.readInt() // dataId
+                )
+            } catch (e: NullPointerException) { null }
+
+            override fun newArray(size: Int) = arrayOfNulls<FundPurchase>(size)
+        }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(fund)
+        parcel.writeInt(account)
+        parcel.writeInt(type)
+        parcel.writeString(price)
+        parcel.writeString(discount)
+        parcel.writeString(confirmDate)
+        parcel.writeString(netVal)
+        parcel.writeString(charges)
+        parcel.writeString(remark)
+        parcel.writeString(time)
+        parcel.writeInt(dataId)
+    }
+
+    override fun describeContents() = 0
+}
