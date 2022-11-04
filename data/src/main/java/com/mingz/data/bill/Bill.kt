@@ -1,6 +1,7 @@
 package com.mingz.data.bill
 
 import android.os.Parcel
+import java.math.BigDecimal
 
 /**
  * 表示账单的父类.
@@ -24,14 +25,24 @@ abstract class Bill(
 ) {
     companion object {
         /**
+         * 精确到百分位的0值.
+         */
+        const val ZERO_2 = "0.00"
+
+        /**
+         * 精确到万分位的0值.
+         */
+        const val ZERO_4 = "0.0000"
+
+        /**
          * 精确到百分位的格式串.
          */
-        const val FORMAT_2 = "%.2f"
+        private const val FORMAT_2 = "%.2f"
 
         /**
          * 精确度万分位的格式串.
          */
-        const val FORMAT_4 = "%.4f"
+        private const val FORMAT_4 = "%.4f"
 
         /**
          * 日期时间的格式.
@@ -47,6 +58,16 @@ abstract class Bill(
          * 当id为该值时，意味着该id或id代表的数据应记为null.
          */
         const val NULL_ID = -1
+
+        /**
+         * 使用[FORMAT_2]格式化[number].
+         */
+        fun formatBigDecimal2(number: BigDecimal) = String.format(FORMAT_2, number)
+
+        /**
+         * 使用[FORMAT_4]格式化[number].
+         */
+        fun formatBigDecimal4(number: BigDecimal) = String.format(FORMAT_4, number)
 
         /**
          * 如果id是可空的，使用该方法替代[Parcel.writeInt]写入[id].

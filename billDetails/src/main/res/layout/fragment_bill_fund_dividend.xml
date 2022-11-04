@@ -56,6 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/redo"
         android:layout_marginTop="10dp"
+        tools:visibility="gone"
         app:title="@string/incomeAccount"/>
     
     <!-- 再投资. -->
@@ -64,7 +65,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="useless1,useless2,fundVal,increment"/>
+        tools:visibility="visible"
+        app:constraint_referenced_ids="useless1,useless2,netVal,incrementAmount"/>
     
     <TextView
         android:id="@+id/useless1"
@@ -75,14 +77,14 @@
         android:layout_marginTop="10dp"
         android:text="@string/fundNetVal"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/mediumText"/>
+        android:textSize="@dimen/smallText"/>
     
     <TextView
-        android:id="@+id/fundVal"
+        android:id="@+id/netVal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/increment"
+        app:layout_constraintEnd_toStartOf="@id/incrementAmount"
         app:layout_constraintTop_toBottomOf="@id/useless1"
         android:layout_marginTop="5dp"
         android:paddingHorizontal="10dp"
@@ -94,12 +96,12 @@
         android:gravity="center_vertical"/>
     
     <TextView
-        android:id="@+id/increment"
+        android:id="@+id/incrementAmount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/fundVal"
+        app:layout_constraintStart_toEndOf="@id/netVal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fundVal"
+        app:layout_constraintTop_toTopOf="@id/netVal"
         android:layout_marginStart="10dp"
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"
@@ -113,30 +115,29 @@
         android:id="@+id/useless2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/increment"
+        app:layout_constraintStart_toStartOf="@id/incrementAmount"
         app:layout_constraintTop_toTopOf="@id/useless1"
         android:text="@string/incrementAmount"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/mediumText"/>
+        android:textSize="@dimen/smallText"/>
     
-    <!--<com.mingz.share.ui.ShowText
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/remarkBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="account,netVal"
+        app:barrierDirection="bottom"/>
+    
+    <com.mingz.share.ui.ShowText
         android:id="@+id/remark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inAccount"
+        app:layout_constraintTop_toBottomOf="@id/remarkBarrier"
         android:layout_marginTop="10dp"
         app:title="@string/remark"
         app:editable="true"
         android:hint="@string/remarkHint"
-        tools:text=""/>-->
-    
-    <include
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        layout="@layout/layout_control_bill"/>
+        tools:text=""/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

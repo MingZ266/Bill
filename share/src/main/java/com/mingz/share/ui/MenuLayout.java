@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class MenuLayout extends ViewGroup {
     // 动画过程为：菜单项中心点 从 主菜单中心点位置 到 菜单展开后菜单项中心点位置 变化，菜单项透明度则是从0到1
     private static final float ANIMATOR_START = 0.0f; // 动画开始值
-    private static final float ANIMATOR_End = 1.0f; // 动画结束值
+    private static final float ANIMATOR_END = 1.0f; // 动画结束值
 
     private int mainIndex = -1; // 主菜单在子View中的索引
     private final Rect mainRect = new Rect(); // 主菜单所在矩阵
@@ -52,12 +52,12 @@ public class MenuLayout extends ViewGroup {
                 defStyleAttr, defStyleRes);
         try {
             if (typedArray.getBoolean(R.styleable.MenuLayout_preview, false)) {
-                animatorValue = ANIMATOR_End;
+                animatorValue = ANIMATOR_END;
             }
         } finally {
             typedArray.recycle();
         }
-        animator = ValueAnimator.ofFloat(ANIMATOR_START, ANIMATOR_End);
+        animator = ValueAnimator.ofFloat(ANIMATOR_START, ANIMATOR_END);
         animator.setDuration(300);
         animator.addUpdateListener(animation -> {
             animatorValue = (float) animation.getAnimatedValue();

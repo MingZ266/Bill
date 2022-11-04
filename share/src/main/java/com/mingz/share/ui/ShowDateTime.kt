@@ -106,6 +106,11 @@ class ShowDateTime(context: Context, attrs: AttributeSet? = null) : LinearLayout
     )
 
     /**
+     * 复制[view]中的日期时间.
+     */
+    fun setDateTime(view: ShowDateTime) = setDateTime(view.year, view.month, view.day, view.hour, view.minute)
+
+    /**
      * 按[format]格式解析[dateTime]以设置日期时间.
      */
     fun setDateTime(dateTime: String, format: String) {

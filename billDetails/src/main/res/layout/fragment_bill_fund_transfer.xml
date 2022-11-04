@@ -196,7 +196,7 @@
         android:layout_marginStart="10dp"
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"
-        android:background="@drawable/bg_fill_when_enable"
+        android:background="@drawable/bg_stroke"
         tools:text="0.0000"
         android:textColor="@color/commonText"
         android:textSize="@dimen/mediumText"
@@ -224,7 +224,6 @@
         android:id="@+id/needAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:visibility="gone"
         app:constraint_referenced_ids="useless4,timeForAccount,account,priceForAccount,actualPrice"/>
     
     <TextView
@@ -289,13 +288,5 @@
         app:editable="true"
         android:hint="@string/remarkHint"
         tools:text=""/>
-    
-    <include
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        layout="@layout/layout_control_bill"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

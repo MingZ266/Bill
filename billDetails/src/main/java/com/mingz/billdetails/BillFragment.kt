@@ -2,11 +2,16 @@ package com.mingz.billdetails
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.mingz.billdetails.databinding.LayoutControlBillBinding
 import com.mingz.data.bill.Bill
+import com.mingz.share.DialogPack
 import com.mingz.share.MyLog
+import com.mingz.share.databinding.DialogInputAmountBinding
+import com.mingz.share.showToast
 
 /**
  * 是否保存了数据.
@@ -39,11 +44,18 @@ abstract class BillFragment : Fragment() {
     /**
      * 初始化视图中的数据.
      *
+     * 调用前需先调用[initMenuBinding].
+     *
      * 在“添加账单”模式下，使用“add + hide + show”方式切换[Fragment]时，用于在“show”操作前：
      *
      * 初始化[BillFragment]视图上的数据.
      */
     abstract fun initViewBeforeShow()
+
+    /**
+     * 设置[BillFragmentImpl.menuBinding].
+     */
+    abstract fun initMenuBinding(binding: LayoutControlBillBinding)
 
     /**
      * 当根视图分配ACTION_DOWN事件时调用.
@@ -72,16 +84,46 @@ abstract class BillFragmentImpl<BILL> : BillFragment() where BILL : Bill, BILL :
     /**
      * 该[BillFragment]的工作模式.
      *
-     * - true: 修改账单
-     * - false: 查看账单
      * - null: 添加账单
+     * - true: 查看账单
+     * - false: 修改账单
      */
     protected var mode: Boolean? = null
         private set
 
+    /**
+     * 操作菜单.
+     */
+    private var menuBinding: LayoutControlBillBinding? = null
+
+    /**
+     * 数额输入弹窗.
+     */
+    private var mInputAmountDialog: DialogPack<DialogInputAmountBinding>? = null
+
+    protected companion object {
+        @JvmField
+        /**
+         * 添加账单模式.
+         */
+        val MODE_ADD: Boolean? = null
+
+        /**
+         * 查看账单模式.
+         */
+        const val MODE_CHECK = true
+
+        /**
+         * 修改账单模式.
+         */
+        const val MODE_MODIFY = false
+    }
+
     final override fun clearDataAfterHide() {
         bill = null
         mode = null
+        menuBinding = null
+        mInputAmountDialog = null
     }
 
     final override fun initViewBeforeShow() {
@@ -89,6 +131,11 @@ abstract class BillFragmentImpl<BILL> : BillFragment() where BILL : Bill, BILL :
         mode = null
         initFromBill()
         initView()
+        initMenuItem()
+    }
+
+    final override fun initMenuBinding(binding: LayoutControlBillBinding) {
+        menuBinding = binding
     }
 
     /**
@@ -123,8 +170,6 @@ abstract class BillFragmentImpl<BILL> : BillFragment() where BILL : Bill, BILL :
 
     /**
      * 将页面数据填充到视图中.
-     *
-     * 应调用[updateMenuItem]以更新菜单项.
      */
     protected abstract fun initView()
 
@@ -152,20 +197,55 @@ abstract class BillFragmentImpl<BILL> : BillFragment() where BILL : Bill, BILL :
      * 根据[mode]更新菜单项图标.
      *
      * 菜单项item1、item2操作含义如下：
-     * - 修改账单(true): 选择币种、保存
-     * - 查看账单(false): 修改账单、删除账单
-     * - 添加账单(null): 选择币种、保存
+     * - 查看账单: 修改账单、删除账单
+     * - 修改账单: 选择币种、保存
+     * - 添加账单: 选择币种、保存
      */
-    protected fun updateMenuItem(menuBinding: LayoutControlBillBinding) {
-        if (mode == null || mode!!) { // 添加账单或修改账单
+    private fun initMenuItem() {
+        val menuBinding = menuBinding ?: return
+        if (mode == MODE_ADD || mode == MODE_MODIFY) { // 添加账单或修改账单
             menuBinding.item1.setImageResource(R.drawable.ic_type)
+            menuBinding.item1.setOnClickListener { // 选择币种
+                context?.showToast("选择币种")
+            }
             menuBinding.item2.setImageResource(R.drawable.ic_save)
-        } else {
-            // TODO: 变更为编辑、删除图标
-            menuBinding.item1.setImageResource(R.drawable.ic_date)
-            menuBinding.item2.setImageResource(R.drawable.ic_time)
+            menuBinding.item2.setOnClickListener { // 保存
+                context?.showToast("保存")
+            }
+        } else { // 查看账单
+            menuBinding.item1.setImageResource(R.drawable.ic_edit)
+            menuBinding.item1.setOnClickListener { // 修改账单
+                context?.showToast("修改账单")
+            }
+            menuBinding.item2.setImageResource(R.drawable.ic_delete)
+            menuBinding.item2.setOnClickListener { // 删除账单
+                context?.showToast("删除账单")
+            }
         }
     }
+
+    /**
+     * 为[views]中的每一个元素设置[enabled].
+     */
+    protected fun setEnabled(enabled: Boolean, vararg views: View) {
+        for (v in views) {
+            v.isEnabled = enabled
+        }
+    }
+
+    /**
+     * 获取数额输入弹窗.
+     */
+    protected val inputAmountDialog: DialogPack<DialogInputAmountBinding>
+        get() {
+            if (mInputAmountDialog == null) {
+                val context = context!!
+                mInputAmountDialog = DialogPack(context, object : DialogPack.Creator<DialogInputAmountBinding> {
+                    override fun createBinding() = DialogInputAmountBinding.inflate(LayoutInflater.from(context))
+                }, true)
+            }
+            return mInputAmountDialog!!
+        }
 
     @CallSuper
     override fun onSaveInstanceState(outState: Bundle) {
@@ -199,6 +279,14 @@ abstract class BillFragmentImpl<BILL> : BillFragment() where BILL : Bill, BILL :
                 initFromBill()
             }
             initView()
+            initMenuItem()
         }
+    }
+
+    @CallSuper
+    override fun onDestroyView() {
+        super.onDestroyView()
+        menuBinding = null
+        mInputAmountDialog = null
     }
 }

@@ -168,27 +168,16 @@ class InputAmount(context: Context, attrs: AttributeSet? = null) : GridLayout(co
         binding.amount.text = "$sign$integer.$decimal"
     }
 
-    /**
-     * 设置初始化参数.
-     * @param initValue 初始数额，默认为"0"
-     * @param accuracy 精确度，默认为2
-     * @param allowNeg 是否允许输入负值，默认为false；若[initValue]为负数，该值将视为true
-     */
-    fun initParams(initValue: String = "0", @IntRange(from = 1) accuracy: Int = 2,
-                   allowNeg: Boolean = false) {
+    private fun initPart1(accuracy: Int) {
         // 重置状态变量
         firstKey = true
         inputInteger = true
         // 设置精确度及格式化字符串
         this.accuracy = accuracy
         format = "%.${accuracy}f"
-        // 分割初始数额
-        val amount = try {
-            String.format(format, BigDecimal(initValue))
-        } catch (e: Exception) { // 不是合法的数值
-            myLog.i("初始值不是合法的数值: $initValue")
-            String.format(format, 0.0)
-        }
+    }
+
+    private fun initPart2(amount: String, allowNeg: Boolean) {
         val index = amount.indexOf('.')
         decimal = amount.substring(index + 1) // 记录初始化数额的小数部分
         decimalPart.clear() // 清空可能记录的小数部分
@@ -206,6 +195,40 @@ class InputAmount(context: Context, attrs: AttributeSet? = null) : GridLayout(co
             }
         }
         binding.amount.text = amount // 设置显示的数额
+    }
+
+    /**
+     * 设置初始化参数.
+     * @param initValue 初始数额，默认为"0"
+     * @param accuracy 精确度，默认为2
+     * @param allowNeg 是否允许输入负值，默认为false；若[initValue]为负数，该值将视为true
+     */
+    fun initParams(initValue: String = "0", @IntRange(from = 1) accuracy: Int = 2,
+                   allowNeg: Boolean = false) {
+        initPart1(accuracy)
+        initPart2(try {
+            String.format(format, BigDecimal(initValue))
+        } catch (e: Exception) { // 不是合法的数值
+            myLog.i("初始值不是合法的数值: $initValue")
+            String.format(format, 0.0)
+        }, allowNeg)
+    }
+
+    /**
+     * 设置初始化参数.
+     * @param initValue 初始数额，默认为[BigDecimal.ZERO]
+     * @param accuracy 精确度，默认为2
+     * @param allowNeg 是否允许输入负值，默认为false；若[initValue]为负数，该值将视为true
+     */
+    fun initParams(initValue: BigDecimal = BigDecimal.ZERO, @IntRange(from = 1) accuracy: Int = 2,
+                   allowNeg: Boolean = false) {
+        initPart1(accuracy)
+        initPart2(try {
+            String.format(format, initValue)
+        } catch (e: Exception) { // 不是合法的数值
+            myLog.i("初始值不是合法的数值: $initValue")
+            String.format(format, 0.0)
+        }, allowNeg)
     }
 
     /**

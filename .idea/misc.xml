@@ -5,7 +5,7 @@
       <map>
         <entry key="..\:/App/Bill/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.16018518518518518" />
         <entry key="..\:/App/Bill/app/src/main/res/drawable/icon_foreground.xml" value="0.16018518518518518" />
-        <entry key="..\:/App/Bill/app/src/main/res/layout/activity_temp.xml" value="0.14666666666666667" />
+        <entry key="..\:/App/Bill/app/src/main/res/layout/activity_temp.xml" value="0.1" />
         <entry key="..\:/App/Bill/app/src/main/res/layout/dialog_test.xml" value="0.22" />
         <entry key="..\:/App/Bill/app/src/main/res/layout/fragment_test.xml" value="0.14990942028985507" />
         <entry key="..\:/App/Bill/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.16018518518518518" />
@@ -13,7 +13,7 @@
         <entry key="..\:/App/Bill/app/src/main/res/mipmap-anydpi-v26/icon_round.xml" value="0.16018518518518518" />
         <entry key="..\:/App/Bill/billDetails/src/main/res/drawable/ic_transfer.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_expenditure.xml" value="0.16666666666666666" />
-        <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_fund_dividend.xml" value="0.22" />
+        <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_fund_dividend.xml" value="0.1" />
         <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_fund_purchase.xml" value="0.22" />
         <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_fund_sales.xml" value="0.22" />
         <entry key="..\:/App/Bill/billDetails/src/main/res/layout/fragment_bill_fund_transfer.xml" value="0.22" />
@@ -41,6 +41,7 @@
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_time.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_type.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/layout/dialog_date_time_picker.xml" value="0.22" />
+        <entry key="..\:/App/Bill/share/src/main/res/layout/dialog_input_amount.xml" value="0.22" />
         <entry key="..\:/App/Bill/share/src/main/res/layout/layout_bill_control.xml" value="0.22" />
         <entry key="..\:/App/Bill/share/src/main/res/layout/layout_floating_menu.xml" value="0.1" />
         <entry key="..\:/App/Bill/share/src/main/res/layout/layout_input_amount.xml" value="0.22" />

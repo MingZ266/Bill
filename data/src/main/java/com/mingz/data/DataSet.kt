@@ -677,26 +677,26 @@ private fun parsingTypeSet(data: ByteArray) {
 /**
  * 通过[Subject.id]查找支出科目.
  */
-fun findSubjectOut(id: Int) = find(orderedSubjectOutSet, id)
+fun findSubjectOut(id: Int?) = find(orderedSubjectOutSet, id)
 
 /**
  * 通过[Subject.id]查找收入科目.
  */
-fun findSubjectIn(id: Int) = find(orderedSubjectInSet, id)
+fun findSubjectIn(id: Int?) = find(orderedSubjectInSet, id)
 
 /**
  * 通过[Account.id]查找账户.
  */
-fun findAccount(id: Int) = find(accountSet, id)
+fun findAccount(id: Int?) = find(accountSet, id)
 
 /**
  * 通过[Type.id]查找币种.
  */
-fun findType(id: Int) = find(typeSet, id)
+fun findType(id: Int?) = find(typeSet, id)
 
 // 按给定id值以二分法查找目标元素
-private fun <T> find(arr: Array<T>, id: Int): T? {
-    if (id == Bill.NULL_ID) return null
+private fun <T> find(arr: Array<T>, id: Int?): T? {
+    if (id == null || id == Bill.NULL_ID) return null
     val index = Arrays.binarySearch(arr, id)
     return if (index < 0) null else arr[index]
 }

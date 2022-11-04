@@ -162,13 +162,5 @@
         app:editable="true"
         android:hint="@string/remarkHint"
         tools:text=""/>
-    
-    <include
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        layout="@layout/layout_control_bill"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
