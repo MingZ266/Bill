@@ -13,11 +13,9 @@ import com.mingz.share.*
 import kotlinx.coroutines.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.MessageDigest
-import java.security.PrivateKey
-import java.security.PublicKey
+import java.security.*
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -116,7 +114,7 @@ suspend fun checkSafetyOption(context: Context): Boolean {
             // 存储的安全密钥未加密，直接读取作为安全密钥
             val safeKeyFile = safeKeyFile(context, FILE_KEY_NONE)
             if (safeKeyFile.exists()) {
-                SafeKey.init(SecretKeySpec(readFile(safeKeyFile), AES.ALGORITHM))
+                SafeKey.init(AES.generateKey(readFile(safeKeyFile)))
                 myLog.i("直接读取安全密钥")
             } else { // 创建安全密钥
                 val safeKey = generateSafeKey()
@@ -300,6 +298,20 @@ internal class RSA {
         }
 
         /**
+         * 从[publicKey]中构造公钥.
+         */
+        @JvmStatic
+        fun generatePublic(publicKey: ByteArray): PublicKey =
+            KeyFactory.getInstance(ALGORITHM).generatePublic(X509EncodedKeySpec(publicKey))
+
+        /**
+         * 从[privateKey]中构造私钥.
+         */
+        @JvmStatic
+        fun generatePrivate(privateKey: ByteArray): PrivateKey =
+            KeyFactory.getInstance(ALGORITHM).generatePrivate(PKCS8EncodedKeySpec(privateKey))
+
+        /**
          * 应用[FULL_NAME]，使用[publicKey]对[data]加密.
          */
         @JvmStatic
@@ -363,7 +375,7 @@ internal class AES {
         /**
          * AES算法名称.
          */
-        const val ALGORITHM = "AES"
+        private const val ALGORITHM = "AES"
 
         /**
          * AES密钥长度.
@@ -386,6 +398,12 @@ internal class AES {
             generator.init(KEY_SIZE)
             return generator.generateKey()
         }
+
+        /**
+         * 从[key]中构造密钥.
+         */
+        @JvmStatic
+        fun generateKey(key: ByteArray): SecretKey = SecretKeySpec(key, ALGORITHM)
 
         /**
          * 应用[FULL_NAME]，使用[key]对[data]加密.
