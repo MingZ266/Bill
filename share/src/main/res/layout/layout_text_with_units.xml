@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="标题"
-        android:textSize="@dimen/smallText"
+        android:textSize="@dimen/textSmall"
         android:textColor="@color/themeColor"/>
     
     <!-- 用于内容过长时可水平滑动显示. -->
@@ -32,7 +32,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         tools:text="0.0000"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:textColor="@color/commonText"
         android:hint="@null"
         android:inputType="text"
@@ -47,7 +47,7 @@
         app:layout_constraintTop_toTopOf="@id/amount"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="单位"
-        android:textSize="@dimen/smallText"
+        android:textSize="@dimen/textSmall"
         android:textColor="@color/themeColor"/>
 
 </merge>

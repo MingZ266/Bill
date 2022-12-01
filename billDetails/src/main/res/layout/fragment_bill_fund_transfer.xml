@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/transferTime"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.ShowDateTime
         android:id="@+id/transferTime"
@@ -45,7 +45,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/outAmount"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:id="@+id/outAmount"
@@ -60,7 +60,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -76,7 +76,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -92,7 +92,7 @@
         android:background="@drawable/bg_stroke"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -102,7 +102,7 @@
         app:layout_constraintTop_toTopOf="@id/useless2"
         android:text="@string/fundNetVal"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
         app:layout_constraintTop_toTopOf="@id/useless2"
         android:text="@string/outPrice"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.TextWithUnits
         android:id="@+id/charges"
@@ -124,8 +124,8 @@
         app:title="@string/charges"/>
     
     <ImageView
-        android:layout_width="@dimen/iconSideLen"
-        android:layout_height="@dimen/iconSideLen"
+        android:layout_width="@dimen/iconMedium"
+        android:layout_height="@dimen/iconMedium"
         app:layout_constraintStart_toStartOf="@id/outAmount"
         app:layout_constraintEnd_toEndOf="@id/outNetVal"
         app:layout_constraintTop_toTopOf="@id/charges"
@@ -152,7 +152,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/outPrice"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:id="@+id/inAmount"
@@ -167,7 +167,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -183,7 +183,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -199,7 +199,7 @@
         android:background="@drawable/bg_stroke"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -209,7 +209,7 @@
         app:layout_constraintTop_toTopOf="@id/useless3"
         android:text="@string/fundNetVal"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:layout_width="wrap_content"
@@ -218,7 +218,7 @@
         app:layout_constraintTop_toTopOf="@id/useless3"
         android:text="@string/inPrice"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <androidx.constraintlayout.widget.Group
         android:id="@+id/needAccount"
@@ -235,7 +235,7 @@
         android:layout_marginTop="20dp"
         android:text="@string/timeForAccount"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.ShowDateTime
         android:id="@+id/timeForAccount"

@@ -1,8 +1,20 @@
 package com.mingz.share
 
-// 软件运行所需的需共享的常量
+// 共享常量
+
+// 配置文件名称.
+/**
+ * 保存安全项验证方式的配置文件名称.
+ */
+const val FILE_CONFIG_SAFETY = "cfg_verify"
+
+// 键名称，以数据类型结尾
+/**
+ * 切换动画的类型.
+ */
+const val KEY_ANIM_TYPE_INT = "anim_type"
 
 /**
- * AES加密模式及填充.
+ * 切换动画的方向.
  */
-const val AES_MODE = "AES/CFB/NoPadding"
+const val KEY_ANIM_DIRECTION_INT = "anim_direction"

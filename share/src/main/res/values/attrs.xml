@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="SwitchAnimView">
+        <!-- 切换时遮罩的颜色，透明度无效. -->
+        <attr format="color" name="maskColor" />
+    </declare-styleable>
+    
     <declare-styleable name="DateTimePicker">
         <!-- 选择工作模式：all-显示日期和时间选择器；date-只显示日期选择器；time-只显示时间选择器. -->
         <attr name="pickerMode" format="enum">
@@ -12,6 +17,41 @@
     <declare-styleable name="MenuLayout">
         <!-- 是否预览菜单展开（应使用tools命名空间）. -->
         <attr name="preview" format="boolean"/>
+    </declare-styleable>
+    
+    <declare-styleable name="DrawableTextView">
+        <!--设置文本左边的图片及大小.-->
+        <attr name="android:drawableStart"/>
+        <attr name="drawableStartWidth" format="dimension"/>
+        <attr name="drawableStartHeight" format="dimension"/>
+        <!--设置文本右边的图片及大小.-->
+        <attr name="android:drawableEnd"/>
+        <attr name="drawableEndWidth" format="dimension"/>
+        <attr name="drawableEndHeight" format="dimension"/>
+        <!--设置文本上边的图片及大小.-->
+        <attr name="android:drawableTop"/>
+        <attr name="drawableTopWidth" format="dimension"/>
+        <attr name="drawableTopHeight" format="dimension"/>
+        <!--设置文本下边的图片及大小.-->
+        <attr name="android:drawableBottom"/>
+        <attr name="drawableBottomWidth" format="dimension"/>
+        <attr name="drawableBottomHeight" format="dimension"/>
+    </declare-styleable>
+    
+    <declare-styleable name="Switch">
+        <attr name="android:checked"/>
+        <!-- 当点击时，是否自动切换选择，默认为true. -->
+        <attr name="autoToggle" format="boolean"/>
+        <!-- 圆的半径. -->
+        <attr name="radius" format="dimension"/>
+        <!-- 圆的颜色. -->
+        <attr name="thumbColor" format="color|reference"/>
+        <!-- 轨道的颜色. -->
+        <attr name="trackColor" format="color|reference"/>
+    </declare-styleable>
+    
+    <declare-styleable name="CheckedImageView">
+        <attr name="android:checked"/>
     </declare-styleable>
     
     <declare-styleable name="ShowDateTime">

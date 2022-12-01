@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.mingz.security">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mingz.security">
+    
+    <application>
+        <activity
+            android:name=".SafetyVerifyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SafetyOptionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bill.Second" />
+        <activity
+            android:name=".option.PasswordActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bill.Second" />
+        <activity
+            android:name=".option.PatternActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bill.Second" />
+        <activity
+            android:name=".option.FingerprintActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bill.Second" />
+    </application>
 
 </manifest>

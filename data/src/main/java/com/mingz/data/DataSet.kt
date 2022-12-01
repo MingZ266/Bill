@@ -8,16 +8,13 @@ import android.util.JsonReader
 import android.util.JsonWriter
 import android.util.Xml
 import com.mingz.data.bill.Bill
-import com.mingz.share.AES_MODE
 import com.mingz.share.MyLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.io.*
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
-import java.util.Collections
-import javax.crypto.Cipher
+import java.util.*
 
 /**
  * 支出科目（可能为空集合）.
@@ -126,10 +123,8 @@ suspend fun initDataSet(applicationContext: Context) {
     typeFile.init(applicationContext)
     withContext(Dispatchers.IO) {
         try {
-            val cipher = Cipher.getInstance(AES_MODE)
-            cipher.init(Cipher.DECRYPT_MODE, safeKey)
             // 支出科目
-            readDataSet(subjectOutFile, cipher, { parsingSubjectSet(it, false) }, {
+            readDataSet(subjectOutFile, { parsingSubjectSet(it, false) }, {
                 // 使用默认数据集
                 readDefaultSubjectSet(applicationContext, false)
                 saveSubjectOutSet()
@@ -139,7 +134,7 @@ suspend fun initDataSet(applicationContext: Context) {
                 orderedSubjectOutSet = emptyArray()
             })
             // 收入科目
-            readDataSet(subjectInFile, cipher, { parsingSubjectSet(it, true) }, {
+            readDataSet(subjectInFile, { parsingSubjectSet(it, true) }, {
                 // 使用默认数据集
                 readDefaultSubjectSet(applicationContext, true)
                 saveSubjectInSet()
@@ -149,7 +144,7 @@ suspend fun initDataSet(applicationContext: Context) {
                 orderedSubjectInSet = emptyArray()
             })
             // 账户
-            readDataSet(accountFile, cipher, { parsingAccountSet(it) }, {
+            readDataSet(accountFile, { parsingAccountSet(it) }, {
                 accountSet = emptyArray() // 默认为空数据集
                 nextAccountId = START_ID
                 //saveAccountSet() // 默认数据集为空，不保存
@@ -158,7 +153,7 @@ suspend fun initDataSet(applicationContext: Context) {
                 nextAccountId = START_ID
             })
             // 币种
-            readDataSet(typeFile, cipher, { parsingTypeSet(it) }, {
+            readDataSet(typeFile, { parsingTypeSet(it) }, {
                 // 使用默认数据集
                 val arr = applicationContext.resources.getStringArray(R.array.defaultType)
                 typeSet = Array(arr.size) { Type(it + 1, arr[it]) }
@@ -189,13 +184,22 @@ suspend fun initDataSet(applicationContext: Context) {
     myLog.v("初始化基础数据集耗时${System.currentTimeMillis() - time}ms")
 }
 
+/**
+ * 当安全密钥更新时调用以更新存储的基础数据集密文.
+ */
+suspend fun updateDataSetCiphertext() {
+    withContext(Dispatchers.IO) {
+        // TODO: 更新数据集密文
+    }
+}
+
 // 在[onData]中将字节数据格式化为数据集，若发生异常则会转到[onException]以避免影响后续数据集的读取
 private inline fun readDataSet(
-    filePack: FilePack, cipher: Cipher, onData: (ByteArray) -> Unit,
+    filePack: FilePack, onData: (ByteArray) -> Unit,
     onNothing: () -> Unit, onException: () -> Unit
 ) {
     try {
-        onData(cipher.doFinal(FileInputStream(filePack.file).use { it.readBytes() }))
+        onData(decrypt(FileInputStream(filePack.file).use { it.readBytes() }))
     } catch (e: FileNotFoundException) { // 数据文件不存在
         onNothing()
     } catch (e: Exception) {
@@ -317,9 +321,7 @@ private suspend inline fun saveDataSet(filePack: FilePack,
                                        crossinline getData: () -> ByteArray) {
     withContext(Dispatchers.IO) {
         try {
-            val cipher = Cipher.getInstance(AES_MODE)
-            cipher.init(Cipher.ENCRYPT_MODE, safeKey)
-            val data = cipher.doFinal(getData())
+            val data = encrypt(getData())
             with(filePack.file) {
                 if (exists() || createNewFile()) {
                     FileOutputStream(this).use { it.write(data) }

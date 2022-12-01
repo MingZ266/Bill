@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 安全项验证页图标间距. -->
+    <dimen name="iconSpace">20dp</dimen>
+</resources>

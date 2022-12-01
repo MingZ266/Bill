@@ -12,9 +12,13 @@
         <item name="android:navigationBarColor">@color/bgDeep</item>
     </style>
     
+    <style name="Theme.Bill.Second" parent="Theme.Bill">
+        <item name="android:statusBarColor">@color/themeColor</item>
+    </style>
+    
     <style name="DateTimePicker">
         <!-- 选择器内文本及分隔符文本尺寸. -->
-        <item name="android:textSize">@dimen/mediumText</item>
+        <item name="android:textSize">@dimen/textMedium</item>
         <!-- 分隔符文本颜色. -->
         <item name="android:textColor">@color/commonText</item>
         <!-- 选择器内文本颜色. -->

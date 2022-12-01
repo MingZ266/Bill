@@ -17,4 +17,9 @@
     <!--<color name="deepTheme">#1F3B59</color>-->
     <!-- 透明度为一半的主题颜色. -->
     <!--<color name="halfATheme">#7F225182</color>-->
+    
+    <!-- 用于着重强调. -->
+    <color name="emphasize">#932727</color>
+    <!-- 分隔线颜色. -->
+    <color name="splitLine">#3F888888</color>
 </resources>

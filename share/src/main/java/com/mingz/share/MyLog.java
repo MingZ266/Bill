@@ -12,6 +12,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public class MyLog {
+    /**
+     * 控制所有{@link MyLog}实例是否允许打印{@link Log#DEBUG}和{@link Log#VERBOSE}级别的日志.
+     */
+    private static final boolean DEBUG = true;
     private static final String PREFIX = "MyTAG-";
     private final String tag;
 
@@ -64,13 +68,13 @@ public class MyLog {
 
     // 打印日志
     private void core(@Level int level, Object msg) {
-        if (debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
+        if (DEBUG || debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
             Log.println(level, tag, msg.toString());
         }
     }
 
     private void core(@Level int level, Throwable e, boolean printStack) {
-        if (debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
+        if (DEBUG || debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
             if (printStack) {
                 Log.println(level, tag, Log.getStackTraceString(e));
             } else {
@@ -80,7 +84,7 @@ public class MyLog {
     }
 
     private void core(@Level int level, Object msg, Throwable e, boolean printStack) {
-        if (debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
+        if (DEBUG || debug || (level != Log.DEBUG && level != Log.VERBOSE)) {
             if (printStack) {
                 Log.println(level, tag, msg + "\n" + Log.getStackTraceString(e));
             } else {

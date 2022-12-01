@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SwitchStyle">
+        <!-- 开启时的颜色. -->
+        <item name="colorControlActivated">#FF00FF</item>
+        <item name="tickColorActive">#00FFFF</item>
+    </style>
+</resources>

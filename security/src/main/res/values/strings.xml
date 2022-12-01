@@ -1,0 +1,18 @@
+<resources>
+    <string name="title">登录保护</string>
+    <string name="password">设置密码</string>
+    <string name="pattern">设置图案</string>
+    <string name="fingerprint">设置指纹</string>
+    <string name="enable">启用</string>
+    <string name="verifyFingerprint">点击以验证指纹</string>
+    <string name="resetFinger">重置指纹</string>
+    <string name="tip">设备尚未注册指纹，是\n否前往添加？</string>
+    <string name="oldPasswdTitle">输入旧密码</string>
+    <string name="oldPasswdHint">旧密码</string>
+    <string name="newPasswdTitle">输入新密码</string>
+    <string name="newPasswdHint">新密码</string>
+    <string name="passwdTitle">输入密码</string>
+    <string name="passwdHint">密码</string>
+    <string name="confirmPasswdHint">确认密码</string>
+    <string name="alterButton">修改</string>
+</resources>

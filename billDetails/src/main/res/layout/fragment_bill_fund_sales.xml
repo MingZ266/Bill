@@ -26,7 +26,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/salesTime"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.ShowDateTime
         android:id="@+id/salesTime"
@@ -45,7 +45,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/inAccountTime"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.ShowDateTime
         android:id="@+id/inAccountTime"
@@ -64,7 +64,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/confirmVal"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:id="@+id/confirmVal"
@@ -79,7 +79,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -95,7 +95,7 @@
         android:background="@drawable/bg_fill_when_enable"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -111,7 +111,7 @@
         android:background="@drawable/bg_stroke"
         tools:text="0.0000"
         android:textColor="@color/commonText"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:gravity="center_vertical"/>
     
     <TextView
@@ -121,7 +121,7 @@
         app:layout_constraintTop_toTopOf="@id/useless3"
         android:text="@string/confirmAmount"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <TextView
         android:layout_width="wrap_content"
@@ -130,7 +130,7 @@
         app:layout_constraintTop_toTopOf="@id/useless3"
         android:text="@string/charges"
         android:textColor="@color/themeColor"
-        android:textSize="@dimen/smallText"/>
+        android:textSize="@dimen/textSmall"/>
     
     <com.mingz.share.ui.TextWithUnits
         android:id="@+id/price"

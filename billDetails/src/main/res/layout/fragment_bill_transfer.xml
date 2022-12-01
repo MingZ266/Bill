@@ -58,8 +58,8 @@
         app:title="@string/outAccount"/>
     
     <ImageView
-        android:layout_width="@dimen/iconSideLen"
-        android:layout_height="@dimen/iconSideLen"
+        android:layout_width="@dimen/iconMedium"
+        android:layout_height="@dimen/iconMedium"
         app:layout_constraintStart_toStartOf="@id/outAccount"
         app:layout_constraintEnd_toEndOf="@id/outAccount"
         app:layout_constraintTop_toTopOf="@id/charges"

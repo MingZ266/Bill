@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:layout_gravity="center"
+    android:background="@color/dialogBg">
+    
+    <TextView
+        android:id="@+id/useless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_horizontal"
+        android:text="@string/tip"
+        android:textSize="@dimen/textMedium"
+        android:textColor="@color/commonText"/>
+    
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/useless"
+        app:layout_constraintStart_toStartOf="@id/confirm"
+        app:layout_constraintEnd_toEndOf="@id/cancel"
+        android:layout_marginTop="10dp"
+        android:background="@color/splitLine"/>
+    
+    <TextView
+        android:id="@+id/confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/useless"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="@string/ok"
+        android:textSize="@dimen/textMedium"
+        android:textColor="@color/themeColor"/>
+    
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/confirm"
+        app:layout_constraintStart_toEndOf="@id/confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center_horizontal"
+        android:text="@string/cancel"
+        android:textSize="@dimen/textMedium"
+        android:textColor="@color/themeColor"/>
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:layout_height="wrap_content"
     tools:layout_gravity="bottom"
     android:paddingVertical="10dp"
     android:paddingHorizontal="15dp"
-    android:background="@drawable/bg_bottom_dialog"
-    tools:ignore="HardcodedText">
+    android:background="@drawable/bg_bottom_dialog">
     
     <TextView
         android:id="@+id/cancel"
@@ -17,8 +16,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="取消"
-        android:textSize="@dimen/aboveMText"
+        android:text="@string/cancel"
+        android:textSize="@dimen/textAboveM"
         android:textColor="@color/themeColor"/>
     
     <TextView
@@ -27,8 +26,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="确定"
-        android:textSize="@dimen/aboveMText"
+        android:text="@string/ok"
+        android:textSize="@dimen/textAboveM"
         android:textColor="@color/themeColor"/>
     
     <com.mingz.share.ui.DateTimePicker

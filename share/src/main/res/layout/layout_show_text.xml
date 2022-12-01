@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="标题"
-        android:textSize="@dimen/smallText"
+        android:textSize="@dimen/textSmall"
         android:textColor="@color/themeColor"/>
     
     <EditText
@@ -28,7 +28,7 @@
         android:maxLines="5"
         android:autofillHints="@null"
         tools:text="展示的文本"
-        android:textSize="@dimen/mediumText"
+        android:textSize="@dimen/textMedium"
         android:textColor="@color/commonText"
         android:background="@null"
         android:theme="@style/CursorStyle"/>

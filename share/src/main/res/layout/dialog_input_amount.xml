@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="标题"
-        android:textSize="@dimen/smallText"
+        android:textSize="@dimen/textSmall"
         android:textColor="@color/themeColor"/>
     
     <com.mingz.share.ui.InputAmount
