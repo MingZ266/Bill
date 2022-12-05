@@ -10,15 +10,17 @@
         android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bill">
-        <activity
-            android:name=".TempActivity"
+        <activity android:name=".StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-    
+                
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TempActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

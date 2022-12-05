@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
+import com.mingz.security.*
+import com.mingz.security.CFG_FINGERPRINT_BOOL
 import com.mingz.security.CFG_PASSWORD_BOOL
 import com.mingz.security.FILE_KEY_PASSWORD
 import com.mingz.security.R
 import com.mingz.security.databinding.ActivityPasswordBinding
-import com.mingz.security.notAllowedToDisable
 import com.mingz.share.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,13 +44,12 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
         }
 
         /**
-         * 验证密码是否正确.
-         * @param password 待验证的密码
-         * @return 密码是否正确
+         * 验证密码，进而解密安全密钥.
+         * @return 若密码正确，则返回解密后的安全密钥，否则返回null
          */
         @JvmStatic
-        suspend fun verifyPassword(context: Context, password: String) =
-            verifyProtection(context, FILE_KEY_PASSWORD, toByteArray(password))
+        suspend fun decryptSafeKey(context: Context, password: String): ByteArray? =
+            decryptSafeKey(context, FILE_KEY_PASSWORD, toByteArray(password))
 
         // 将密码转为字节流
         private fun toByteArray(password: String) = password.toByteArray(StandardCharsets.UTF_8)
@@ -137,7 +137,9 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
 
     // 验证密码以禁用密码安全项
     private fun disable() {
-        if (notAllowedToDisable(config, CFG_PASSWORD_BOOL)) {
+        val hasNotPattern = !config[CFG_PATTERN_BOOL, false]
+        // 当指纹安全项已启用时，若未启用图案安全项，将不允许禁用
+        if (config[CFG_FINGERPRINT_BOOL, false] && hasNotPattern) {
             activity.showToast("请在禁用指纹后再次尝试")
             return
         }
@@ -185,7 +187,8 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
                 launch {
                     loading.show("正在禁用")
                     catchException({
-                        if (requestDisable(activity, toByteArray(password))) {
+                        // 若无图案安全项，则代表将没有安全项被启用
+                        if (requestDisable(activity, toByteArray(password), hasNotPattern)) {
                             // 反馈已禁用
                             binding.enable.enable.isChecked = false
                             doneInit = false // 重置标记

@@ -15,6 +15,8 @@
     <color name="halfABgLight">#7FFFFFFF</color>
     <!-- 较深的主题颜色. -->
     <color name="deepTheme">#0060C5</color>
+    <!-- 较浅的主题颜色. -->
+    <color name="lightTheme">#A2CFFF</color>
     <!-- 透明度为一半的主题颜色. -->
     <color name="halfATheme">#7F409EFF</color>
     

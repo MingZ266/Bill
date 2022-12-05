@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mingz.security.*
 import com.mingz.share.MyLog
 import com.mingz.share.catchException
-import com.mingz.share.onTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.FileInputStream
@@ -54,29 +53,28 @@ abstract class ByteSafetyOptionActivity : AppCompatActivity(), SafetyOption {
         }
 
         /**
-         * 验证保护项是否正确.
+         * 验证保护项，进而解密安全密钥.
          * @param protection 待验证的保护项
-         * @return 保护项是否正确
+         * @return 若保护项正确，则返回解密后的安全密钥，否则返回null
          */
         @JvmStatic
-        suspend fun verifyProtection(context: Context, filename: String, protection: ByteArray): Boolean {
+        suspend fun decryptSafeKey(context: Context, filename: String, protection: ByteArray): ByteArray? {
             // 拆分保存的数据
             val dataGroup = split(withContext(Dispatchers.IO) {
                 FileInputStream(safeKeyFile(context, filename)).use { it.readBytes() }
             })
-            dataGroup[0] = ByteArray(0) // 安全密钥密文（释放存储）
-            val ciphertext = dataGroup[1] // 私钥密文
             val publicKey = RSA.generatePublic(dataGroup[2]) // 公钥
             catchException({
                 // 尝试解密私钥，若解密失败则意味着保护项错误
-                val privateKey = decryptPrivateKey(protection, ciphertext)
+                val privateKey = RSA.generatePrivate(decryptPrivateKey(protection, dataGroup[1]/*私钥密文*/))
                 // 验证私钥是否正确，继而验证保护项是否正确
-                verifyPrivateKey(RSA.generatePrivate(privateKey), publicKey)
-                return true
+                verifyPrivateKey(privateKey, publicKey)
+                // 使用私钥解密安全密钥
+                return RSA.decrypt(privateKey, dataGroup[0]/*安全密钥密文*/)
             }, {
                 MyLog().v(it, true)
             })
-            return false
+            return null
         }
 
         /**
@@ -141,17 +139,37 @@ abstract class ByteSafetyOptionActivity : AppCompatActivity(), SafetyOption {
      *
      * 若保护项正确，将在配置文件中禁用安全项，且删除安全密钥密文存储文件.
      * @param protection 待验证的保护项
+     * @param saveSafeKey 是否需要保存安全密钥明文，若该安全项为最后一项启用的安全项则需要保存
      * @return 保护项是否正确
      */
-    protected suspend fun requestDisable(context: Context, protection: ByteArray) =
-        verifyProtection(context, filename, protection).onTrue {
+    protected suspend fun requestDisable(context: Context, protection: ByteArray, saveSafeKey: Boolean): Boolean {
+        // 拆分保存的数据
+        val dataGroup = split(withContext(Dispatchers.IO) {
+            FileInputStream(safeKeyFile(context, filename)).use { it.readBytes() }
+        })
+        if (!saveSafeKey) dataGroup[0] = ByteArray(0) // 安全密钥密文（释放存储）
+        val publicKey = RSA.generatePublic(dataGroup[2]) // 公钥
+        catchException({
+            // 尝试解密私钥，若解密失败则意味着保护项错误
+            val privateKey = RSA.generatePrivate(decryptPrivateKey(protection, dataGroup[1]/*私钥密文*/))
+            // 验证私钥是否正确，继而验证保护项是否正确
+            verifyPrivateKey(privateKey, publicKey)
+            // 验证成功
             catchException(MyLog()) {
+                if (saveSafeKey) { // 保存安全密钥明文
+                    saveSafeKey(context, RSA.decrypt(privateKey, dataGroup[0]))
+                }
                 // 写配置：安全项已禁用
                 writeConfig(false)
                 // 删除安全密钥密文存储文件
                 safeKeyFile(context, filename).delete()
             }
-        }
+            return true
+        }, {
+            MyLog().v(it, true)
+        })
+        return false
+    }
 
     /**
      * 请求修改保护项.
@@ -164,10 +182,11 @@ abstract class ByteSafetyOptionActivity : AppCompatActivity(), SafetyOption {
         val dataGroup = split(withContext(Dispatchers.IO) {
             FileInputStream(safeKeyFile(context, filename)).use { it.readBytes() }
         })
+        val publicKey = RSA.generatePublic(dataGroup[2]) // 公钥
         val privateKey: ByteArray // 解密后的私钥
         try {
             privateKey = decryptPrivateKey(oldProtection, dataGroup[1]/*私钥密文*/)
-            verifyPrivateKey(RSA.generatePrivate(privateKey), RSA.generatePublic(dataGroup[2]/*公钥*/))
+            verifyPrivateKey(RSA.generatePrivate(privateKey), publicKey)
         } catch (e: Exception) { // 密码错误
             MyLog().v(e, true)
             return false

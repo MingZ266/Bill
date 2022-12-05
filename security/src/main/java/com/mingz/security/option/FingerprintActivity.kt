@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import com.mingz.security.*
@@ -19,6 +18,7 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.KeyStore.PrivateKeyEntry
+import java.security.PrivateKey
 import java.util.*
 import javax.crypto.SecretKey
 import javax.security.auth.x500.X500Principal
@@ -58,18 +58,30 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
             }
         }
 
-        // 从AndroidKeyStore中查找密钥对
-        private fun findKeyPair(): KeyPair? {
+        /**
+         * 从AndroidKeyStore中查找用于加密安全密钥的密钥对.
+         */
+        internal fun findKeyPair(): KeyPair? {
             val keyStore = KeyStore.getInstance(ANDROID_KEY_STORE)
             keyStore.load(null)
             val entry = keyStore.getEntry(ALIAS_FINGERPRINT, null)
             if (entry is PrivateKeyEntry) { // 获取密钥对
                 val keyPair = KeyPair(entry.certificate.publicKey, entry.privateKey)
-                MyLog("指纹").d("获取密钥对: 公钥(${keyPair.public.encoded?.size}) - 私钥(" +
+                MyLog("查找密钥对").d("获取密钥对: 公钥(${keyPair.public.encoded?.size}) - 私钥(" +
                         "${keyPair.private.encoded?.size})")
                 return keyPair
             }
             return null
+        }
+
+        /**
+         * 使用[biometricPrompt]调用[BiometricPrompt.authenticate]发起指纹验证请求.
+         */
+        internal fun authenticate(biometricPrompt: BiometricPrompt, title: String, privateKey: PrivateKey) {
+            biometricPrompt.authenticate(BiometricPrompt.PromptInfo.Builder()
+                .setTitle(title)
+                .setNegativeButtonText("取消")
+                .build(), BiometricPrompt.CryptoObject(RSA.getCipher(privateKey)))
         }
     }
 
@@ -101,46 +113,35 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
         }
         // 启用指纹时重新生成密钥对
         val keyPair = generateKeyPair()
-        // 通过校验私钥是否已解锁，以确认用户是否通过了生物识别验证
-        val verify = RSA.encrypt(keyPair.public, ByteArray(RSA.MAX_ENCRYPT))
-        BiometricPrompt(activity, object : AuthenticationCallback(activity) {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                catchException(myLog) {
-                    // 尝试使用私钥，若不可使用（未通过身份验证）将抛出异常
-                    RSA.decrypt(result.cryptoObject?.cipher ?: return, verify)
-                    launch {
-                        loading.show("正在启用")
-                        catchException({
-                            // 生成新的安全密钥并更新
-                            SafeKey.update(activity, generateSafeKey())
-                            // 写配置：指纹已启用
-                            config[CFG_FINGERPRINT_BOOL] = true
-                            // 反馈已启用
-                            binding.enable.enable.isChecked = true
-                        }, {
-                            activity.showToast("启用失败")
-                            myLog.w("指纹启用失败", it, true)
-                        })
-                        loading.dismiss()
-                    }
+        verifyFingerprint(keyPair, "验证以启用指纹", object : VerifyCallback {
+            override fun onSuccess() {
+                launch {
+                    loading.show("正在启用")
+                    catchException({
+                        // 生成新的安全密钥并更新
+                        SafeKey.update(activity, generateSafeKey())
+                        // 写配置：指纹已启用
+                        config[CFG_FINGERPRINT_BOOL] = true
+                        // 反馈已启用
+                        binding.enable.enable.isChecked = true
+                    }, {
+                        activity.showToast("启用失败")
+                        myLog.w("指纹启用失败", it, true)
+                    })
+                    loading.dismiss()
                 }
             }
-        }).authenticate(buildPromptInfo("验证以启用指纹"),
-            BiometricPrompt.CryptoObject(RSA.getCipher(keyPair.private)))
+        })
     }
 
     // 验证指纹后禁用指纹
     private fun disable() {
         val keyPair = findKeyPair() ?: generateKeyPair()
-        // 通过校验私钥是否已解锁，以确认用户是否通过了生物识别验证
-        val verify = RSA.encrypt(keyPair.public, ByteArray(RSA.MAX_ENCRYPT))
-        BiometricPrompt(activity, object : AuthenticationCallback(activity) {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+        verifyFingerprint(keyPair, "验证以禁用指纹", object : VerifyCallback {
+            override fun onSuccess() {
                 launch {
                     loading.show("正在禁用")
-                    catchException(myLog) block@{
-                        // 尝试使用私钥，若不可使用（未通过身份验证）将抛出异常
-                        RSA.decrypt(result.cryptoObject?.cipher ?: return@block, verify)
+                    catchException(myLog) {
                         // 写配置：指纹已禁用
                         config[CFG_FINGERPRINT_BOOL] = false
                         // 反馈已禁用
@@ -155,14 +156,25 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
                     loading.dismiss()
                 }
             }
-        }).authenticate(buildPromptInfo("验证以禁用指纹"),
-            BiometricPrompt.CryptoObject(RSA.getCipher(keyPair.private)))
+        })
     }
 
-    private fun buildPromptInfo(title: String) = BiometricPrompt.PromptInfo.Builder()
-        .setTitle(title)
-        .setNegativeButtonText("取消")
-        .build()
+    // 验证指纹
+    private fun verifyFingerprint(keyPair: KeyPair, title: String, callback: VerifyCallback) {
+        // 通过校验私钥是否已解锁，以确认用户是否通过了生物识别验证
+        val verify = RSA.encrypt(keyPair.public, ByteArray(RSA.MAX_ENCRYPT))
+        authenticate(BiometricPrompt(activity, object : AuthenticationCallback(activity) {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                catchException(myLog) {
+                    val cipher = result.cryptoObject?.cipher ?: return
+                    // 尝试使用私钥，若不可使用（未通过身份验证）将抛出异常
+                    RSA.decrypt(cipher, verify)
+                    // 私钥可用（验证通过）
+                    callback.onSuccess()
+                }
+            }
+        }), title, keyPair.private)
+    }
 
     // 从AndroidKeyStore中生成密钥对
     @Suppress("DEPRECATION")
@@ -208,9 +220,10 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
         }
     }
 
-    private open class AuthenticationCallback(
-        private val context: Context
-    ) : BiometricPrompt.AuthenticationCallback() {
+    /**
+     * 生物识别验证回调.
+     */
+    open class AuthenticationCallback(private val context: Context) : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationFailed() {
             context.showToast("识别失败")
         }
@@ -222,5 +235,13 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
                 context.showToast(errString.toString())
             }
         }
+    }
+
+    // 指纹验证结果回调
+    private interface VerifyCallback {
+        /**
+         * 当指纹验证成功时回调.
+         */
+        fun onSuccess()
     }
 }

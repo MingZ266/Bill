@@ -76,20 +76,6 @@ private val safetyOptionSet: Array<Class<out SafetyOption>>
         PatternActivity::class.java,
         FingerprintActivity::class.java
     )
-
-/**
- * 检查是否允许禁用[goal]对应的安全项.
- * @param goal 取值[CFG_PASSWORD_BOOL]或[CFG_PATTERN_BOOL]
- * @return 当指纹已启用且禁用[goal]对应的安全项后将只剩指纹安全项时返回true
- */
-internal fun notAllowedToDisable(config: Config, goal: String): Boolean {
-    if (config[CFG_FINGERPRINT_BOOL, false]) { // 指纹安全项已启用
-        val password = if (goal == CFG_PASSWORD_BOOL) false else config[CFG_PASSWORD_BOOL, false]
-        val pattern = if (goal == CFG_PATTERN_BOOL) false else config[CFG_PATTERN_BOOL, false]
-        return !(password || pattern)
-    }
-    return false
-}
 //******************************
 
 /**
@@ -126,6 +112,17 @@ suspend fun checkSafetyOption(context: Context): Boolean {
                 }
             }
         }
+    }
+}
+
+/**
+ * 保存安全密钥明文.
+ */
+suspend fun saveSafeKey(context: Context, safeKey: ByteArray) {
+    // 保存安全密钥
+    val file = safeKeyFile(context, FILE_KEY_NONE)
+    if (!saveFile(file, safeKey)) {
+        MyLog().w("安全密钥保存失败: 文件创建失败（${file.absolutePath}）")
     }
 }
 

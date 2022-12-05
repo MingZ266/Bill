@@ -4,8 +4,6 @@
     <color name="bgLight">#666666</color>
     <!-- 较深的背景颜色. -->
     <color name="bgDeep">#444444</color>
-    <!-- 主题颜色. -->
-    <!--<color name="themeColor">#225182</color>-->
     <!-- 多数文本的颜色. -->
     <color name="commonText">#AAAAAA</color>
     <!-- 用于提示性的文本或禁用的文本的颜色. -->
@@ -13,10 +11,6 @@
     
     <!-- 透明度为一半的较亮的背景颜色. -->
     <color name="halfABgLight">#7F666666</color>
-    <!-- 较深的主题颜色. -->
-    <!--<color name="deepTheme">#1F3B59</color>-->
-    <!-- 透明度为一半的主题颜色. -->
-    <!--<color name="halfATheme">#7F225182</color>-->
     
     <!-- 用于着重强调. -->
     <color name="emphasize">#932727</color>

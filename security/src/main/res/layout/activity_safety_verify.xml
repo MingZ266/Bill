@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_dialog"
+    tools:context=".SafetyVerifyActivity">
+    
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.4"/>
+    
+    <!--<include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/fragment_password"/>-->
+    
+    <!-- 切换安全项验证方式的图标组. -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        android:orientation="horizontal">
+    
+        <com.mingz.share.ui.CheckedImageView
+            android:id="@+id/password"
+            android:layout_width="@dimen/iconLarge"
+            android:layout_height="@dimen/iconLarge"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_password"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_circle_icon"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    
+        <com.mingz.share.ui.CheckedImageView
+            android:id="@+id/pattern"
+            android:layout_width="@dimen/iconLarge"
+            android:layout_height="@dimen/iconLarge"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_pattern"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_circle_icon"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    
+        <com.mingz.share.ui.CheckedImageView
+            android:id="@+id/fingerprint"
+            android:layout_width="@dimen/iconLarge"
+            android:layout_height="@dimen/iconLarge"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_fingerprint"
+            android:tint="@color/themeColor"
+            android:background="@drawable/bg_circle_icon"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:checked="true"/>
+        
+    </LinearLayout>
+    
+    <com.mingz.share.ui.HalfSwitchAnimView
+        android:id="@+id/switchAnim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:maskColor="@color/lightTheme"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

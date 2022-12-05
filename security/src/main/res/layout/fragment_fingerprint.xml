@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_gravity="center_vertical">
+    
+    <com.mingz.share.ui.DrawableTextView
+        android:id="@+id/verify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/verifyFingerprint"
+        android:textColor="@color/themeColor"
+        android:textSize="@dimen/textSmall"
+        android:drawableTop="@drawable/ic_fingerprint"
+        app:drawableTopWidth="@dimen/iconLarge"
+        app:drawableTopHeight="@dimen/iconLarge"
+        android:drawablePadding="10dp"
+        app:drawableTint="@color/themeColor"/>
+    
+</FrameLayout>
