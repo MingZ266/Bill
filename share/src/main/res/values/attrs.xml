@@ -19,6 +19,13 @@
         <attr name="preview" format="boolean"/>
     </declare-styleable>
     
+    <declare-styleable name="PatternDrawing">
+        <!-- 绘制结点高亮时的颜色，亦是连接线的颜色. -->
+        <attr format="color" name="lightColor" />
+        <!-- 绘制结点未高亮时的颜色. -->
+        <attr format="color" name="commonColor" />
+    </declare-styleable>
+    
     <declare-styleable name="DrawableTextView">
         <!--设置文本左边的图片及大小.-->
         <attr name="android:drawableStart"/>
