@@ -19,47 +19,58 @@ class StartActivity : AppCompatActivity(), CoroutineScope {
     private val activity = this
     private var finishOnStop = false
     private lateinit var binding: ActivityStartBinding
+    // 并行任务
+    private lateinit var check: Deferred<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 播放前半部分切换动画
-        binding.root.startAnimBeforeSwitch(object : SwitchAnimView.AnimListener() {
-            private lateinit var check: Deferred<Boolean>
-
-            override fun onStart() {
-                // 查询是否需要验证安全项以解锁安全密钥
-                check = async { checkSafetyOption(activity) }
-            }
-
-            override fun onStop() {
-                launch {
-                    // 确保查询任务完成
-                    val goal = if (check.await()) { // 需要验证安全项
-                        SafetyVerifyFragment.setVerifyCallback(object : SafetyVerifyFragment.VerifyCallback {
-                            override fun onSuccess(context: Context) {
-                                // TODO: 跳转到主页
-                                startActivity(Intent(context, TempActivity::class.java).apply {
-                                    // 清除页面
-                                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                })
-                            }
-                        })
-                        SafetyVerifyActivity::class.java
-                    } else { // 不需要验证安全项
-                        TempActivity::class.java // TODO: 跳转到主页
-                    }
-                    startActivity(Intent(activity, goal).apply {
-                        with(binding.root) {
-                            putExtra(KEY_ANIM_TYPE_INT, getType())
-                            putExtra(KEY_ANIM_DIRECTION_INT, getDirection())
-                        }
-                        flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    })
-                    finishOnStop = true
+        // 查询是否需要验证安全项以解锁安全密钥
+        check = async { checkSafetyOption(activity) }
+        launch {
+            delay(500) // 短暂延时，用以展示起始页
+            // 播放前半部分切换动画
+            binding.switchAnim.startAnimBeforeSwitch(object : SwitchAnimView.AnimListener() {
+                override fun onStop() {
+                    skip() // 动画结束后跳转
                 }
+            })
+        }
+    }
+
+    // 跳转
+    private fun skip() {
+        launch {
+            // 等待查询任务完成
+            val goal = if (check.await()) { // 需要验证安全项
+                initVerifyCallback()
+                SafetyVerifyActivity::class.java
+            } else { // 不需要验证安全项
+                TempActivity::class.java // TODO: 跳转到主页
+            }
+            startActivity(Intent(activity, goal).apply {
+                // 传递动画信息
+                with(binding.switchAnim) {
+                    putExtra(KEY_ANIM_TYPE_INT, getType())
+                    putExtra(KEY_ANIM_DIRECTION_INT, getDirection())
+                }
+                flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+            })
+            finishOnStop = true
+        }
+    }
+
+    // 初始化安全项验证结果回调
+    private fun initVerifyCallback() {
+        SafetyVerifyFragment.setVerifyCallback(object : SafetyVerifyFragment.VerifyCallback {
+            override fun onSuccess(context: Context) {
+                // TODO: 跳转到主页
+                context.startActivity(Intent(context, TempActivity::class.java).apply {
+                    // 清除页面
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                })
             }
         })
     }
