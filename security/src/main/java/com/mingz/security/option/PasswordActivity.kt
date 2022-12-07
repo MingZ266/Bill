@@ -28,7 +28,7 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
     private val loading = Loading(activity) // 等待弹窗
     private lateinit var binding: ActivityPasswordBinding
     private lateinit var config: Config
-    private var doneInit = false // 标记在点击启用后是否已完成初始化
+    private var doneInit = false // 标记在点击启用/禁用后是否已完成初始化
 
     companion object {
         private const val MESSAGE_IS_EMPTY = "输入不能为空"
@@ -39,7 +39,6 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
         @Suppress("unused") // 通过反射调用
         @JvmStatic
         fun whenSafeKeyUpdated(context: Context, safeKey: SecretKey) {
-            MyLog("密码").d("更新安全密钥")
             whenSafeKeyUpdated(context, safeKey, FILE_KEY_PASSWORD)
         }
 
@@ -66,9 +65,13 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
         // 初始化配置文件
         config = Config(activity, FILE_CONFIG_SAFETY)
         // 初始化视图
-        val has = config[CFG_PASSWORD_BOOL, false]
-        binding.enable.enable.initChecked(has)
-        if (has) {
+        if (savedInstanceState != null) {
+            clearInput()
+            clearFocus()
+        }
+        val enable = config[CFG_PASSWORD_BOOL, false]
+        binding.enable.enable.initChecked(enable)
+        if (enable) {
             alterPassword()
         } else { // 隐藏密码操作区域
             binding.passwdLayout.visibility = View.GONE
@@ -137,9 +140,9 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
 
     // 验证密码以禁用密码安全项
     private fun disable() {
-        val hasNotPattern = !config[CFG_PATTERN_BOOL, false]
+        val notEnablePattern = !config[CFG_PATTERN_BOOL, false]
         // 当指纹安全项已启用时，若未启用图案安全项，将不允许禁用
-        if (config[CFG_FINGERPRINT_BOOL, false] && hasNotPattern) {
+        if (config[CFG_FINGERPRINT_BOOL, false] && notEnablePattern) {
             activity.showToast("请在禁用指纹后再次尝试")
             return
         }
@@ -187,8 +190,8 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
                 launch {
                     loading.show("正在禁用")
                     catchException({
-                        // 若无图案安全项，则代表将没有安全项被启用
-                        if (requestDisable(activity, toByteArray(password), hasNotPattern)) {
+                        // 若未启用图案安全项，则代表将没有安全项被启用
+                        if (requestDisable(activity, toByteArray(password), notEnablePattern)) {
                             // 反馈已禁用
                             binding.enable.enable.isChecked = false
                             doneInit = false // 重置标记
@@ -252,7 +255,7 @@ class PasswordActivity : ByteSafetyOptionActivity(), CoroutineScope {
                         }
                     }, {
                         activity.showToast("密码修改失败")
-                        myLog.v("修改密码失败", it, true)
+                        myLog.v("密码修改失败", it, true)
                     })
                 }
             }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bgDeep"
+    android:orientation="vertical"
+    tools:context=".option.PatternActivity">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:gravity="center"
+        android:text="@string/pattern"
+        android:textColor="@color/bgLight"
+        android:textSize="@dimen/textLarge"
+        android:background="@color/themeColor"/>
+    
+    <include
+        android:id="@+id/enable"
+        layout="@layout/layout_enable"/>
+    
+    <com.mingz.share.ui.DrawableTextView
+        android:id="@+id/alterPattern"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:text="@string/alterPattern"
+        android:textSize="@dimen/textAboveM"
+        android:textColor="@color/commonText"
+        android:drawableEnd="@drawable/ic_edit"
+        tools:drawableEnd="@drawable/ic_close"
+        app:drawableEndWidth="@dimen/iconSmall"
+        app:drawableEndHeight="@dimen/iconSmall"
+        app:drawableTint="@color/commonText"
+        android:background="@drawable/bg_fill"
+        tools:background="@drawable/bg_stroke_and_fill"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        tools:text="提示文字"
+        android:textSize="@dimen/textSmall"
+        android:textColor="@color/themeColor"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+    
+    <com.mingz.share.ui.PatternDrawing
+        android:id="@+id/pattern"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="40dp"
+        app:commonColor="@color/bgDeep"
+        app:lightColor="@color/themeColor"
+        android:background="@drawable/bg_fill"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>

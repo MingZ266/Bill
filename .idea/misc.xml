@@ -28,13 +28,13 @@
         <entry key="..\:/App/Bill/security/src/main/res/drawable/ic_pattern.xml" value="0.1921875" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/activity_fingerprint.xml" value="0.22" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/activity_password.xml" value="0.16666666666666666" />
-        <entry key="..\:/App/Bill/security/src/main/res/layout/activity_pattern.xml" value="0.16576086956521738" />
+        <entry key="..\:/App/Bill/security/src/main/res/layout/activity_pattern.xml" value="0.1" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/activity_safety_option.xml" value="0.22" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/activity_safety_verify.xml" value="0.16666666666666666" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/dialog_tip_enrolled_biometric.xml" value="0.22" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/fragment_fingerprint.xml" value="0.22" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/fragment_password.xml" value="0.22" />
-        <entry key="..\:/App/Bill/security/src/main/res/layout/fragment_pattern.xml" value="0.16576086956521738" />
+        <entry key="..\:/App/Bill/security/src/main/res/layout/fragment_pattern.xml" value="0.22" />
         <entry key="..\:/App/Bill/security/src/main/res/layout/layout_enable.xml" value="0.16666666666666666" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/bg_blue_outline.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/bg_blue_outline_with_color.xml" value="0.1962962962962963" />
@@ -49,8 +49,11 @@
         <entry key="..\:/App/Bill/share/src/main/res/drawable/bg_with_or_without_color.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/cursor_color.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/cursor_select_handle.xml" value="0.1962962962962963" />
+        <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_close.xml" value="0.20256410256410257" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_currency.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_date.xml" value="0.1962962962962963" />
+        <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_delete.xml" value="0.20358974358974358" />
+        <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_edit.xml" value="0.20358974358974358" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_floating_menu.xml" value="0.1962962962962963" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_loading.xml" value="0.20358974358974358" />
         <entry key="..\:/App/Bill/share/src/main/res/drawable/ic_save.xml" value="0.1962962962962963" />

@@ -268,12 +268,7 @@ public class PatternDrawing extends ViewGroup {
                 // 回调
                 if (callback != null) {
                     if (pattern.length >= 4) {
-                        // 将选中结点编号依序组合作为密码
-                        final StringBuilder password = new StringBuilder();
-                        for (int number : pattern) {
-                            password.append(number);
-                        }
-                        callback.onResult(password.toString());
+                        callback.onResult(pattern);
                     } else {
                         callback.onLess();
                     }
@@ -337,19 +332,22 @@ public class PatternDrawing extends ViewGroup {
         invalidate();
     }
 
+    /**
+     * 图案绘制结果回调.
+     */
     public interface Callback {
+        /**
+         * 绘制图案结束时回调.<br>
+         *
+         * 若连接的点太少将不会调用该方法.
+         * @param pattern 依序组成图案的结点索引
+         */
+        void onResult(@NonNull int[] pattern);
+
         /**
          * 连接的点太少（少于4个）.
          */
         void onLess();
-
-        /**
-         * 所绘制图案转化为数值后的结果.<br>
-         *
-         * 若连接的点太少将不会调用该方法.
-         * @param password 转化后的结果
-         */
-        void onResult(@NonNull String password);
     }
 
     // 图案绘制结点

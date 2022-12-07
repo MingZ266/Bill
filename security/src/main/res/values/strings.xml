@@ -15,4 +15,6 @@
     <string name="passwdHint">密码</string>
     <string name="confirmPasswdHint">确认密码</string>
     <string name="alterButton">修改</string>
+    <string name="alterPattern">修改图案</string>
+    <string name="patternUnlock">请绘制图案以解锁</string>
 </resources>
