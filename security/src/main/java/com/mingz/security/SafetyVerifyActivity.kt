@@ -8,14 +8,12 @@ import com.mingz.security.verify.FingerprintFragment
 import com.mingz.security.verify.PasswordFragment
 import com.mingz.security.verify.PatternFragment
 import com.mingz.security.verify.SafetyVerifyFragment
-import com.mingz.share.Config
-import com.mingz.share.FILE_CONFIG_SAFETY
-import com.mingz.share.KEY_ANIM_DIRECTION_INT
-import com.mingz.share.KEY_ANIM_TYPE_INT
+import com.mingz.share.*
 import com.mingz.share.ui.CheckedImageView
 import com.mingz.share.ui.SwitchAnimView
 
 class SafetyVerifyActivity : AppCompatActivity() {
+    private val activity = this
     private lateinit var binding: ActivitySafetyVerifyBinding
     private var currentFragment: SafetyVerifyFragment? = null // 当前选中的安全项
     private var currentCheckedIcon: CheckedImageView? = null // 当前选中项对应的图标
@@ -99,10 +97,14 @@ class SafetyVerifyActivity : AppCompatActivity() {
             }
         }
         if (hasFingerprint) {
-            currentFragment = FingerprintFragment()
-            binding.fingerprint.let {
-                it.visibility = View.VISIBLE
-                currentCheckedIcon = it
+            if (FingerprintFragment.isAvailable(activity)) {
+                currentFragment = FingerprintFragment()
+                binding.fingerprint.let {
+                    it.visibility = View.VISIBLE
+                    currentCheckedIcon = it
+                }
+            } else {
+                activity.showToast("系统指纹变更，指纹已禁用")
             }
         }
         // 初始化选中当前安全项

@@ -38,11 +38,15 @@ class FingerprintActivity : AppCompatActivity(), CoroutineScope, SafetyOption {
     private lateinit var config: Config
 
     companion object {
-        // AndroidKeyStore
-        private const val ANDROID_KEY_STORE = "AndroidKeyStore"
+        /**
+         * AndroidKeyStore.
+         */
+        internal const val ANDROID_KEY_STORE = "AndroidKeyStore"
 
-        // 密钥条目在AndroidKeyStore中的别名
-        private const val ALIAS_FINGERPRINT = CFG_FINGERPRINT_BOOL
+        /**
+         * 密钥条目在AndroidKeyStore中的别名.
+         */
+        internal const val ALIAS_FINGERPRINT = CFG_FINGERPRINT_BOOL
 
         // 更新安全密钥密文
         @Suppress("unused") // 通过反射调用

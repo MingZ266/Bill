@@ -1,6 +1,9 @@
 package com.mingz.security.verify
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +11,11 @@ import androidx.biometric.BiometricPrompt
 import com.mingz.security.*
 import com.mingz.security.databinding.FragmentFingerprintBinding
 import com.mingz.security.option.FingerprintActivity
-import com.mingz.share.MyLog
-import com.mingz.share.catchException
-import com.mingz.share.readFile
-import com.mingz.share.showToast
+import com.mingz.share.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.security.KeyStore
 import kotlin.coroutines.CoroutineContext
 
 class FingerprintFragment : SafetyVerifyFragment(), CoroutineScope {
@@ -26,6 +27,38 @@ class FingerprintFragment : SafetyVerifyFragment(), CoroutineScope {
 
     companion object {
         const val TAG = CFG_FINGERPRINT_BOOL
+
+        /**
+         * 检查指纹安全项是否可用.
+         *
+         * 当系统指纹变更时，密钥对中的私钥将失效，此时指纹安全项不可用.
+         *
+         * 若不可用，将禁用指纹安全项.
+         * @return 若可用，将返回true
+         */
+        internal fun isAvailable(context: Context): Boolean {
+            // 若API版本低于23，则密钥对未使用身份验证保护，一般不会失效
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true
+            val keyPair = FingerprintActivity.findKeyPair() ?: return false
+            return try {
+                RSA.getCipher(keyPair.private)
+                true
+            } catch (e: KeyPermanentlyInvalidatedException) { // 私钥失效
+                val myLog = MyLog()
+                myLog.w("指纹安全项已失效", e)
+                catchException(myLog) {
+                    // 写配置：指纹已禁用
+                    Config(context, FILE_CONFIG_SAFETY)[CFG_FINGERPRINT_BOOL] = false
+                    // 删除指纹安全项保存的安全密钥密文
+                    safeKeyFile(context, FILE_KEY_FINGERPRINT).delete()
+                    // 删除密钥对
+                    val keyStore = KeyStore.getInstance(FingerprintActivity.ANDROID_KEY_STORE)
+                    keyStore.load(null)
+                    keyStore.deleteEntry(FingerprintActivity.ALIAS_FINGERPRINT)
+                }
+                false
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
