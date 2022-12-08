@@ -6,7 +6,7 @@
     <string name="enable">启用</string>
     <string name="verifyFingerprint">点击以验证指纹</string>
     <string name="resetFinger">重置指纹</string>
-    <string name="tip">设备尚未注册指纹，是\n否前往添加？</string>
+    <string name="tip">设备尚未注册指纹，是否\n前往系统设置？</string>
     <string name="oldPasswdTitle">输入旧密码</string>
     <string name="oldPasswdHint">旧密码</string>
     <string name="newPasswdTitle">输入新密码</string>

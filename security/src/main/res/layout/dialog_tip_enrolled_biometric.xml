@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="15dp"
+    android:paddingHorizontal="20dp"
     android:paddingVertical="10dp"
     tools:layout_gravity="center"
     android:background="@color/dialogBg">
@@ -41,6 +41,15 @@
         android:text="@string/ok"
         android:textSize="@dimen/textMedium"
         android:textColor="@color/themeColor"/>
+    
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/confirm"
+        app:layout_constraintEnd_toStartOf="@id/cancel"
+        app:layout_constraintTop_toTopOf="@id/confirm"
+        app:layout_constraintBottom_toBottomOf="@id/confirm"
+        android:background="@color/splitLine"/>
     
     <TextView
         android:id="@+id/cancel"

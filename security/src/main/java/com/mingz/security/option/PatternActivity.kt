@@ -4,8 +4,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.mingz.security.CFG_FINGERPRINT_BOOL
@@ -19,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.util.Arrays
+import java.util.*
 import javax.crypto.SecretKey
 
 class PatternActivity : ByteSafetyOptionActivity(), CoroutineScope {
@@ -125,6 +123,7 @@ class PatternActivity : ByteSafetyOptionActivity(), CoroutineScope {
                         binding.pattern.visibility = View.GONE
                         // 显示修改选项
                         binding.alterPattern.visibility = View.VISIBLE
+                        binding.alterPattern.alpha = 1.0f
                         // 重置标记
                         doneInit = false
                     }, {
@@ -201,6 +200,10 @@ class PatternActivity : ByteSafetyOptionActivity(), CoroutineScope {
                     })
                     loading.dismiss()
                 }
+                // 短暂延时后重置绘制状态
+                binding.pattern.postDelayed({
+                    binding.pattern.reDraw()
+                }, DELAY_REDRAW)
             }
 
             // 视作图案错误

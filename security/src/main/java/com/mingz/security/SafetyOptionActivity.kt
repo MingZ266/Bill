@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -19,7 +20,6 @@ import com.mingz.share.MyLog
 class SafetyOptionActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySafetyOptionBinding
     private val activity = this
-    private var showTip = true // 是否显示提示弹窗
     private val tipDialog = DialogPack(activity, object : DialogPack.Creator<DialogTipEnrolledBiometricBinding> {
         override fun createBinding() = DialogTipEnrolledBiometricBinding.inflate(LayoutInflater.from(activity))
 
@@ -29,10 +29,15 @@ class SafetyOptionActivity : AppCompatActivity() {
             binding.cancel.setOnClickListener { dialog.dismiss() }
             binding.confirm.setOnClickListener {
                 dialog.dismiss()
-                // TODO: 跳转到设置
+                // 跳转到系统设置
+                startActivity(Intent(Settings.ACTION_SETTINGS))
             }
         }
     })
+
+    companion object {
+        private var showTip = true // 是否显示提示弹窗
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
